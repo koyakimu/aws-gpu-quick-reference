@@ -1,0 +1,29 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+
+# Claude Code local settings
+.claude/
+
+# Local development
+.env
+.env.local
+*.log
+
+# Python HTTP server
+__pycache__/
+*.py[cod]
