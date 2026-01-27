@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS EC2 GPU インスタンス リファレンスガイド (2026年1月更新)</title>
+    
+    <!-- SEO -->
+    <meta name="description" content="AWS EC2 GPUインスタンスの完全比較ガイド。Blackwell〜Voltaまで全世代のスペック・価格・東京リージョン対応状況を一覧で確認。">
+    <meta name="keywords" content="AWS, EC2, GPU, NVIDIA, Blackwell, Hopper, H100, H200, P5, G6, 機械学習, AI, インスタンス比較">
+    <meta name="author" content="koyakimu">
+    
+    <!-- OGP (Open Graph Protocol) -->
+    <meta property="og:title" content="AWS EC2 GPU インスタンス リファレンスガイド">
+    <meta property="og:description" content="Blackwell〜Voltaまで全世代のGPUインスタンスを網羅。スペック・価格・東京リージョン対応を一覧比較。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://koyakimu.github.io/aws-gpu-quick-reference/">
+    <meta property="og:image" content="https://koyakimu.github.io/aws-gpu-quick-reference/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:site_name" content="AWS EC2 GPU Reference Guide">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AWS EC2 GPU インスタンス リファレンスガイド">
+    <meta name="twitter:description" content="Blackwell〜Voltaまで全世代のGPUインスタンスを網羅。スペック・価格・東京リージョン対応を一覧比較。">
+    <meta name="twitter:image" content="https://koyakimu.github.io/aws-gpu-quick-reference/ogp.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
     <style>
         :root {
             /* 世代別カラー */
@@ -105,7 +130,7 @@
 <body>
 <div class="container">
     <h1>🚀 AWS EC2 GPU インスタンス リファレンスガイド</h1>
-    <p class="subtitle">最終更新: 2026年1月21日 | 価格: 東京リージョン On-Demand (税抜)</p>
+    <p class="subtitle">最終更新: 2026年1月27日 | 価格: 東京リージョン On-Demand (税抜)</p>
 
     <div class="legend">
         <div class="legend-item"><div class="legend-color blackwell"></div>Blackwell (2024)</div>
@@ -199,8 +224,8 @@ const EC2_LINKS = {
 // GPU インスタンスデータ
 const GPU_DATA = [
     // Blackwell
-    { gen: 'blackwell', genRows: 8, gpu: 'B300', gpuNew: true, ec2: 'P6-B300', size: 'p6-b300.48xlarge', count: 8, vram: '2.3TB', fp16: '2,250', fp8: '4,500', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '4TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$142.45', tokyo: false },
-    { gen: 'blackwell', gpu: 'B200', ec2: 'P6-B200', size: 'p6-b200.48xlarge', count: 8, vram: '1.4TB', fp16: '2,250', fp8: '4,500', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$74.88', tokyo: false },
+    { gen: 'blackwell', genRows: 8, gpu: 'B300', gpuNew: true, ec2: 'P6-B300', size: 'p6-b300.48xlarge', count: 8, vram: '2.3TB', fp16: '2,250', fp8: '4,500', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '4TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$11.70', tokyo: false },
+    { gen: 'blackwell', gpu: 'B200', ec2: 'P6-B200', size: 'p6-b200.48xlarge', count: 8, vram: '1.4TB', fp16: '2,250', fp8: '4,500', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$9.36', tokyo: false },
     { gen: 'blackwell', gpu: 'RTX PRO', gpuNew: true, gpuRows: 6, ec2: 'G7e', ec2Rows: 6, size: 'g7e.2xlarge', count: 1, vram: '96GB', fp16: '240*', fp8: '480*', est: true, efa: '-', pcie: 'Gen5', vcpu: 8, mem: '64GB', nvme: '1.9TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.4xlarge', count: 1, vram: '96GB', fp16: '240*', fp8: '480*', est: true, efa: '-', pcie: 'Gen5', vcpu: 16, mem: '128GB', nvme: '1.9TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.8xlarge', count: 1, vram: '96GB', fp16: '240*', fp8: '480*', est: true, efa: '-', pcie: 'Gen5', vcpu: 32, mem: '256GB', nvme: '1.9TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
@@ -208,8 +233,8 @@ const GPU_DATA = [
     { gen: 'blackwell', size: 'g7e.24xlarge', count: 4, vram: '384GB', fp16: '960*', fp8: '1,920*', est: true, efa: '-', pcie: 'Gen5', vcpu: 96, mem: '1TB', nvme: '7.6TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.48xlarge', count: 8, vram: '768GB', fp16: '1,920*', fp8: '3,840*', est: true, efa: '1600G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '15.2TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     // Hopper
-    { gen: 'hopper', genRows: 3, gpu: 'H200', ec2: 'P5en', size: 'p5en.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v3 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$63.30', priceGpu: '$7.91', priceCb: '$4.52', tokyo: true },
-    { gen: 'hopper', gpu: 'H200', ec2: 'P5e', size: 'p5e.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$4.33', tokyo: true },
+    { gen: 'hopper', genRows: 3, gpu: 'H200', ec2: 'P5en', size: 'p5en.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v3 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$63.30', priceGpu: '$7.91', priceCb: '$5.20', tokyo: true },
+    { gen: 'hopper', gpu: 'H200', ec2: 'P5e', size: 'p5e.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$4.98', tokyo: true },
     { gen: 'hopper', gpu: 'H100', ec2: 'P5', size: 'p5.48xlarge', count: 8, vram: '640GB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$30.27', priceGpu: '$3.78', priceCb: '$3.93', tokyo: true },
 
     // Ada Lovelace - G6e L40S
