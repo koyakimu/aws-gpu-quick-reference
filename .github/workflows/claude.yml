@@ -20,7 +20,7 @@ jobs:
         github.event.comment.author_association == 'COLLABORATOR'
       )
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
@@ -34,7 +34,7 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          claude_args: "--max-turns 10"
+          claude_args: "--max-turns 30"
 
   # PR 自動レビュー
   claude-review:
@@ -64,4 +64,4 @@ jobs:
             - コードの品質と可読性
             - 潜在的なバグやセキュリティ問題
             - CLAUDE.mdに記載されたプロジェクト規約との整合性
-          claude_args: "--max-turns 5"
+          claude_args: "--max-turns 15"
