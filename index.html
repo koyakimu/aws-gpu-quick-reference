@@ -58,7 +58,8 @@
             min-height: 100vh;
             padding: 20px;
         }
-        .container { max-width: 100%; overflow-x: auto; }
+        .container { max-width: 100%; }
+        .table-wrapper { overflow-x: auto; }
         h1 { text-align: center; margin-bottom: 10px; color: var(--c-accent); font-size: 1.8em; }
         .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
 
@@ -125,6 +126,36 @@
         .notes h3 { color: var(--c-accent); margin-bottom: 10px; }
         .notes ul { margin-left: 20px; }
         .notes li { margin-bottom: 5px; }
+
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            /* フォントサイズ拡大 */
+            table {
+                font-size: 0.85em;
+            }
+
+            /* タップ領域拡大 */
+            th, td {
+                padding: 10px 6px;
+            }
+
+            /* スムーズスクロール対応 */
+            .table-wrapper {
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 凡例をスマホ向けに調整 */
+            .legend {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            /* 注釈セクションのパディング調整 */
+            .notes {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -141,6 +172,7 @@
         <div class="legend-item"><div class="legend-color volta"></div>Volta (2017)</div>
     </div>
 
+    <div class="table-wrapper">
     <table>
         <thead>
             <tr>
@@ -162,6 +194,7 @@
         </thead>
         <tbody id="gpu-table-body"></tbody>
     </table>
+    </div>
 
     <div class="notes">
         <h3>📝 Notes</h3>
