@@ -161,7 +161,7 @@
 <body>
 <div class="container">
     <h1>🚀 AWS EC2 GPU インスタンス リファレンスガイド</h1>
-    <p class="subtitle">最終更新: 2026年1月27日 | 価格: 東京リージョン On-Demand (税抜)</p>
+    <p class="subtitle">最終更新: 2026年1月31日 | 価格: 東京リージョン On-Demand (税抜)</p>
 
     <div class="legend">
         <div class="legend-item"><div class="legend-color blackwell"></div>Blackwell (2024)</div>
@@ -291,8 +291,8 @@ const GPU_DATA = [
     { gen: 'ada', size: 'g6f.xlarge', count: '1/8', vram: '3GB', fp16: '30*', fp8: '61*', est: true, efa: '-', pcie: 'Gen4', vcpu: 4, mem: '16GB', nvme: '-', price: '$0.24', priceGpu: '$1.92', priceCb: '-', tokyo: true },
     { gen: 'ada', size: 'g6f.4xlarge', count: '1/2', vram: '12GB', fp16: '121*', fp8: '243*', est: true, efa: '-', pcie: 'Gen4', vcpu: 16, mem: '64GB', nvme: '-', price: '$0.95', priceGpu: '$1.90', priceCb: '-', tokyo: true },
     // Ampere
-    { gen: 'ampere', genRows: 9, gpu: 'A100 40GB', ec2: 'P4d', size: 'p4d.24xlarge', count: 8, vram: '320GB', fp16: '4,992', fp8: '9,984', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$14.71', priceGpu: '$1.84', priceCb: '-', tokyo: true },
-    { gen: 'ampere', gpu: 'A100 80GB', ec2: 'P4de', size: 'p4de.24xlarge', count: 8, vram: '640GB', fp16: '4,992', fp8: '9,984', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$18.40', priceGpu: '$2.30', priceCb: '-', tokyo: false },
+    { gen: 'ampere', genRows: 9, gpu: 'A100 40GB', ec2: 'P4d', size: 'p4d.24xlarge', count: 8, vram: '320GB', fp16: '4,992', fp8: '9,984', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$14.71', priceGpu: '$1.84', priceCb: '$1.48', tokyo: true },
+    { gen: 'ampere', gpu: 'A100 80GB', ec2: 'P4de', size: 'p4de.24xlarge', count: 8, vram: '640GB', fp16: '4,992', fp8: '9,984', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$18.40', priceGpu: '$2.30', priceCb: '$1.85', tokyo: false },
     { gen: 'ampere', gpu: 'A10G', gpuRows: 7, ec2: 'G5', ec2Rows: 7, size: 'g5.xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 4, mem: '16GB', nvme: '125GB', price: '$1.01', priceGpu: '$1.01', priceCb: '-', tokyo: true },
     { gen: 'ampere', size: 'g5.2xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 8, mem: '32GB', nvme: '450GB', price: '$1.21', priceGpu: '$1.21', priceCb: '-', tokyo: true },
     { gen: 'ampere', size: 'g5.4xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 16, mem: '64GB', nvme: '600GB', price: '$1.62', priceGpu: '$1.62', priceCb: '-', tokyo: true },
