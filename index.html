@@ -263,8 +263,8 @@ const EC2_LINKS = {
 // GPU インスタンスデータ
 const GPU_DATA = [
     // Blackwell
-    { gen: 'blackwell', genRows: 8, gpu: 'B300', gpuNew: true, ec2: 'P6-B300', size: 'p6-b300.48xlarge', count: 8, vram: '2.3TB', fp16: '2,250', fp8: '4,500', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '4TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$11.70', tokyo: false },
-    { gen: 'blackwell', gpu: 'B200', ec2: 'P6-B200', size: 'p6-b200.48xlarge', count: 8, vram: '1.4TB', fp16: '2,250', fp8: '4,500', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$9.36', tokyo: false },
+    { gen: 'blackwell', genRows: 8, gpu: 'B300', gpuNew: true, ec2: 'P6-B300', size: 'p6-b300.48xlarge', count: 8, vram: '2.3TB', fp16: '18,000', fp8: '36,000', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '4TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$11.70', tokyo: false },
+    { gen: 'blackwell', gpu: 'B200', ec2: 'P6-B200', size: 'p6-b200.48xlarge', count: 8, vram: '1.4TB', fp16: '18,000', fp8: '36,000', efa: 'v4 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$9.36', tokyo: false },
     { gen: 'blackwell', gpu: 'RTX PRO', gpuNew: true, gpuRows: 6, ec2: 'G7e', ec2Rows: 6, size: 'g7e.2xlarge', count: 1, vram: '96GB', fp16: '240*', fp8: '480*', est: true, efa: '-', pcie: 'Gen5', vcpu: 8, mem: '64GB', nvme: '1.9TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.4xlarge', count: 1, vram: '96GB', fp16: '240*', fp8: '480*', est: true, efa: '-', pcie: 'Gen5', vcpu: 16, mem: '128GB', nvme: '1.9TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.8xlarge', count: 1, vram: '96GB', fp16: '240*', fp8: '480*', est: true, efa: '-', pcie: 'Gen5', vcpu: 32, mem: '256GB', nvme: '1.9TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
@@ -272,10 +272,10 @@ const GPU_DATA = [
     { gen: 'blackwell', size: 'g7e.24xlarge', count: 4, vram: '384GB', fp16: '960*', fp8: '1,920*', est: true, efa: '-', pcie: 'Gen5', vcpu: 96, mem: '1TB', nvme: '7.6TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.48xlarge', count: 8, vram: '768GB', fp16: '1,920*', fp8: '3,840*', est: true, efa: '1600G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '15.2TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     // Hopper
-    { gen: 'hopper', genRows: 4, gpu: 'H200', ec2: 'P5en', size: 'p5en.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v3 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$63.30', priceGpu: '$7.91', priceCb: '$5.20', tokyo: true },
-    { gen: 'hopper', gpu: 'H200', ec2: 'P5e', size: 'p5e.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$4.98', tokyo: true },
-    { gen: 'hopper', gpu: 'H100', gpuRows: 2, ec2: 'P5', ec2Rows: 2, size: 'p5.48xlarge', count: 8, vram: '640GB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$30.27', priceGpu: '$3.78', priceCb: '$3.93', tokyo: true },
-    { gen: 'hopper', size: 'p5.4xlarge', count: 1, vram: '80GB', fp16: '247', fp8: '495', efa: '-', pcie: 'Gen4', vcpu: 24, mem: '256GB', nvme: '3.8TB', price: '$3.78', priceGpu: '$3.78', priceCb: '$3.78', tokyo: true },
+    { gen: 'hopper', genRows: 4, gpu: 'H200', ec2: 'P5en', size: 'p5en.48xlarge', count: 8, vram: '1.1TB', fp16: '15,832', fp8: '31,664', efa: 'v3 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$63.30', priceGpu: '$7.91', priceCb: '$5.20', tokyo: true },
+    { gen: 'hopper', gpu: 'H200', ec2: 'P5e', size: 'p5e.48xlarge', count: 8, vram: '1.1TB', fp16: '15,832', fp8: '31,664', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$4.98', tokyo: true },
+    { gen: 'hopper', gpu: 'H100', gpuRows: 2, ec2: 'P5', ec2Rows: 2, size: 'p5.48xlarge', count: 8, vram: '640GB', fp16: '15,832', fp8: '31,664', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$30.27', priceGpu: '$3.78', priceCb: '$3.93', tokyo: true },
+    { gen: 'hopper', size: 'p5.4xlarge', count: 1, vram: '80GB', fp16: '1,979', fp8: '3,958', efa: '-', pcie: 'Gen4', vcpu: 24, mem: '256GB', nvme: '3.8TB', price: '$3.78', priceGpu: '$3.78', priceCb: '$3.78', tokyo: true },
 
     // Ada Lovelace - G6e L40S
     { gen: 'ada', genRows: 11, gpu: 'L40S', gpuRows: 4, ec2: 'G6e', ec2Rows: 4, size: 'g6e.xlarge', count: 1, vram: '48GB', fp16: '733', fp8: '1,466', efa: '-', pcie: 'Gen4', vcpu: 4, mem: '32GB', nvme: '-', price: '$1.86', priceGpu: '$1.86', priceCb: '-', tokyo: true },
@@ -292,15 +292,15 @@ const GPU_DATA = [
     { gen: 'ada', size: 'g6f.xlarge', count: '1/8', vram: '3GB', fp16: '30*', fp8: '61*', est: true, efa: '-', pcie: 'Gen4', vcpu: 4, mem: '16GB', nvme: '-', price: '$0.24', priceGpu: '$1.92', priceCb: '-', tokyo: true },
     { gen: 'ada', size: 'g6f.4xlarge', count: '1/2', vram: '12GB', fp16: '121*', fp8: '243*', est: true, efa: '-', pcie: 'Gen4', vcpu: 16, mem: '64GB', nvme: '-', price: '$0.95', priceGpu: '$1.90', priceCb: '-', tokyo: true },
     // Ampere
-    { gen: 'ampere', genRows: 9, gpu: 'A100 40GB', ec2: 'P4d', size: 'p4d.24xlarge', count: 8, vram: '320GB', fp16: '4,992', fp8: '9,984', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$14.71', priceGpu: '$1.84', priceCb: '$1.48', tokyo: true },
-    { gen: 'ampere', gpu: 'A100 80GB', ec2: 'P4de', size: 'p4de.24xlarge', count: 8, vram: '640GB', fp16: '4,992', fp8: '9,984', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$18.40', priceGpu: '$2.30', priceCb: '$1.85', tokyo: false },
-    { gen: 'ampere', gpu: 'A10G', gpuRows: 7, ec2: 'G5', ec2Rows: 7, size: 'g5.xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 4, mem: '16GB', nvme: '125GB', price: '$1.01', priceGpu: '$1.01', priceCb: '-', tokyo: true },
-    { gen: 'ampere', size: 'g5.2xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 8, mem: '32GB', nvme: '450GB', price: '$1.21', priceGpu: '$1.21', priceCb: '-', tokyo: true },
-    { gen: 'ampere', size: 'g5.4xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 16, mem: '64GB', nvme: '600GB', price: '$1.62', priceGpu: '$1.62', priceCb: '-', tokyo: true },
-    { gen: 'ampere', size: 'g5.8xlarge', count: 1, vram: '24GB', fp16: '250', fp8: '500', efa: '-', pcie: 'Gen4', vcpu: 32, mem: '128GB', nvme: '900GB', price: '$2.45', priceGpu: '$2.45', priceCb: '-', tokyo: true },
-    { gen: 'ampere', size: 'g5.12xlarge', count: 4, vram: '96GB', fp16: '1,000', fp8: '2,000', efa: '-', pcie: 'Gen4', vcpu: 48, mem: '192GB', nvme: '3.8TB', price: '$5.67', priceGpu: '$1.42', priceCb: '-', tokyo: true },
-    { gen: 'ampere', size: 'g5.24xlarge', count: 4, vram: '96GB', fp16: '1,000', fp8: '2,000', efa: '-', pcie: 'Gen4', vcpu: 96, mem: '384GB', nvme: '3.8TB', price: '$8.14', priceGpu: '$2.04', priceCb: '-', tokyo: true },
-    { gen: 'ampere', size: 'g5.48xlarge', count: 8, vram: '192GB', fp16: '2,000', fp8: '4,000', efa: '-', pcie: 'Gen4', vcpu: 192, mem: '768GB', nvme: '7.6TB', price: '$16.29', priceGpu: '$2.04', priceCb: '-', tokyo: true },
+    { gen: 'ampere', genRows: 9, gpu: 'A100 40GB', ec2: 'P4d', size: 'p4d.24xlarge', count: 8, vram: '320GB', fp16: '2,496', fp8: '-', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$14.71', priceGpu: '$1.84', priceCb: '$1.48', tokyo: true },
+    { gen: 'ampere', gpu: 'A100 80GB', ec2: 'P4de', size: 'p4de.24xlarge', count: 8, vram: '640GB', fp16: '2,496', fp8: '-', efa: 'v1 400G', pcie: 'Gen4', vcpu: 96, mem: '1.1TB', nvme: '8TB', price: '$18.40', priceGpu: '$2.30', priceCb: '$1.85', tokyo: false },
+    { gen: 'ampere', gpu: 'A10G', gpuRows: 7, ec2: 'G5', ec2Rows: 7, size: 'g5.xlarge', count: 1, vram: '24GB', fp16: '125', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 4, mem: '16GB', nvme: '125GB', price: '$1.01', priceGpu: '$1.01', priceCb: '-', tokyo: true },
+    { gen: 'ampere', size: 'g5.2xlarge', count: 1, vram: '24GB', fp16: '125', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 8, mem: '32GB', nvme: '450GB', price: '$1.21', priceGpu: '$1.21', priceCb: '-', tokyo: true },
+    { gen: 'ampere', size: 'g5.4xlarge', count: 1, vram: '24GB', fp16: '125', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 16, mem: '64GB', nvme: '600GB', price: '$1.62', priceGpu: '$1.62', priceCb: '-', tokyo: true },
+    { gen: 'ampere', size: 'g5.8xlarge', count: 1, vram: '24GB', fp16: '125', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 32, mem: '128GB', nvme: '900GB', price: '$2.45', priceGpu: '$2.45', priceCb: '-', tokyo: true },
+    { gen: 'ampere', size: 'g5.12xlarge', count: 4, vram: '96GB', fp16: '500', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 48, mem: '192GB', nvme: '3.8TB', price: '$5.67', priceGpu: '$1.42', priceCb: '-', tokyo: true },
+    { gen: 'ampere', size: 'g5.24xlarge', count: 4, vram: '96GB', fp16: '500', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 96, mem: '384GB', nvme: '3.8TB', price: '$8.14', priceGpu: '$2.04', priceCb: '-', tokyo: true },
+    { gen: 'ampere', size: 'g5.48xlarge', count: 8, vram: '192GB', fp16: '1,000', fp8: '-', efa: '-', pcie: 'Gen4', vcpu: 192, mem: '768GB', nvme: '7.6TB', price: '$16.29', priceGpu: '$2.04', priceCb: '-', tokyo: true },
 
     // Turing - G4dn T4
     { gen: 'turing', genRows: 11, gpu: 'T4', gpuRows: 6, ec2: 'G4dn', ec2Rows: 6, size: 'g4dn.xlarge', count: 1, vram: '16GB', fp16: '65', fp8: '-', efa: '-', pcie: 'Gen3', vcpu: 4, mem: '16GB', nvme: '125GB', price: '$0.53', priceGpu: '$0.53', priceCb: '-', tokyo: true },
