@@ -272,9 +272,10 @@ const GPU_DATA = [
     { gen: 'blackwell', size: 'g7e.24xlarge', count: 4, vram: '384GB', fp16: '960*', fp8: '1,920*', est: true, efa: '-', pcie: 'Gen5', vcpu: 96, mem: '1TB', nvme: '7.6TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     { gen: 'blackwell', size: 'g7e.48xlarge', count: 8, vram: '768GB', fp16: '1,920*', fp8: '3,840*', est: true, efa: '1600G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '15.2TB', price: 'TBD', priceGpu: 'TBD', priceCb: '-', tokyo: false },
     // Hopper
-    { gen: 'hopper', genRows: 3, gpu: 'H200', ec2: 'P5en', size: 'p5en.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v3 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$63.30', priceGpu: '$7.91', priceCb: '$5.20', tokyo: true },
+    { gen: 'hopper', genRows: 4, gpu: 'H200', ec2: 'P5en', size: 'p5en.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v3 3200G', pcie: 'Gen5', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$63.30', priceGpu: '$7.91', priceCb: '$5.20', tokyo: true },
     { gen: 'hopper', gpu: 'H200', ec2: 'P5e', size: 'p5e.48xlarge', count: 8, vram: '1.1TB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: null, priceGpu: null, priceCb: '$4.98', tokyo: true },
-    { gen: 'hopper', gpu: 'H100', ec2: 'P5', size: 'p5.48xlarge', count: 8, vram: '640GB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$30.27', priceGpu: '$3.78', priceCb: '$3.93', tokyo: true },
+    { gen: 'hopper', gpu: 'H100', ec2: 'P5', ec2Rows: 2, size: 'p5.48xlarge', count: 8, vram: '640GB', fp16: '1,979', fp8: '3,958', efa: 'v2 3200G', pcie: 'Gen4', vcpu: 192, mem: '2TB', nvme: '30TB', price: '$30.27', priceGpu: '$3.78', priceCb: '$3.93', tokyo: true },
+    { gen: 'hopper', size: 'p5.4xlarge', count: 1, vram: '80GB', fp16: '247', fp8: '495', efa: '-', pcie: 'Gen4', vcpu: 24, mem: '256GB', nvme: '3.8TB', price: '$3.78', priceGpu: '$3.78', priceCb: '-', tokyo: true },
 
     // Ada Lovelace - G6e L40S
     { gen: 'ada', genRows: 11, gpu: 'L40S', gpuRows: 4, ec2: 'G6e', ec2Rows: 4, size: 'g6e.xlarge', count: 1, vram: '48GB', fp16: '733', fp8: '1,466', efa: '-', pcie: 'Gen4', vcpu: 4, mem: '32GB', nvme: '-', price: '$1.86', priceGpu: '$1.86', priceCb: '-', tokyo: true },

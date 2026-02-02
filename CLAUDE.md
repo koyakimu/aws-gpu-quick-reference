@@ -16,7 +16,26 @@ AWS EC2 GPUインスタンスの比較表を表示する静的Webサイト。
  efaVersion, pcie, vcpu, memory, nvme, onDemandPrice, pricePerGpu, cbPrice, tokyoAvailable]
 ```
 
-### CB (Capacity Blocks) 価格更新
+### 価格更新
+
+#### On-Demand 価格
+
+**AWS Price List Bulk API**を使用して最新価格を取得可能:
+```
+https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/index.json
+```
+
+- ファイルサイズが大きい（数百MB）ため、ダウンロードと解析に時間がかかる
+- `products` セクションでインスタンスタイプを検索
+- `terms.OnDemand` セクションで価格情報を取得
+- リージョン別の価格は `location` フィールドで識別
+- 東京リージョンは `"Asia Pacific (Tokyo)"` または `ap-northeast-1`
+
+**代替手段:**
+- AWS CLI: `aws pricing get-products --service-code AmazonEC2 --filters ...`
+- AWS SDKを使用したプログラマティックアクセス
+
+#### CB (Capacity Blocks) 価格更新
 
 CB価格データソース:
 https://raw.githubusercontent.com/koyakimu/ec2-capacity-blocks-for-ml-pricing-json/refs/heads/main/data/pricing.json
