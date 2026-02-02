@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "title": "AWS EC2 NVIDIA GPU Specifications",
+    "description": "AWS EC2で提供されているNVIDIA GPUの演算性能一覧",
+    "last_updated": "2026-02-02",
+    "notes": {
+      "sparsity": "with_sparsity=trueの値はスパース性あり。Dense（密）は半分の値",
+      "tensor_core": "FP16 TFLOPSはTensor Core使用時の値",
+      "form_factor": "P系インスタンスはSXM版、G系インスタンスはPCIe版を採用",
+      "fp8_support": "FP8はHopper (H100/H200)以降で対応",
+      "fp4_support": "FP4はBlackwell (B200/B300)以降で対応",
+      "unit": "TFLOPSはTeraFLOPS (10^12 floating-point operations per second)"
+    },
+    "sources": [
+      "https://www.nvidia.com/en-us/data-center/",
+      "https://docs.aws.amazon.com/ec2/latest/instancetypes/ac.html"
+    ]
+  },
+  "gpus": [
+    {
+      "gpu_name": "V100 SXM2",
+      "ec2_instance": ["P3", "P3dn"],
+      "architecture": "Volta",
+      "form_factor": "SXM",
+      "fp16_tflops": 125,
+      "fp16_with_sparsity": false,
+      "fp16_tflops_non_tensor": 31.4,
+      "fp8_tflops": null,
+      "fp4_tflops": null,
+      "memory_gb": [16, 32],
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/v100/"
+    },
+    {
+      "gpu_name": "T4",
+      "ec2_instance": ["G4dn"],
+      "architecture": "Turing",
+      "form_factor": "PCIe",
+      "fp16_tflops": 65,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": null,
+      "fp4_tflops": null,
+      "memory_gb": 16,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/tesla-t4/"
+    },
+    {
+      "gpu_name": "A10G",
+      "ec2_instance": ["G5"],
+      "architecture": "Ampere",
+      "form_factor": "PCIe",
+      "fp16_tflops": 125,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": null,
+      "fp4_tflops": null,
+      "memory_gb": 24,
+      "is_aws_custom": true,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/products/a10-gpu/"
+    },
+    {
+      "gpu_name": "L4",
+      "ec2_instance": ["G6"],
+      "architecture": "Ada Lovelace",
+      "form_factor": "PCIe",
+      "fp16_tflops": 242,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": 485,
+      "fp8_with_sparsity": true,
+      "fp4_tflops": null,
+      "memory_gb": 24,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/l4/"
+    },
+    {
+      "gpu_name": "L40S",
+      "ec2_instance": ["G6e"],
+      "architecture": "Ada Lovelace",
+      "form_factor": "PCIe",
+      "fp16_tflops": 733,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": 1466,
+      "fp8_with_sparsity": true,
+      "fp4_tflops": null,
+      "memory_gb": 48,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/l40s/"
+    },
+    {
+      "gpu_name": "A100 SXM",
+      "ec2_instance": ["P4d", "P4de"],
+      "architecture": "Ampere",
+      "form_factor": "SXM",
+      "fp16_tflops": 312,
+      "fp16_with_sparsity": true,
+      "fp16_tflops_non_tensor": 78,
+      "fp8_tflops": null,
+      "fp4_tflops": null,
+      "memory_gb": [40, 80],
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/a100/"
+    },
+    {
+      "gpu_name": "H100 SXM",
+      "ec2_instance": ["P5"],
+      "architecture": "Hopper",
+      "form_factor": "SXM",
+      "fp16_tflops": 1979,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": 3958,
+      "fp8_with_sparsity": true,
+      "fp4_tflops": null,
+      "memory_gb": 80,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/h100/"
+    },
+    {
+      "gpu_name": "H200 SXM",
+      "ec2_instance": ["P5e", "P5en"],
+      "architecture": "Hopper",
+      "form_factor": "SXM",
+      "fp16_tflops": 1979,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": 3958,
+      "fp8_with_sparsity": true,
+      "fp4_tflops": null,
+      "memory_gb": 141,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "gpu_name": "B200 SXM",
+      "ec2_instance": ["P6-B200"],
+      "architecture": "Blackwell",
+      "form_factor": "SXM",
+      "fp16_tflops": 2250,
+      "fp16_with_sparsity": false,
+      "fp8_tflops": 4500,
+      "fp8_with_sparsity": false,
+      "fp4_tflops": 9000,
+      "fp4_with_sparsity": false,
+      "memory_gb": 180,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "gpu_name": "B300 SXM",
+      "ec2_instance": ["P6-B300"],
+      "architecture": "Blackwell Ultra",
+      "form_factor": "SXM",
+      "fp16_tflops": 2250,
+      "fp16_with_sparsity": false,
+      "fp8_tflops": 4500,
+      "fp8_with_sparsity": false,
+      "fp4_tflops": 14000,
+      "fp4_with_sparsity": false,
+      "memory_gb": 288,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/dgx-b300/"
+    }
+  ]
+}

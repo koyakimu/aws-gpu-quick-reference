@@ -10,6 +10,13 @@ AWS EC2 GPUインスタンスの比較表を表示する静的Webサイト。
 
 ## データ更新
 
+### GPUスペック
+
+- GPUの演算性能等は `data/aws-ec2-nvidia-gpu-specs.json` を参照
+- 新しいGPUを追加する場合はまずJSONを更新してから `GPU_DATA` 配列を編集
+
+### GPU_DATA配列
+
 `GPU_DATA` 配列を編集。各エントリ:
 ```javascript
 [generation, gpuModel, ec2Type, instanceSize, gpuCount, vram, fp16, fp8,
