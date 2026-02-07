@@ -31,45 +31,110 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
     <style>
         :root {
-            /* 世代別カラー */
-            --c-blackwell: 155, 89, 182;
-            --c-hopper: 52, 152, 219;
-            --c-ada: 46, 204, 113;
-            --c-ampere: 231, 76, 60;
-            --c-turing: 243, 156, 18;
-            --c-volta: 149, 165, 166;
+            /* AWS カラーパレット */
+            --aws-squid-ink: #232F3E;
+            --aws-squid-ink-dark: #1A242F;
+            --aws-squid-ink-deep: #131A22;
+            --aws-orange: #FF9900;
+            --aws-orange-light: #FFAC31;
+            --aws-orange-dark: #EC7211;
+            --aws-smile: #FF9900;
+            --aws-blue: #527FFF;
+            --aws-teal: #44B9C6;
+            --aws-green: #7AA116;
+            --aws-purple: #8C6EFF;
+
+            /* 世代別カラー（AWSカラーベース） */
+            --c-blackwell: 140, 110, 255;
+            --c-hopper: 82, 127, 255;
+            --c-ada: 68, 185, 198;
+            --c-ampere: 255, 153, 0;
+            --c-turing: 122, 161, 22;
+            --c-volta: 136, 153, 166;
+
             /* UI カラー */
-            --c-accent: #ff9f43;
-            --c-price: #55efc4;
-            --c-cb: #81ecec;
-            --c-inst: #74b9ff;
-            --c-efa: #a29bfe;
-            --c-pcie: #fd79a8;
-            --c-warn: #fdcb6e;
-            --c-est: #ffeaa7;
-            --c-ok: #55efc4;
-            --c-no: #ff7675;
+            --c-accent: var(--aws-orange);
+            --c-price: #7AA116;
+            --c-cb: var(--aws-teal);
+            --c-inst: var(--aws-blue);
+            --c-efa: var(--aws-purple);
+            --c-pcie: #E07EAC;
+            --c-warn: var(--aws-orange-light);
+            --c-est: #FFD97D;
+            --c-ok: #7AA116;
+            --c-no: #D13212;
+
+            /* レイアウト */
+            --border-radius: 12px;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #e0e0e0;
+            font-family: 'Amazon Ember', 'Segoe UI', 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+            background: var(--aws-squid-ink-deep);
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(82, 127, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(140, 110, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(255, 153, 0, 0.04) 0%, transparent 40%);
+            color: #E8EAED;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
+            line-height: 1.5;
         }
+
         .container { max-width: 100%; }
-        .table-wrapper { overflow-x: auto; }
-        h1 { text-align: center; margin-bottom: 10px; color: var(--c-accent); font-size: 1.8em; }
-        .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 153, 0, 0.15);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--aws-orange);
+            font-size: 1.9em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8899A6;
+            margin-bottom: 24px;
+            font-size: 0.95em;
+        }
 
         /* 凡例 */
         .legend {
-            display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;
-            margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--border-radius);
         }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85em; }
-        .legend-color { width: 20px; height: 20px; border-radius: 4px; }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: #B0BEC5;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
 
         /* 世代別グラデーション（凡例用） */
         .blackwell { background: linear-gradient(135deg, rgb(var(--c-blackwell)), rgba(var(--c-blackwell), 0.7)); }
@@ -80,81 +145,145 @@
         .volta { background: linear-gradient(135deg, rgb(var(--c-volta)), rgba(var(--c-volta), 0.7)); }
 
         /* テーブル基本 */
-        table { width: 100%; border-collapse: collapse; font-size: 0.75em; background: rgba(255,255,255,0.02); }
-        th, td { padding: 6px 4px; text-align: center; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap; }
-        th { background: rgba(255,159,67,0.3); color: #fff; font-weight: 600; position: sticky; top: 0; }
-        th.group { background: rgba(255,159,67,0.5); font-size: 0.9em; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875em;
+            background: rgba(26, 36, 47, 0.9);
+        }
+
+        th, td {
+            padding: 8px 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            white-space: nowrap;
+        }
+
+        th {
+            background: var(--aws-squid-ink);
+            color: #E8EAED;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.95em;
+            letter-spacing: 0.01em;
+            border-bottom: 2px solid rgba(255, 153, 0, 0.3);
+        }
+
+        th.group {
+            background: linear-gradient(180deg, rgba(255, 153, 0, 0.2), rgba(255, 153, 0, 0.1));
+            color: var(--aws-orange-light);
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 6px 10px;
+        }
+
         tbody tr, tbody td { transition: all 0.15s ease; }
 
         /* 世代別行背景 */
-        .row-blackwell td { background: rgba(var(--c-blackwell), 0.15); }
-        .row-hopper td { background: rgba(var(--c-hopper), 0.15); }
-        .row-ada td { background: rgba(var(--c-ada), 0.15); }
-        .row-ampere td { background: rgba(var(--c-ampere), 0.15); }
-        .row-turing td { background: rgba(var(--c-turing), 0.15); }
-        .row-volta td { background: rgba(var(--c-volta), 0.15); }
+        .row-blackwell td { background: rgba(var(--c-blackwell), 0.1); }
+        .row-hopper td { background: rgba(var(--c-hopper), 0.1); }
+        .row-ada td { background: rgba(var(--c-ada), 0.1); }
+        .row-ampere td { background: rgba(var(--c-ampere), 0.1); }
+        .row-turing td { background: rgba(var(--c-turing), 0.1); }
+        .row-volta td { background: rgba(var(--c-volta), 0.1); }
+
+        /* 偶数行で微妙にコントラスト */
+        tbody tr:nth-child(even) td { filter: brightness(1.05); }
 
         /* ホバー時 */
         td[rowspan].cell-hover { position: relative; }
-        .row-blackwell td.cell-hover, td.cell-hover-blackwell { background: rgba(var(--c-blackwell), 0.7) !important; color: #fff !important; }
-        .row-hopper td.cell-hover, td.cell-hover-hopper { background: rgba(var(--c-hopper), 0.7) !important; color: #fff !important; }
-        .row-ada td.cell-hover, td.cell-hover-ada { background: rgba(var(--c-ada), 0.7) !important; color: #fff !important; }
-        .row-ampere td.cell-hover, td.cell-hover-ampere { background: rgba(var(--c-ampere), 0.7) !important; color: #fff !important; }
-        .row-turing td.cell-hover, td.cell-hover-turing { background: rgba(var(--c-turing), 0.7) !important; color: #fff !important; }
-        .row-volta td.cell-hover, td.cell-hover-volta { background: rgba(var(--c-volta), 0.7) !important; color: #fff !important; }
+        .row-blackwell td.cell-hover, td.cell-hover-blackwell { background: rgba(var(--c-blackwell), 0.55) !important; color: #fff !important; }
+        .row-hopper td.cell-hover, td.cell-hover-hopper { background: rgba(var(--c-hopper), 0.55) !important; color: #fff !important; }
+        .row-ada td.cell-hover, td.cell-hover-ada { background: rgba(var(--c-ada), 0.55) !important; color: #fff !important; }
+        .row-ampere td.cell-hover, td.cell-hover-ampere { background: rgba(var(--c-ampere), 0.55) !important; color: #fff !important; }
+        .row-turing td.cell-hover, td.cell-hover-turing { background: rgba(var(--c-turing), 0.55) !important; color: #fff !important; }
+        .row-volta td.cell-hover, td.cell-hover-volta { background: rgba(var(--c-volta), 0.55) !important; color: #fff !important; }
 
         /* セル装飾クラス */
-        .arch { font-weight: bold; text-align: left; padding-left: 8px; }
-        .gpu { font-weight: 600; color: var(--c-accent); }
-        .inst { font-family: monospace; color: var(--c-inst); font-size: 0.95em; }
-        .price { color: var(--c-price); }
+        .arch {
+            font-weight: 700;
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px 12px;
+            font-size: 0.95em;
+            letter-spacing: 0.01em;
+        }
+
+        .gpu { font-weight: 600; color: var(--aws-orange-light); }
+        .inst { font-family: 'Consolas', 'Monaco', monospace; color: var(--c-inst); }
+        .price { color: var(--c-price); font-weight: 500; }
         .cb { color: var(--c-cb); }
-        .cbo { color: var(--c-warn); font-size: 0.85em; }
-        .efa { color: var(--c-efa); font-size: 0.9em; }
+        .cbo { color: var(--c-warn); font-size: 0.9em; }
+        .efa { color: var(--c-efa); }
         .pcie { color: var(--c-pcie); }
         .est { color: var(--c-est); font-style: italic; }
-        .ok { color: var(--c-ok); }
+        .ok { color: var(--c-ok); font-weight: 600; }
         .no { color: var(--c-no); }
-        .badge { display: inline-block; padding: 1px 4px; border-radius: 3px; font-size: 0.65em; background: #e74c3c; color: white; margin-left: 3px; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--aws-orange-dark), var(--aws-orange));
+            color: white;
+            margin-left: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
         a { color: inherit; text-decoration: none; }
         a:hover { text-decoration: underline; opacity: 0.9; }
         .ec2-link { color: var(--c-inst); }
         .ec2-link:hover { color: #fff; }
 
+        /* $/GPU(CB)列の幅を制限 */
+        td.cb, th.cb-header {
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         /* Notes */
-        .notes { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; font-size: 0.85em; }
-        .notes h3 { color: var(--c-accent); margin-bottom: 10px; }
+        .notes {
+            margin-top: 24px;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--border-radius);
+            font-size: 0.9em;
+            line-height: 1.7;
+        }
+
+        .notes h3 {
+            color: var(--aws-orange);
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
         .notes ul { margin-left: 20px; }
-        .notes li { margin-bottom: 5px; }
+        .notes li { margin-bottom: 6px; color: #C5CDD5; }
+        .notes li strong { color: #E8EAED; }
 
         /* スマホ対応 */
         @media (max-width: 768px) {
-            /* フォントサイズ拡大 */
-            table {
-                font-size: 0.85em;
-            }
+            body { padding: 12px; }
 
-            /* タップ領域拡大 */
-            th, td {
-                padding: 10px 6px;
-            }
+            h1 { font-size: 1.4em; }
 
-            /* スムーズスクロール対応 */
-            .table-wrapper {
-                -webkit-overflow-scrolling: touch;
-            }
+            table { font-size: 0.85em; }
 
-            /* 凡例をスマホ向けに調整 */
-            .legend {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
+            th, td { padding: 10px 6px; }
 
-            /* 注釈セクションのパディング調整 */
-            .notes {
-                padding: 12px;
-                font-size: 0.9em;
-            }
+            .table-wrapper { -webkit-overflow-scrolling: touch; }
+
+            .legend { flex-wrap: wrap; gap: 10px; padding: 12px; }
+
+            .notes { padding: 14px; font-size: 0.9em; }
         }
     </style>
 </head>
@@ -181,14 +310,14 @@
                 <th colspan="2" class="group">接続</th>
                 <th colspan="3" class="group">システム</th>
                 <th colspan="3" class="group">価格</th>
-                <th></th>
+                <th class="group"></th>
             </tr>
             <tr>
                 <th>世代</th><th>GPU</th><th>EC2</th><th>サイズ</th>
                 <th>数</th><th>VRAM</th><th>FP16</th><th>FP8</th>
-                <th><a href="https://aws.amazon.com/hpc/efa/" target="_blank" title="Elastic Fabric Adapter"></a>EFA</a></th><th>PCIe</th>
+                <th><a href="https://aws.amazon.com/hpc/efa/" target="_blank" title="Elastic Fabric Adapter">EFA</a></th><th>PCIe</th>
                 <th>vCPU</th><th>Mem</th><th>NVMe</th>
-                <th><a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" title="EC2 On-Demand 料金"></a>$/h</a></th><th>$/GPU</th><th><a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" title="Capacity Blocks for ML">$/GPU(CB)</a></th>
+                <th><a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" title="EC2 On-Demand 料金">$/h</a></th><th>$/GPU</th><th class="cb-header"><a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" title="Capacity Blocks for ML">$/GPU<br>(CB)</a></th>
                 <th>東京</th>
             </tr>
         </thead>
