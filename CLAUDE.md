@@ -10,13 +10,39 @@ AWS EC2 GPUインスタンスの比較表を表示する静的Webサイト。
 
 ## データ更新
 
+### GPUスペック
+
+- GPUの演算性能等は `data/aws-ec2-nvidia-gpu-specs.json` を参照
+- 新しいGPUを追加する場合はまずJSONを更新してから `GPU_DATA` 配列を編集
+
+### GPU_DATA配列
+
 `GPU_DATA` 配列を編集。各エントリ:
 ```javascript
 [generation, gpuModel, ec2Type, instanceSize, gpuCount, vram, fp16, fp8,
  efaVersion, pcie, vcpu, memory, nvme, onDemandPrice, pricePerGpu, cbPrice, tokyoAvailable]
 ```
 
-### CB (Capacity Blocks) 価格更新
+### 価格更新
+
+#### On-Demand 価格
+
+**AWS Price List Bulk API**を使用して最新価格を取得可能:
+```
+https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/index.json
+```
+
+- ファイルサイズが大きい（数百MB）ため、ダウンロードと解析に時間がかかる
+- `products` セクションでインスタンスタイプを検索
+- `terms.OnDemand` セクションで価格情報を取得
+- リージョン別の価格は `location` フィールドで識別
+- 東京リージョンは `"Asia Pacific (Tokyo)"` または `ap-northeast-1`
+
+**代替手段:**
+- AWS CLI: `aws pricing get-products --service-code AmazonEC2 --filters ...`
+- AWS SDKを使用したプログラマティックアクセス
+
+#### CB (Capacity Blocks) 価格更新
 
 CB価格データソース:
 https://raw.githubusercontent.com/koyakimu/ec2-capacity-blocks-for-ml-pricing-json/refs/heads/main/data/pricing.json
