@@ -77,7 +77,10 @@ export const en = {
     refUserGuide: "EC2 User Guide - Accelerated Computing",
     refBlog: "AWS Blog - EC2 Category (Latest News)",
     disclaimerTitle: "Disclaimer",
-    disclaimerText:
-      "Information on this page is for reference purposes and accuracy is not guaranteed. Prices, specifications, and region availability may change without notice. Please always check the official AWS documentation for the latest and most accurate information. The author assumes no liability for any damages resulting from decisions or actions based on information on this page.",
+    disclaimerBefore:
+      "Information on this page is for reference purposes and accuracy is not guaranteed. Prices, specifications, and region availability may change without notice. Please always check the ",
+    disclaimerLink: "official AWS documentation",
+    disclaimerAfter:
+      " for the latest and most accurate information. The author assumes no liability for any damages resulting from decisions or actions based on information on this page.",
   },
 };
