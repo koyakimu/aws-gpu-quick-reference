@@ -1,0 +1,36 @@
+<!-- CAL-001: コスト計算ツール HTMLモック -->
+<section id="cost-calculator" class="calculator-section">
+  <h2 data-i18n="calculator.title">簡易コスト計算</h2>
+
+  <div class="calculator-form">
+    <div class="calculator-input">
+      <label for="calc-instance" data-i18n="calculator.instanceLabel">インスタンスタイプ</label>
+      <select id="calc-instance">
+        <!-- GPU_DATAから動的生成 -->
+        <option value="p6-b300.48xlarge">p6-b300.48xlarge (B300 x8)</option>
+        <option value="p5.48xlarge">p5.48xlarge (H100 x8)</option>
+        <!-- ... -->
+      </select>
+    </div>
+
+    <div class="calculator-input">
+      <label for="calc-count" data-i18n="calculator.countLabel">台数</label>
+      <input type="number" id="calc-count" value="1" min="1" max="100" />
+    </div>
+  </div>
+
+  <div class="calculator-result">
+    <div class="result-card">
+      <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+      <span class="result-value" id="calc-od-result">$23,558.40</span>
+    </div>
+    <div class="result-card">
+      <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額</span>
+      <span class="result-value" id="calc-cb-result">$8,424.00</span>
+    </div>
+  </div>
+
+  <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">
+    概算値です。RI/Savings Plans等の割引は含まれません。正確な料金はAWS公式をご確認ください。
+  </p>
+</section>

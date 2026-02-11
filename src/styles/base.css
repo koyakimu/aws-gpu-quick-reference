@@ -1,0 +1,135 @@
+:root {
+  /* AWS カラーパレット */
+  --aws-squid-ink: #232f3e;
+  --aws-squid-ink-dark: #1a242f;
+  --aws-squid-ink-deep: #131a22;
+  --aws-orange: #ff9900;
+  --aws-orange-light: #ffac31;
+  --aws-orange-dark: #ec7211;
+  --aws-smile: #ff9900;
+  --aws-blue: #527fff;
+  --aws-teal: #44b9c6;
+  --aws-green: #7aa116;
+  --aws-purple: #8c6eff;
+
+  /* 世代別カラー（AWSカラーベース） */
+  --c-blackwell: 140, 110, 255;
+  --c-hopper: 82, 127, 255;
+  --c-ada: 68, 185, 198;
+  --c-ampere: 255, 153, 0;
+  --c-turing: 122, 161, 22;
+  --c-volta: 136, 153, 166;
+
+  /* UI カラー */
+  --c-accent: var(--aws-orange);
+  --c-price: #7aa116;
+  --c-cb: var(--aws-teal);
+  --c-inst: var(--aws-blue);
+  --c-efa: var(--aws-purple);
+  --c-pcie: #e07eac;
+  --c-warn: var(--aws-orange-light);
+  --c-est: #ffd97d;
+  --c-ok: #7aa116;
+  --c-no: #d13212;
+
+  /* レイアウト */
+  --border-radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    "Amazon Ember", "Segoe UI", "Hiragino Sans", "Meiryo",
+    system-ui, sans-serif;
+  background: var(--aws-squid-ink-deep);
+  background-image:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(82, 127, 255, 0.06) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(140, 110, 255, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(255, 153, 0, 0.04) 0%,
+      transparent 40%
+    );
+  color: #e8eaed;
+  min-height: 100vh;
+  padding: 24px;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+/* Notes */
+.notes {
+  margin-top: 24px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--border-radius);
+  font-size: 0.9em;
+  line-height: 1.7;
+}
+
+.notes h3 {
+  color: var(--aws-orange);
+  margin-bottom: 12px;
+  font-size: 1.05em;
+}
+
+.notes ul {
+  margin-left: 20px;
+}
+.notes li {
+  margin-bottom: 6px;
+  color: #c5cdd5;
+}
+.notes li strong {
+  color: #e8eaed;
+}
+.notes li ul {
+  margin-top: 4px;
+}
+
+.disclaimer-text {
+  color: #fdcb6e;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+.disclaimer-text a {
+  color: #74b9ff;
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  .notes {
+    padding: 14px;
+    font-size: 0.9em;
+  }
+}

@@ -8,3 +8,5 @@ Thumbs.db
 __pycache__/
 .env
 .playwright-cli/
+node_modules/
+dist/

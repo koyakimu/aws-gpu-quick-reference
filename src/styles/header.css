@@ -1,0 +1,65 @@
+.site-header {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.header-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.header-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #b0bec5;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: all 0.2s ease;
+}
+
+.header-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #e8eaed;
+}
+
+#theme-toggle {
+  font-size: 1.1em;
+  padding: 6px 10px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--aws-orange);
+  font-size: 1.9em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  text-align: center;
+  color: #8899a6;
+  margin-bottom: 0;
+  font-size: 0.95em;
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.4em;
+    padding-right: 0;
+  }
+
+  .header-controls {
+    position: static;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+}

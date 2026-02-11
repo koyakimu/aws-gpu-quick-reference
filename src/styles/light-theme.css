@@ -1,0 +1,144 @@
+[data-theme="light"] {
+  --c-price: #2e7d32;
+  --c-cb: #00838f;
+  --c-inst: #1565c0;
+  --c-efa: #6a1b9a;
+  --c-pcie: #c2185b;
+  --c-warn: #e65100;
+  --c-est: #f57f17;
+  --c-ok: #2e7d32;
+  --c-no: #c62828;
+}
+
+[data-theme="light"] body {
+  background: #f5f7fa;
+  background-image: none;
+  color: #1a242f;
+}
+
+[data-theme="light"] h1 {
+  color: var(--aws-orange-dark);
+}
+
+[data-theme="light"] .subtitle {
+  color: #546e7a;
+}
+
+/* ヘッダーコントロール */
+[data-theme="light"] .header-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #546e7a;
+}
+[data-theme="light"] .header-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #1a242f;
+}
+
+/* 凡例 */
+[data-theme="light"] .legend {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .legend-item {
+  color: #546e7a;
+}
+
+/* テーブル */
+[data-theme="light"] .table-wrapper {
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] table {
+  background: #fff;
+}
+
+[data-theme="light"] th {
+  background: #f0f2f5;
+  color: #1a242f;
+  border-bottom-color: rgba(255, 153, 0, 0.4);
+}
+
+[data-theme="light"] th,
+[data-theme="light"] td {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] th.group {
+  background: linear-gradient(180deg, rgba(255, 153, 0, 0.15), rgba(255, 153, 0, 0.08));
+  color: var(--aws-orange-dark);
+}
+
+/* 世代別行背景（ライトモード） */
+[data-theme="light"] .row-blackwell td { background: rgba(var(--c-blackwell), 0.06); }
+[data-theme="light"] .row-hopper td { background: rgba(var(--c-hopper), 0.06); }
+[data-theme="light"] .row-ada td { background: rgba(var(--c-ada), 0.06); }
+[data-theme="light"] .row-ampere td { background: rgba(var(--c-ampere), 0.06); }
+[data-theme="light"] .row-turing td { background: rgba(var(--c-turing), 0.06); }
+[data-theme="light"] .row-volta td { background: rgba(var(--c-volta), 0.06); }
+
+/* ホバー（ライトモード） */
+[data-theme="light"] .row-blackwell td.cell-hover, [data-theme="light"] td.cell-hover-blackwell { background: rgba(var(--c-blackwell), 0.2) !important; color: #1a242f !important; }
+[data-theme="light"] .row-hopper td.cell-hover, [data-theme="light"] td.cell-hover-hopper { background: rgba(var(--c-hopper), 0.2) !important; color: #1a242f !important; }
+[data-theme="light"] .row-ada td.cell-hover, [data-theme="light"] td.cell-hover-ada { background: rgba(var(--c-ada), 0.2) !important; color: #1a242f !important; }
+[data-theme="light"] .row-ampere td.cell-hover, [data-theme="light"] td.cell-hover-ampere { background: rgba(var(--c-ampere), 0.2) !important; color: #1a242f !important; }
+[data-theme="light"] .row-turing td.cell-hover, [data-theme="light"] td.cell-hover-turing { background: rgba(var(--c-turing), 0.2) !important; color: #1a242f !important; }
+[data-theme="light"] .row-volta td.cell-hover, [data-theme="light"] td.cell-hover-volta { background: rgba(var(--c-volta), 0.2) !important; color: #1a242f !important; }
+
+/* セル装飾（ライトモード） */
+[data-theme="light"] .gpu { color: #c65100; }
+[data-theme="light"] .ec2-link { color: var(--c-inst); }
+[data-theme="light"] .ec2-link:hover { color: #0d47a1; }
+
+/* Notes */
+[data-theme="light"] .notes {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .notes li {
+  color: #455a64;
+}
+[data-theme="light"] .notes li strong {
+  color: #1a242f;
+}
+[data-theme="light"] .disclaimer-text {
+  color: #bf360c;
+}
+[data-theme="light"] .disclaimer-text a {
+  color: #1565c0;
+}
+
+/* 計算ツール（ライトモード） */
+[data-theme="light"] .calculator-section {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .calculator-section h2 {
+  color: var(--aws-orange-dark);
+}
+
+[data-theme="light"] .calculator-input label {
+  color: #546e7a;
+}
+
+[data-theme="light"] .calculator-input select,
+[data-theme="light"] .calculator-input input {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #1a242f;
+}
+
+[data-theme="light"] .result-card {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .result-label {
+  color: #546e7a;
+}
+
+[data-theme="light"] .calculator-disclaimer {
+  color: #78909c;
+}

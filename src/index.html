@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS EC2 GPU インスタンス リファレンスガイド</title>
+
+    <!-- SEO -->
+    <meta
+      name="description"
+      content="AWS EC2 GPUインスタンスの完全比較ガイド。Blackwell〜Voltaまで全世代のスペック・価格・東京リージョン対応状況を一覧で確認。"
+    />
+    <meta
+      name="keywords"
+      content="AWS, EC2, GPU, NVIDIA, Blackwell, Hopper, H100, H200, P5, G6, 機械学習, AI, インスタンス比較"
+    />
+    <meta name="author" content="koyakimu" />
+
+    <!-- OGP (Open Graph Protocol) -->
+    <meta property="og:title" content="AWS EC2 GPU インスタンス リファレンスガイド" />
+    <meta
+      property="og:description"
+      content="Blackwell〜Voltaまで全世代のGPUインスタンスを網羅。スペック・価格・東京リージョン対応を一覧比較。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koyakimu.github.io/aws-gpu-quick-reference/" />
+    <meta property="og:image" content="https://koyakimu.github.io/aws-gpu-quick-reference/ogp.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:site_name" content="AWS EC2 GPU Reference Guide" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AWS EC2 GPU インスタンス リファレンスガイド" />
+    <meta
+      name="twitter:description"
+      content="Blackwell〜Voltaまで全世代のGPUインスタンスを網羅。スペック・価格・東京リージョン対応を一覧比較。"
+    />
+    <meta name="twitter:image" content="https://koyakimu.github.io/aws-gpu-quick-reference/ogp.png" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="site-header">
+        <div class="header-controls">
+          <button id="lang-toggle" class="header-btn" type="button">English</button>
+          <button id="theme-toggle" class="header-btn" type="button">☀️</button>
+        </div>
+        <h1 data-i18n="header.title">🚀 AWS EC2 GPU インスタンス リファレンスガイド</h1>
+        <p class="subtitle">
+          <span data-i18n="header.subtitle">全世代のNVIDIA GPUインスタンスを一覧比較</span>
+          <span> | </span>
+          <span data-i18n="header.updated">更新日</span>: 2026-01-31
+        </p>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-color blackwell"></div> Blackwell (2024)</div>
+        <div class="legend-item"><div class="legend-color hopper"></div> Hopper (2022)</div>
+        <div class="legend-item"><div class="legend-color ada"></div> Ada Lovelace (2022)</div>
+        <div class="legend-item"><div class="legend-color ampere"></div> Ampere (2020)</div>
+        <div class="legend-item"><div class="legend-color turing"></div> Turing (2018)</div>
+        <div class="legend-item"><div class="legend-color volta"></div> Volta (2017)</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th colspan="4" class="group" data-i18n="table.groupInstance">インスタンス</th>
+              <th colspan="4" class="group" data-i18n="table.groupGpu">GPU性能</th>
+              <th colspan="2" class="group" data-i18n="table.groupConnect">接続</th>
+              <th colspan="3" class="group" data-i18n="table.groupSystem">システム</th>
+              <th colspan="3" class="group" data-i18n="table.groupPrice">価格</th>
+              <th class="group"></th>
+            </tr>
+            <tr>
+              <th data-i18n="table.generation">世代</th>
+              <th data-i18n="table.gpuModel">GPU</th>
+              <th data-i18n="table.ec2Type">EC2</th>
+              <th data-i18n="table.instanceSize">サイズ</th>
+              <th data-i18n="table.gpuCount">数</th>
+              <th data-i18n="table.vram">VRAM</th>
+              <th data-i18n="table.fp16">FP16</th>
+              <th data-i18n="table.fp8">FP8</th>
+              <th>
+                <a href="https://aws.amazon.com/hpc/efa/" target="_blank" title="Elastic Fabric Adapter"
+                  data-i18n="table.efa">EFA</a>
+              </th>
+              <th data-i18n="table.pcie">PCIe</th>
+              <th data-i18n="table.vcpu">vCPU</th>
+              <th data-i18n="table.memory">Mem</th>
+              <th data-i18n="table.nvme">NVMe</th>
+              <th>
+                <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" title="EC2 On-Demand 料金"
+                  data-i18n="table.onDemand">$/h</a>
+              </th>
+              <th data-i18n="table.perGpu">$/GPU</th>
+              <th class="cb-header">
+                <a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" title="Capacity Blocks for ML"
+                  data-i18n="table.cb">$/GPU(CB)</a>
+              </th>
+              <th data-i18n="table.tokyo">東京</th>
+            </tr>
+          </thead>
+          <tbody id="gpu-table-body"></tbody>
+        </table>
+      </div>
+
+      <!-- コスト計算ツール -->
+      <section id="cost-calculator" class="calculator-section">
+        <h2 data-i18n="calculator.title">簡易コスト計算</h2>
+        <div class="calculator-form">
+          <div class="calculator-input">
+            <label for="calc-instance" data-i18n="calculator.instanceLabel">インスタンスタイプ</label>
+            <select id="calc-instance"></select>
+          </div>
+          <div class="calculator-input">
+            <label for="calc-count" data-i18n="calculator.countLabel">台数</label>
+            <input type="number" id="calc-count" value="1" min="1" max="100" />
+          </div>
+        </div>
+        <div class="calculator-result">
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+            <span class="result-value" id="calc-od-result">-</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額</span>
+            <span class="result-value" id="calc-cb-result">-</span>
+          </div>
+        </div>
+        <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">
+          概算値です。RI/Savings Plans等の割引は含まれません。正確な料金はAWS公式をご確認ください。
+        </p>
+      </section>
+
+      <div class="notes">
+        <h3 data-i18n="notes.title">📝 Notes</h3>
+        <ul>
+          <li><strong>価格:</strong> <span data-i18n="notes.priceNote">2025年6月の値下げ反映済み。東京リージョン On-Demand 価格 (USD)。CB = Capacity Blocks。TBD = 価格未発表。</span></li>
+          <li><strong>G7e (NEW):</strong> <span data-i18n="notes.g7eNote">NVIDIA RTX PRO 6000 Blackwell Server Edition GPU搭載。</span></li>
+          <li><strong>P5en vs P5e vs P5:</strong> <span data-i18n="notes.p5CompNote">P5en: H200 + EFAv3 + PCIe Gen5...</span></li>
+          <li><strong>EFA:</strong> <span data-i18n="notes.efaNote">Elastic Fabric Adapter。マルチノード分散学習に必須。</span></li>
+          <li><strong>PCIe:</strong> <span data-i18n="notes.pcieNote">Gen5はGen4の約2倍の帯域幅。</span></li>
+          <li><strong>FP16/FP8:</strong> <span data-i18n="notes.fpNote">TFLOPS値（Sparsity有効時）。</span></li>
+        </ul>
+
+        <h3 style="margin-top: 15px" data-i18n="notes.refTitle">🔗 公式リファレンス</h3>
+        <ul>
+          <li><a href="https://aws.amazon.com/ec2/instance-types/#Accelerated_Computing" target="_blank" data-i18n="notes.refAccelerated">EC2 Accelerated Computing インスタンス一覧</a></li>
+          <li><a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" data-i18n="notes.refOnDemand">EC2 On-Demand 料金</a></li>
+          <li><a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" data-i18n="notes.refCb">Capacity Blocks for ML</a></li>
+          <li><a href="https://aws.amazon.com/hpc/efa/" target="_blank" data-i18n="notes.refEfa">Elastic Fabric Adapter (EFA)</a></li>
+          <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/accelerated-computing-instances.html" target="_blank" data-i18n="notes.refUserGuide">EC2 ユーザーガイド - アクセラレーテッドコンピューティング</a></li>
+          <li><a href="https://aws.amazon.com/blogs/aws/category/compute/amazon-ec2/" target="_blank" data-i18n="notes.refBlog">AWS Blog - EC2 カテゴリ（最新情報）</a></li>
+        </ul>
+
+        <h3 style="margin-top: 15px" data-i18n="notes.disclaimerTitle">⚠️ 免責事項</h3>
+        <p class="disclaimer-text">
+          <span data-i18n="notes.disclaimerBefore">本ページの情報は参考用であり、正確性を保証するものではありません。価格・仕様・リージョン対応状況は予告なく変更される場合があります。最新かつ正確な情報については、必ず</span><a href="https://aws.amazon.com/ec2/instance-types/" target="_blank" data-i18n="notes.disclaimerLink">AWS公式ドキュメント</a><span data-i18n="notes.disclaimerAfter">をご確認ください。本ページの情報に基づく判断・行動によって生じた損害について、作成者は一切の責任を負いません。</span>
+        </p>
+      </div>
+    </div>
+
+    <script type="module" src="./scripts/main.js"></script>
+  </body>
+</html>
