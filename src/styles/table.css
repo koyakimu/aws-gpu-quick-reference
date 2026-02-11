@@ -1,0 +1,187 @@
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 153, 0, 0.15);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+/* 凡例 */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--border-radius);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: #b0bec5;
+}
+
+.legend-color {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 世代別グラデーション（凡例用） */
+.blackwell {
+  background: linear-gradient(135deg, rgb(var(--c-blackwell)), rgba(var(--c-blackwell), 0.7));
+}
+.hopper {
+  background: linear-gradient(135deg, rgb(var(--c-hopper)), rgba(var(--c-hopper), 0.7));
+}
+.ada {
+  background: linear-gradient(135deg, rgb(var(--c-ada)), rgba(var(--c-ada), 0.7));
+}
+.ampere {
+  background: linear-gradient(135deg, rgb(var(--c-ampere)), rgba(var(--c-ampere), 0.7));
+}
+.turing {
+  background: linear-gradient(135deg, rgb(var(--c-turing)), rgba(var(--c-turing), 0.7));
+}
+.volta {
+  background: linear-gradient(135deg, rgb(var(--c-volta)), rgba(var(--c-volta), 0.7));
+}
+
+/* テーブル基本 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875em;
+  background: rgba(26, 36, 47, 0.9);
+}
+
+th,
+td {
+  padding: 8px 10px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+th {
+  background: var(--aws-squid-ink);
+  color: #e8eaed;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+  border-bottom: 2px solid rgba(255, 153, 0, 0.3);
+}
+
+th.group {
+  background: linear-gradient(180deg, rgba(255, 153, 0, 0.2), rgba(255, 153, 0, 0.1));
+  color: var(--aws-orange-light);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 6px 10px;
+}
+
+tbody tr,
+tbody td {
+  transition: all 0.15s ease;
+}
+
+/* 世代別行背景 */
+.row-blackwell td { background: rgba(var(--c-blackwell), 0.1); }
+.row-hopper td { background: rgba(var(--c-hopper), 0.1); }
+.row-ada td { background: rgba(var(--c-ada), 0.1); }
+.row-ampere td { background: rgba(var(--c-ampere), 0.1); }
+.row-turing td { background: rgba(var(--c-turing), 0.1); }
+.row-volta td { background: rgba(var(--c-volta), 0.1); }
+
+/* 偶数行で微妙にコントラスト */
+tbody tr:nth-child(even) td {
+  filter: brightness(1.05);
+}
+
+/* ホバー時 */
+td[rowspan].cell-hover { position: relative; }
+.row-blackwell td.cell-hover, td.cell-hover-blackwell { background: rgba(var(--c-blackwell), 0.55) !important; color: #fff !important; }
+.row-hopper td.cell-hover, td.cell-hover-hopper { background: rgba(var(--c-hopper), 0.55) !important; color: #fff !important; }
+.row-ada td.cell-hover, td.cell-hover-ada { background: rgba(var(--c-ada), 0.55) !important; color: #fff !important; }
+.row-ampere td.cell-hover, td.cell-hover-ampere { background: rgba(var(--c-ampere), 0.55) !important; color: #fff !important; }
+.row-turing td.cell-hover, td.cell-hover-turing { background: rgba(var(--c-turing), 0.55) !important; color: #fff !important; }
+.row-volta td.cell-hover, td.cell-hover-volta { background: rgba(var(--c-volta), 0.55) !important; color: #fff !important; }
+
+/* セル装飾クラス */
+.arch {
+  font-weight: 700;
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px 12px;
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+}
+
+.gpu { font-weight: 600; color: var(--aws-orange-light); }
+.inst { font-family: "Consolas", "Monaco", monospace; color: var(--c-inst); }
+.price { color: var(--c-price); font-weight: 500; }
+.cb { color: var(--c-cb); }
+.cbo { color: var(--c-warn); font-size: 0.9em; }
+.efa { color: var(--c-efa); }
+.pcie { color: var(--c-pcie); }
+.est { color: var(--c-est); font-style: italic; }
+.ok { color: var(--c-ok); font-weight: 600; }
+.no { color: var(--c-no); }
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.65em;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--aws-orange-dark), var(--aws-orange));
+  color: white;
+  margin-left: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ec2-link { color: var(--c-inst); }
+.ec2-link:hover { color: #fff; }
+
+/* $/GPU(CB)列の幅を制限 */
+td.cb,
+th.cb-header {
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.85em;
+  }
+
+  th,
+  td {
+    padding: 10px 6px;
+  }
+
+  .table-wrapper {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .legend {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+  }
+}

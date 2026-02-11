@@ -1,0 +1,127 @@
+.calculator-section {
+  margin-top: 24px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--border-radius);
+}
+
+.calculator-section h2 {
+  color: var(--aws-orange);
+  font-size: 1.2em;
+  margin-bottom: 16px;
+}
+
+.calculator-form {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.calculator-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calculator-input label {
+  font-size: 0.85em;
+  color: #8899a6;
+}
+
+.calculator-input select,
+.calculator-input input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e8eaed;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.calculator-input select {
+  min-width: 300px;
+}
+
+.calculator-input input {
+  width: 80px;
+}
+
+.calculator-input select:focus,
+.calculator-input input:focus {
+  outline: none;
+  border-color: var(--aws-orange);
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+}
+
+.calculator-result {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+.result-label {
+  font-size: 0.85em;
+  color: #8899a6;
+}
+
+.result-value {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--c-price);
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.result-value.cbo {
+  color: var(--c-warn);
+  font-size: 1em;
+}
+
+.calculator-disclaimer {
+  font-size: 0.8em;
+  color: #8899a6;
+  line-height: 1.5;
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+  .calculator-section {
+    padding: 16px;
+  }
+
+  .calculator-form {
+    flex-direction: column;
+  }
+
+  .calculator-input select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .calculator-input input {
+    width: 100%;
+  }
+
+  .calculator-result {
+    flex-direction: column;
+  }
+
+  .result-card {
+    min-width: unset;
+  }
+}

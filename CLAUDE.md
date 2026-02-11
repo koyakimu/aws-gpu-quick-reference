@@ -4,23 +4,54 @@ AWS EC2 GPUインスタンスの比較表を表示する静的Webサイト。
 
 ## 構成
 
-- 全て `index.html` に含まれる（CSS、HTML、JS、データ）
-- ビルドツール不要
-- デプロイ: mainブランチにpush（GitHub Pages）
+- Vite + vite-plugin-singlefile でビルド
+- ソースは `src/` 配下にモジュール分割（CSS/JS/HTML/i18n）
+- `npm run build` で `dist/index.html` に単一HTMLを出力
+- デプロイ: GitHub Actions で `npm run build` → `dist/` を GitHub Pages にデプロイ
+
+### ディレクトリ構成
+
+```
+src/
+├── index.html          # HTMLテンプレート
+├── styles/
+│   ├── base.css        # リセット、タイポグラフィ、CSS変数
+│   ├── table.css       # テーブルスタイル（世代色分け、ホバー等）
+│   ├── header.css      # ヘッダー（言語/テーマ切替含む）
+│   ├── calculator.css  # コスト計算ツールのスタイル
+│   └── light-theme.css # ライトモード用オーバーライド
+├── scripts/
+│   ├── main.js         # エントリーポイント（初期化・イベント登録）
+│   ├── gpu-data.js     # GPU_DATA配列 + EC2_LINKS
+│   ├── table.js        # テーブル描画ロジック
+│   ├── calculator.js   # コスト計算ロジック
+│   ├── i18n.js         # 多言語切替ロジック
+│   └── theme.js        # ライト/ダークモード切替ロジック
+└── i18n/
+    ├── ja.js           # 日本語翻訳辞書
+    └── en.js           # 英語翻訳辞書
+```
+
+### 開発コマンド
+
+- `npm run dev` — Vite開発サーバー（HMR対応）
+- `npm run build` — `dist/index.html` に単一HTMLを出力
+- `npm run preview` — ビルド結果のプレビュー
+- `npm test` — Vitest で単体テスト実行
 
 ## データ更新
 
 ### GPUスペック
 
 - GPUの演算性能等は `data/aws-ec2-nvidia-gpu-specs.json` を参照
-- 新しいGPUを追加する場合はまずJSONを更新してから `GPU_DATA` 配列を編集
+- 新しいGPUを追加する場合はまずJSONを更新してから `src/scripts/gpu-data.js` の `GPU_DATA` 配列を編集
 
 ### GPU_DATA配列
 
-`GPU_DATA` 配列を編集。各エントリ:
+`src/scripts/gpu-data.js` の `GPU_DATA` 配列を編集。各エントリはオブジェクト形式:
 ```javascript
-[generation, gpuModel, ec2Type, instanceSize, gpuCount, vram, fp16, fp8,
- efaVersion, pcie, vcpu, memory, nvme, onDemandPrice, pricePerGpu, cbPrice, tokyoAvailable]
+{ gen, gpu, ec2, size, count, vramPerGpu, fp16PerGpu, fp8PerGpu,
+  efa, pcie, vcpu, mem, nvme, price, priceGpu, priceCb, tokyo }
 ```
 
 ### 価格更新
