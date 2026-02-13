@@ -4,9 +4,6 @@ import { ko } from "../i18n/ko.js";
 
 const STORAGE_KEY = "gpu-ref-lang";
 const dictionaries = { ja, en, ko };
-const LANG_ORDER = ["ja", "en", "ko"];
-const LANG_LABELS = { ja: "日本語", en: "English", ko: "한국어" };
-
 let currentLang = "ja";
 
 function detectLanguage() {
@@ -55,22 +52,13 @@ export function initI18n() {
   applyTranslations();
 }
 
-function nextLangLabel() {
-  const idx = LANG_ORDER.indexOf(currentLang);
-  const nextLang = LANG_ORDER[(idx + 1) % LANG_ORDER.length];
-  return LANG_LABELS[nextLang];
-}
-
 export function setupLangToggle() {
-  const btn = document.getElementById("lang-toggle");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
-    const idx = LANG_ORDER.indexOf(currentLang);
-    const nextLang = LANG_ORDER[(idx + 1) % LANG_ORDER.length];
-    setLang(nextLang);
-    btn.textContent = nextLangLabel();
+  const select = document.getElementById("lang-select");
+  if (!select) return;
+  select.value = currentLang;
+  select.addEventListener("change", () => {
+    setLang(select.value);
   });
-  btn.textContent = nextLangLabel();
 }
 
 export { detectLanguage };
