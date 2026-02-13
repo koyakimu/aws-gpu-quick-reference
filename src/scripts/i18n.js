@@ -1,8 +1,11 @@
 import { ja } from "../i18n/ja.js";
 import { en } from "../i18n/en.js";
+import { ko } from "../i18n/ko.js";
 
 const STORAGE_KEY = "gpu-ref-lang";
-const dictionaries = { ja, en };
+const dictionaries = { ja, en, ko };
+const LANG_ORDER = ["ja", "en", "ko"];
+const LANG_LABELS = { ja: "日本語", en: "English", ko: "한국어" };
 
 let currentLang = "ja";
 
@@ -11,7 +14,9 @@ function detectLanguage() {
   if (saved && dictionaries[saved]) return saved;
 
   const nav = navigator.language || navigator.userLanguage || "";
-  return nav.startsWith("ja") ? "ja" : "en";
+  if (nav.startsWith("ja")) return "ja";
+  if (nav.startsWith("ko")) return "ko";
+  return "en";
 }
 
 export function getLang() {
@@ -50,14 +55,22 @@ export function initI18n() {
   applyTranslations();
 }
 
+function nextLangLabel() {
+  const idx = LANG_ORDER.indexOf(currentLang);
+  const nextLang = LANG_ORDER[(idx + 1) % LANG_ORDER.length];
+  return LANG_LABELS[nextLang];
+}
+
 export function setupLangToggle() {
   const btn = document.getElementById("lang-toggle");
   if (!btn) return;
   btn.addEventListener("click", () => {
-    setLang(currentLang === "ja" ? "en" : "ja");
-    btn.textContent = currentLang === "ja" ? "English" : "日本語";
+    const idx = LANG_ORDER.indexOf(currentLang);
+    const nextLang = LANG_ORDER[(idx + 1) % LANG_ORDER.length];
+    setLang(nextLang);
+    btn.textContent = nextLangLabel();
   });
-  btn.textContent = currentLang === "ja" ? "English" : "日本語";
+  btn.textContent = nextLangLabel();
 }
 
 export { detectLanguage };
