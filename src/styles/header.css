@@ -29,6 +29,11 @@
   color: #e8eaed;
 }
 
+#lang-select {
+  appearance: auto;
+  cursor: pointer;
+}
+
 #theme-toggle {
   font-size: 1.1em;
   padding: 6px 10px;
