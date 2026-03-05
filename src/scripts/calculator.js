@@ -86,9 +86,18 @@ function updateResult() {
   if (odMonthly != null) {
     odResult.textContent = formatCurrency(odMonthly);
     odResult.classList.remove("cbo");
-    if (odYearlyResult) odYearlyResult.textContent = formatCurrency(odYearly);
-    if (odJpyResult) odJpyResult.textContent = formatJpy(convertToJpy(odMonthly, exchangeRate));
-    if (odYearlyJpyResult) odYearlyJpyResult.textContent = formatJpy(convertToJpy(odYearly, exchangeRate));
+    if (odYearlyResult) {
+      odYearlyResult.textContent = formatCurrency(odYearly);
+      odYearlyResult.classList.remove("cbo");
+    }
+    if (odJpyResult) {
+      odJpyResult.textContent = formatJpy(convertToJpy(odMonthly, exchangeRate));
+      odJpyResult.classList.remove("cbo");
+    }
+    if (odYearlyJpyResult) {
+      odYearlyJpyResult.textContent = formatJpy(convertToJpy(odYearly, exchangeRate));
+      odYearlyJpyResult.classList.remove("cbo");
+    }
   } else {
     odResult.textContent = t("calculator.cbOnly");
     odResult.classList.add("cbo");
