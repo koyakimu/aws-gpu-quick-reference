@@ -47,7 +47,7 @@
 }
 
 .calculator-input input {
-  width: 80px;
+  width: 100px;
 }
 
 .calculator-input select:focus,
