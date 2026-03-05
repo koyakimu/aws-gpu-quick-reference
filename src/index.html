@@ -131,6 +131,10 @@
             <label for="calc-count" data-i18n="calculator.countLabel">台数</label>
             <input type="number" id="calc-count" value="1" min="1" max="100" />
           </div>
+          <div class="calculator-input">
+            <label for="calc-exchange-rate" data-i18n="calculator.exchangeRateLabel">為替レート (USD→JPY)</label>
+            <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
+          </div>
         </div>
         <div class="calculator-result">
           <div class="result-card">
@@ -138,8 +142,34 @@
             <span class="result-value" id="calc-od-result">-</span>
           </div>
           <div class="result-card">
+            <span class="result-label" data-i18n="calculator.onDemandYearly">On-Demand 年額</span>
+            <span class="result-value" id="calc-od-yearly-result">-</span>
+          </div>
+          <div class="result-card">
             <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額</span>
             <span class="result-value" id="calc-cb-result">-</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.cbYearly">Capacity Blocks 年額</span>
+            <span class="result-value" id="calc-cb-yearly-result">-</span>
+          </div>
+        </div>
+        <div class="calculator-result">
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.onDemandMonthlyJpy">On-Demand 月額 (JPY)</span>
+            <span class="result-value" id="calc-od-jpy-result">-</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.onDemandYearlyJpy">On-Demand 年額 (JPY)</span>
+            <span class="result-value" id="calc-od-yearly-jpy-result">-</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.cbMonthlyJpy">CB 月額 (JPY)</span>
+            <span class="result-value" id="calc-cb-jpy-result">-</span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.cbYearlyJpy">CB 年額 (JPY)</span>
+            <span class="result-value" id="calc-cb-yearly-jpy-result">-</span>
           </div>
         </div>
         <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">

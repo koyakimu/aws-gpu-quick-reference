@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parsePrice, calculateMonthlyCost, isCbOnly } from "../src/scripts/calculator.js";
+import { parsePrice, calculateMonthlyCost, calculateYearlyCost, convertToJpy, isCbOnly } from "../src/scripts/calculator.js";
 
 describe("parsePrice", () => {
   it("parses dollar string to number", () => {
@@ -29,6 +29,32 @@ describe("calculateMonthlyCost", () => {
 
   it("returns null when count is null", () => {
     expect(calculateMonthlyCost(3.78, null)).toBeNull();
+  });
+});
+
+describe("calculateYearlyCost", () => {
+  it("calculates yearly cost as monthly * 12", () => {
+    expect(calculateYearlyCost(2721.6)).toBeCloseTo(32659.2);
+    expect(calculateYearlyCost(21794.4)).toBeCloseTo(261532.8);
+  });
+
+  it("returns null when monthly cost is null", () => {
+    expect(calculateYearlyCost(null)).toBeNull();
+  });
+});
+
+describe("convertToJpy", () => {
+  it("converts USD to JPY using exchange rate", () => {
+    expect(convertToJpy(100, 150)).toBe(15000);
+    expect(convertToJpy(2721.6, 150)).toBeCloseTo(408240);
+  });
+
+  it("returns null when amount is null", () => {
+    expect(convertToJpy(null, 150)).toBeNull();
+  });
+
+  it("returns null when exchange rate is null", () => {
+    expect(convertToJpy(100, null)).toBeNull();
   });
 });
 
