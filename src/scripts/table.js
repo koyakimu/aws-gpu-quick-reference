@@ -1,4 +1,4 @@
-import { GPU_DATA, EC2_LINKS } from "./gpu-data.js";
+import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
 import { t } from "./i18n.js";
 
 function parseFraction(str) {
@@ -123,7 +123,18 @@ export function renderTable() {
     if (row.gpu) {
       const attrs = row.gpuRows ? { rowspan: row.gpuRows } : {};
       const gpuCell = createCell("td", null, "gpu", attrs);
-      gpuCell.appendChild(document.createTextNode(row.gpu));
+      const datasheetUrl = GPU_DATASHEET_LINKS[row.gpu];
+      if (datasheetUrl) {
+        const link = document.createElement("a");
+        link.href = datasheetUrl;
+        link.target = "_blank";
+        link.className = "gpu-link";
+        link.title = `${row.gpu} Datasheet`;
+        link.textContent = row.gpu;
+        gpuCell.appendChild(link);
+      } else {
+        gpuCell.appendChild(document.createTextNode(row.gpu));
+      }
       if (row.gpuNew) {
         const badge = document.createElement("span");
         badge.className = "badge";
@@ -163,6 +174,11 @@ export function renderTable() {
     if (estClass) fp8Cell.className = estClass;
     fp8Cell.appendChild(createPerfContent(row.fp8PerGpu, row.count, row.est));
     tr.appendChild(fp8Cell);
+
+    const fp4Cell = document.createElement("td");
+    if (estClass) fp4Cell.className = estClass;
+    fp4Cell.appendChild(createPerfContent(row.fp4PerGpu, row.count, row.est));
+    tr.appendChild(fp4Cell);
 
     tr.appendChild(createCell("td", row.efa, "efa"));
     tr.appendChild(createCell("td", row.pcie, "pcie"));

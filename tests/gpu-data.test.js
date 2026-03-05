@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { GPU_DATA, EC2_LINKS } from "../src/scripts/gpu-data.js";
+import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "../src/scripts/gpu-data.js";
 
 describe("GPU_DATA integrity", () => {
   it("has entries", () => {
@@ -67,6 +67,25 @@ describe("EC2_LINKS", () => {
     const ec2Types = new Set(GPU_DATA.filter((r) => r.ec2).map((r) => r.ec2));
     ec2Types.forEach((ec2) => {
       expect(EC2_LINKS, `Missing link for ${ec2}`).toHaveProperty(ec2);
+    });
+  });
+});
+
+describe("GPU_DATASHEET_LINKS", () => {
+  it("has entries", () => {
+    expect(Object.keys(GPU_DATASHEET_LINKS).length).toBeGreaterThan(0);
+  });
+
+  it("all links are valid NVIDIA URLs", () => {
+    Object.entries(GPU_DATASHEET_LINKS).forEach(([key, url]) => {
+      expect(url, `GPU_DATASHEET_LINKS[${key}]`).toMatch(/^https:\/\/www\.nvidia\.com/);
+    });
+  });
+
+  it("all gpu types in GPU_DATA have a corresponding datasheet link", () => {
+    const gpuTypes = new Set(GPU_DATA.filter((r) => r.gpu).map((r) => r.gpu));
+    gpuTypes.forEach((gpu) => {
+      expect(GPU_DATASHEET_LINKS, `Missing datasheet link for ${gpu}`).toHaveProperty(gpu);
     });
   });
 });

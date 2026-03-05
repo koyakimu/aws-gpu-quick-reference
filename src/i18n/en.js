@@ -13,6 +13,7 @@ export const en = {
     vram: "VRAM",
     fp16: "FP16",
     fp8: "FP8",
+    fp4: "FP4",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -75,7 +76,7 @@ export const en = {
     pcieNote:
       "Gen5 offers ~2x bandwidth over Gen4. Affects CPU-GPU data transfer speeds.",
     fpNote:
-      "TFLOPS values (with Sparsity enabled). FP8 mainly used for Transformer inference. T4/V100 do not support FP8. * indicates estimated values.",
+      "TFLOPS values (with Sparsity enabled). FP8 mainly used for Transformer inference. FP4 supported from Blackwell (B200/B300) onwards. T4/V100 do not support FP8. * indicates estimated values.",
     refTitle: "Official References",
     refAccelerated: "EC2 Accelerated Computing Instances",
     refOnDemand: "EC2 On-Demand Pricing",

@@ -13,6 +13,7 @@ export const ja = {
     vram: "VRAM",
     fp16: "FP16",
     fp8: "FP8",
+    fp4: "FP4",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -75,7 +76,7 @@ export const ja = {
     pcieNote:
       "Gen5はGen4の約2倍の帯域幅。CPU-GPU間のデータ転送速度に影響。",
     fpNote:
-      "TFLOPS値（Sparsity有効時）。FP8は主にTransformer推論で使用。T4/V100はFP8非対応。*付きは予想値。",
+      "TFLOPS値（Sparsity有効時）。FP8は主にTransformer推論で使用。FP4はBlackwell (B200/B300)以降で対応。T4/V100はFP8非対応。*付きは予想値。",
     refTitle: "公式リファレンス",
     refAccelerated: "EC2 Accelerated Computing インスタンス一覧",
     refOnDemand: "EC2 On-Demand 料金",

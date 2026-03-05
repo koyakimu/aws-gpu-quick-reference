@@ -13,6 +13,7 @@ export const ko = {
     vram: "VRAM",
     fp16: "FP16",
     fp8: "FP8",
+    fp4: "FP4",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -75,7 +76,7 @@ export const ko = {
     pcieNote:
       "Gen5는 Gen4의 약 2배 대역폭. CPU-GPU 간 데이터 전송 속도에 영향.",
     fpNote:
-      "TFLOPS 값 (Sparsity 활성화 시). FP8은 주로 Transformer 추론에 사용. T4/V100은 FP8 미지원. *는 예상 값.",
+      "TFLOPS 값 (Sparsity 활성화 시). FP8은 주로 Transformer 추론에 사용. FP4는 Blackwell (B200/B300) 이후 지원. T4/V100은 FP8 미지원. *는 예상 값.",
     refTitle: "공식 레퍼런스",
     refAccelerated: "EC2 Accelerated Computing 인스턴스 목록",
     refOnDemand: "EC2 On-Demand 요금",
