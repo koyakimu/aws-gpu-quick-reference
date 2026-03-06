@@ -14,6 +14,9 @@ export const en = {
     fp16: "FP16",
     fp8: "FP8",
     fp4: "FP4",
+    cuda: "CUDA",
+    dense: "Dense",
+    sparse: "Sparse",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -82,7 +85,7 @@ export const en = {
     pcieNote:
       "Gen5 offers ~2x bandwidth over Gen4. Affects CPU-GPU data transfer speeds.",
     fpNote:
-      "TFLOPS values (with Sparsity enabled). FP8 mainly used for Transformer inference. FP4 supported from Blackwell (B200/B300) onwards. T4/V100 do not support FP8. * indicates estimated values.",
+      "TFLOPS values. CUDA = performance without TensorCore. Dense = dense matrix operations, Sparse = with structured sparsity (2:4) enabled. FP8 supported from Hopper onwards, FP4 from Blackwell onwards. Turing/Volta do not support Sparsity. * indicates estimated values.",
     refTitle: "Official References",
     refAccelerated: "EC2 Accelerated Computing Instances",
     refOnDemand: "EC2 On-Demand Pricing",

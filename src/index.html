@@ -80,40 +80,49 @@
           <thead>
             <tr>
               <th colspan="4" class="group" data-i18n="table.groupInstance">インスタンス</th>
-              <th colspan="5" class="group" data-i18n="table.groupGpu">GPU性能</th>
+              <th colspan="9" class="group" data-i18n="table.groupGpu">GPU性能</th>
               <th colspan="2" class="group" data-i18n="table.groupConnect">接続</th>
               <th colspan="3" class="group" data-i18n="table.groupSystem">システム</th>
               <th colspan="3" class="group" data-i18n="table.groupPrice">価格</th>
               <th class="group"></th>
             </tr>
             <tr>
-              <th data-i18n="table.generation">世代</th>
-              <th data-i18n="table.gpuModel">GPU</th>
-              <th data-i18n="table.ec2Type">EC2</th>
-              <th data-i18n="table.instanceSize">サイズ</th>
-              <th data-i18n="table.gpuCount">数</th>
-              <th data-i18n="table.vram">VRAM</th>
-              <th data-i18n="table.fp16">FP16</th>
-              <th data-i18n="table.fp8">FP8</th>
-              <th data-i18n="table.fp4">FP4</th>
-              <th>
+              <th rowspan="2" data-i18n="table.generation">世代</th>
+              <th rowspan="2" data-i18n="table.gpuModel">GPU</th>
+              <th rowspan="2" data-i18n="table.ec2Type">EC2</th>
+              <th rowspan="2" data-i18n="table.instanceSize">サイズ</th>
+              <th rowspan="2" data-i18n="table.gpuCount">数</th>
+              <th rowspan="2" data-i18n="table.vram">VRAM</th>
+              <th colspan="3" data-i18n="table.fp16">FP16</th>
+              <th colspan="2" data-i18n="table.fp8">FP8</th>
+              <th colspan="2" data-i18n="table.fp4">FP4</th>
+              <th rowspan="2">
                 <a href="https://aws.amazon.com/hpc/efa/" target="_blank" title="Elastic Fabric Adapter"
                   data-i18n="table.efa">EFA</a>
               </th>
-              <th data-i18n="table.pcie">PCIe</th>
-              <th data-i18n="table.vcpu">vCPU</th>
-              <th data-i18n="table.memory">Mem</th>
-              <th data-i18n="table.nvme">NVMe</th>
-              <th>
+              <th rowspan="2" data-i18n="table.pcie">PCIe</th>
+              <th rowspan="2" data-i18n="table.vcpu">vCPU</th>
+              <th rowspan="2" data-i18n="table.memory">Mem</th>
+              <th rowspan="2" data-i18n="table.nvme">NVMe</th>
+              <th rowspan="2">
                 <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" title="EC2 On-Demand 料金"
                   data-i18n="table.onDemand">$/h</a>
               </th>
-              <th data-i18n="table.perGpu">$/GPU</th>
-              <th class="cb-header">
+              <th rowspan="2" data-i18n="table.perGpu">$/GPU</th>
+              <th rowspan="2" class="cb-header">
                 <a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" title="Capacity Blocks for ML"
                   data-i18n="table.cb">$/GPU(CB)</a>
               </th>
-              <th data-i18n="table.tokyo">東京</th>
+              <th rowspan="2" data-i18n="table.tokyo">東京</th>
+            </tr>
+            <tr>
+              <th data-i18n="table.cuda">CUDA</th>
+              <th data-i18n="table.dense">Dense</th>
+              <th data-i18n="table.sparse">Sparse</th>
+              <th data-i18n="table.dense">Dense</th>
+              <th data-i18n="table.sparse">Sparse</th>
+              <th data-i18n="table.dense">Dense</th>
+              <th data-i18n="table.sparse">Sparse</th>
             </tr>
           </thead>
           <tbody id="gpu-table-body"></tbody>
@@ -220,7 +229,7 @@
           <li><strong>P5en vs P5e vs P5:</strong> <span data-i18n="notes.p5CompNote">P5en: H200 + EFAv3 + PCIe Gen5...</span></li>
           <li><strong>EFA:</strong> <span data-i18n="notes.efaNote">Elastic Fabric Adapter。マルチノード分散学習に必須。</span></li>
           <li><strong>PCIe:</strong> <span data-i18n="notes.pcieNote">Gen5はGen4の約2倍の帯域幅。</span></li>
-          <li><strong>FP16/FP8/FP4:</strong> <span data-i18n="notes.fpNote">TFLOPS値（Sparsity有効時）。</span></li>
+          <li><strong>FP16/FP8/FP4:</strong> <span data-i18n="notes.fpNote">TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。</span></li>
         </ul>
 
         <h3 style="margin-top: 15px" data-i18n="notes.refTitle">🔗 公式リファレンス</h3>

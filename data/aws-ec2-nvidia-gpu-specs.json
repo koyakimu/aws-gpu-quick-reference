@@ -37,7 +37,7 @@
       "architecture": "Turing",
       "form_factor": "PCIe",
       "fp16_tflops": 65,
-      "fp16_with_sparsity": true,
+      "fp16_with_sparsity": false,
       "fp8_tflops": null,
       "fp4_tflops": null,
       "memory_gb": 16,
