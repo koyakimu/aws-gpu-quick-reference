@@ -20,7 +20,7 @@ export const EC2_LINKS = {
 export const GPU_DATASHEET_LINKS = {
     "B300": "https://www.nvidia.com/en-us/data-center/dgx-b300/",
     "B200": "https://www.nvidia.com/en-us/data-center/dgx-b200/",
-    "RTX PRO": "https://www.nvidia.com/en-us/design-visualization/rtx-pro-6000-server-edition/",
+    "RTX PRO": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/",
     "H200": "https://www.nvidia.com/en-us/data-center/h200/",
     "H100": "https://www.nvidia.com/en-us/data-center/h100/",
     "L40S": "https://www.nvidia.com/en-us/data-center/l40s/",
