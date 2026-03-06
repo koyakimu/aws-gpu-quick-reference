@@ -141,6 +141,40 @@
   color: #546e7a;
 }
 
+[data-theme="light"] .calculator-unit-prices {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .unit-price-item label {
+  color: #546e7a;
+}
+
+[data-theme="light"] .unit-price-prefix {
+  color: #546e7a;
+}
+
+[data-theme="light"] .unit-price-input-wrapper input {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #1a242f;
+}
+
+[data-theme="light"] .unit-price-input-wrapper input.user-edited {
+  border-color: var(--aws-orange-dark);
+  background: rgba(255, 153, 0, 0.06);
+}
+
+[data-theme="light"] .unit-price-reset {
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #546e7a;
+}
+
+[data-theme="light"] .unit-price-reset:hover {
+  color: var(--aws-orange-dark);
+  border-color: var(--aws-orange-dark);
+}
+
 [data-theme="light"] .calculator-disclaimer {
   color: #78909c;
 }

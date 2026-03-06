@@ -4,6 +4,9 @@ import { t } from "./i18n.js";
 const HOURS_PER_MONTH = 720;
 const MONTHS_PER_YEAR = 12;
 
+let odUserEdited = false;
+let cbUserEdited = false;
+
 function parseFraction(str) {
   const parts = str.split("/");
   return parts.length === 2 ? Number(parts[0]) / Number(parts[1]) : Number(str);
@@ -57,10 +60,30 @@ function getUniqueInstances() {
   });
 }
 
+function updateUnitPrices(row) {
+  const odInput = document.getElementById("calc-od-unit-price");
+  const cbInput = document.getElementById("calc-cb-unit-price");
+  if (!odInput || !cbInput) return;
+
+  const odPrice = parsePrice(row.price);
+  const cbPrice = parsePrice(row.priceCb);
+
+  if (!odUserEdited) {
+    odInput.value = odPrice != null ? odPrice.toFixed(2) : "";
+    odInput.classList.remove("user-edited");
+  }
+  if (!cbUserEdited) {
+    cbInput.value = cbPrice != null ? cbPrice.toFixed(2) : "";
+    cbInput.classList.remove("user-edited");
+  }
+}
+
 function updateResult() {
   const select = document.getElementById("calc-instance");
   const countInput = document.getElementById("calc-count");
   const exchangeRateInput = document.getElementById("calc-exchange-rate");
+  const odUnitInput = document.getElementById("calc-od-unit-price");
+  const cbUnitInput = document.getElementById("calc-cb-unit-price");
   const odResult = document.getElementById("calc-od-result");
   const odYearlyResult = document.getElementById("calc-od-yearly-result");
   const cbResult = document.getElementById("calc-cb-result");
@@ -79,7 +102,8 @@ function updateResult() {
   const row = GPU_DATA.find((r) => r.size === instanceSize);
   if (!row) return;
 
-  const odPrice = parsePrice(row.price);
+  // Use user-edited unit price if available, otherwise use data
+  const odPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : parsePrice(row.price);
   const odMonthly = calculateMonthlyCost(odPrice, instanceCount);
   const odYearly = calculateYearlyCost(odMonthly);
 
@@ -115,7 +139,8 @@ function updateResult() {
     }
   }
 
-  const cbGpuPrice = parsePrice(row.priceCb);
+  // Use user-edited CB unit price if available, otherwise use data
+  const cbGpuPrice = cbUnitInput && cbUnitInput.value !== "" ? parseFloat(cbUnitInput.value) : parsePrice(row.priceCb);
   if (cbGpuPrice != null) {
     const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
     const cbMonthly = cbGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount;
@@ -146,20 +171,80 @@ function populateSelect() {
   });
 }
 
+function onInstanceChange() {
+  const select = document.getElementById("calc-instance");
+  if (!select) return;
+  const row = GPU_DATA.find((r) => r.size === select.value);
+  if (!row) return;
+
+  odUserEdited = false;
+  cbUserEdited = false;
+  updateUnitPrices(row);
+  updateResult();
+}
+
 export function initCalculator() {
   populateSelect();
 
   const select = document.getElementById("calc-instance");
   const countInput = document.getElementById("calc-count");
   const exchangeRateInput = document.getElementById("calc-exchange-rate");
+  const odUnitInput = document.getElementById("calc-od-unit-price");
+  const cbUnitInput = document.getElementById("calc-cb-unit-price");
+  const odResetBtn = document.getElementById("calc-od-reset");
+  const cbResetBtn = document.getElementById("calc-cb-reset");
 
-  if (select) select.addEventListener("change", updateResult);
+  if (select) select.addEventListener("change", onInstanceChange);
   if (countInput) countInput.addEventListener("input", updateResult);
   if (exchangeRateInput) exchangeRateInput.addEventListener("input", updateResult);
+
+  if (odUnitInput) {
+    odUnitInput.addEventListener("input", () => {
+      odUserEdited = true;
+      odUnitInput.classList.add("user-edited");
+      updateResult();
+    });
+  }
+  if (cbUnitInput) {
+    cbUnitInput.addEventListener("input", () => {
+      cbUserEdited = true;
+      cbUnitInput.classList.add("user-edited");
+      updateResult();
+    });
+  }
+
+  if (odResetBtn) {
+    odResetBtn.addEventListener("click", () => {
+      odUserEdited = false;
+      const row = GPU_DATA.find((r) => r.size === select?.value);
+      if (row) {
+        const odPrice = parsePrice(row.price);
+        odUnitInput.value = odPrice != null ? odPrice.toFixed(2) : "";
+        odUnitInput.classList.remove("user-edited");
+      }
+      updateResult();
+    });
+  }
+  if (cbResetBtn) {
+    cbResetBtn.addEventListener("click", () => {
+      cbUserEdited = false;
+      const row = GPU_DATA.find((r) => r.size === select?.value);
+      if (row) {
+        const cbPrice = parsePrice(row.priceCb);
+        cbUnitInput.value = cbPrice != null ? cbPrice.toFixed(2) : "";
+        cbUnitInput.classList.remove("user-edited");
+      }
+      updateResult();
+    });
+  }
 
   document.addEventListener("lang-changed", () => {
     updateResult();
   });
+
+  // Initialize unit prices for the first selected instance
+  const initialRow = GPU_DATA.find((r) => r.size === select?.value);
+  if (initialRow) updateUnitPrices(initialRow);
 
   updateResult();
 }

@@ -44,6 +44,10 @@ function applyTranslations() {
     const key = el.getAttribute("data-i18n");
     el.textContent = t(key);
   });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    el.title = t(key);
+  });
 }
 
 export function initI18n() {
