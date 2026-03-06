@@ -136,59 +136,75 @@
             <label for="calc-exchange-rate" data-i18n="calculator.exchangeRateLabel">為替レート (USD→JPY)</label>
             <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
           </div>
-        </div>
-        <div class="calculator-unit-prices">
-          <div class="unit-price-item">
+          <div class="calculator-input unit-price-field">
             <label for="calc-od-unit-price" data-i18n="calculator.odUnitPriceLabel">On-Demand 単価 ($/h)</label>
             <div class="unit-price-input-wrapper">
               <span class="unit-price-prefix">$</span>
               <input type="number" id="calc-od-unit-price" step="0.01" min="0" placeholder="-" />
               <button type="button" id="calc-od-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice">↺</button>
             </div>
+            <span class="unit-price-default" id="calc-od-default-price"></span>
           </div>
-          <div class="unit-price-item">
+          <div class="calculator-input unit-price-field">
             <label for="calc-cb-unit-price" data-i18n="calculator.cbUnitPriceLabel">CB 単価 ($/GPU/h)</label>
             <div class="unit-price-input-wrapper">
               <span class="unit-price-prefix">$</span>
               <input type="number" id="calc-cb-unit-price" step="0.01" min="0" placeholder="-" />
               <button type="button" id="calc-cb-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice">↺</button>
             </div>
+            <span class="unit-price-default" id="calc-cb-default-price"></span>
           </div>
         </div>
         <div class="calculator-result">
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
             <span class="result-value" id="calc-od-result">-</span>
+            <span class="result-default" id="calc-od-result-default"></span>
+            <span class="result-diff" id="calc-od-result-diff"></span>
           </div>
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.onDemandYearly">On-Demand 年額</span>
             <span class="result-value" id="calc-od-yearly-result">-</span>
+            <span class="result-default" id="calc-od-yearly-result-default"></span>
+            <span class="result-diff" id="calc-od-yearly-result-diff"></span>
           </div>
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額</span>
             <span class="result-value" id="calc-cb-result">-</span>
+            <span class="result-default" id="calc-cb-result-default"></span>
+            <span class="result-diff" id="calc-cb-result-diff"></span>
           </div>
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.cbYearly">Capacity Blocks 年額</span>
             <span class="result-value" id="calc-cb-yearly-result">-</span>
+            <span class="result-default" id="calc-cb-yearly-result-default"></span>
+            <span class="result-diff" id="calc-cb-yearly-result-diff"></span>
           </div>
         </div>
         <div class="calculator-result">
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.onDemandMonthlyJpy">On-Demand 月額 (JPY)</span>
             <span class="result-value" id="calc-od-jpy-result">-</span>
+            <span class="result-default" id="calc-od-jpy-result-default"></span>
+            <span class="result-diff" id="calc-od-jpy-result-diff"></span>
           </div>
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.onDemandYearlyJpy">On-Demand 年額 (JPY)</span>
             <span class="result-value" id="calc-od-yearly-jpy-result">-</span>
+            <span class="result-default" id="calc-od-yearly-jpy-result-default"></span>
+            <span class="result-diff" id="calc-od-yearly-jpy-result-diff"></span>
           </div>
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.cbMonthlyJpy">CB 月額 (JPY)</span>
             <span class="result-value" id="calc-cb-jpy-result">-</span>
+            <span class="result-default" id="calc-cb-jpy-result-default"></span>
+            <span class="result-diff" id="calc-cb-jpy-result-diff"></span>
           </div>
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.cbYearlyJpy">CB 年額 (JPY)</span>
             <span class="result-value" id="calc-cb-yearly-jpy-result">-</span>
+            <span class="result-default" id="calc-cb-yearly-jpy-result-default"></span>
+            <span class="result-diff" id="calc-cb-yearly-jpy-result-diff"></span>
           </div>
         </div>
         <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">

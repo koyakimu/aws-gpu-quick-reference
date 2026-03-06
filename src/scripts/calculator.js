@@ -46,6 +46,12 @@ function formatJpy(amount) {
   return "¥" + Math.round(amount).toLocaleString("ja-JP");
 }
 
+function formatDiff(diff, formatter) {
+  if (diff == null) return "";
+  const sign = diff > 0 ? "+" : "";
+  return sign + formatter(diff);
+}
+
 function getUniqueInstances() {
   return GPU_DATA.map((row) => {
     const gpuName = row.gpu || GPU_DATA.find((r) => r.gen === row.gen && r.gpu)?.gpu || "";
@@ -58,6 +64,25 @@ function getUniqueInstances() {
       cbOnly: isCbOnly(row),
     };
   });
+}
+
+function updateDefaultPriceDisplay(row) {
+  const odDefault = document.getElementById("calc-od-default-price");
+  const cbDefault = document.getElementById("calc-cb-default-price");
+
+  const odPrice = parsePrice(row.price);
+  const cbPrice = parsePrice(row.priceCb);
+
+  if (odDefault) {
+    odDefault.textContent = odPrice != null
+      ? `${t("calculator.defaultPrice")}: $${odPrice.toFixed(2)}`
+      : `${t("calculator.defaultPrice")}: -`;
+  }
+  if (cbDefault) {
+    cbDefault.textContent = cbPrice != null
+      ? `${t("calculator.defaultPrice")}: $${cbPrice.toFixed(2)}`
+      : `${t("calculator.defaultPrice")}: -`;
+  }
 }
 
 function updateUnitPrices(row) {
@@ -75,6 +100,27 @@ function updateUnitPrices(row) {
   if (!cbUserEdited) {
     cbInput.value = cbPrice != null ? cbPrice.toFixed(2) : "";
     cbInput.classList.remove("user-edited");
+  }
+
+  updateDefaultPriceDisplay(row);
+}
+
+function setResultComparison(resultId, currentValue, defaultValue, isJpy) {
+  const defaultEl = document.getElementById(resultId + "-default");
+  const diffEl = document.getElementById(resultId + "-diff");
+  if (!defaultEl || !diffEl) return;
+
+  const formatter = isJpy ? formatJpy : formatCurrency;
+
+  if (currentValue != null && defaultValue != null && currentValue !== defaultValue) {
+    defaultEl.textContent = `${t("calculator.defaultCost")}: ${formatter(defaultValue)}`;
+    const diff = currentValue - defaultValue;
+    diffEl.textContent = `${t("calculator.diffLabel")}: ${formatDiff(diff, formatter)}`;
+    diffEl.className = "result-diff " + (diff > 0 ? "diff-increase" : "diff-decrease");
+  } else {
+    defaultEl.textContent = "";
+    diffEl.textContent = "";
+    diffEl.className = "result-diff";
   }
 }
 
@@ -102,8 +148,13 @@ function updateResult() {
   const row = GPU_DATA.find((r) => r.size === instanceSize);
   if (!row) return;
 
-  // Use user-edited unit price if available, otherwise use data
-  const odPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : parsePrice(row.price);
+  // Default prices from data
+  const odDefaultPrice = parsePrice(row.price);
+  const odDefaultMonthly = calculateMonthlyCost(odDefaultPrice, instanceCount);
+  const odDefaultYearly = calculateYearlyCost(odDefaultMonthly);
+
+  // User-adjusted price
+  const odPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : odDefaultPrice;
   const odMonthly = calculateMonthlyCost(odPrice, instanceCount);
   const odYearly = calculateYearlyCost(odMonthly);
 
@@ -122,6 +173,19 @@ function updateResult() {
       odYearlyJpyResult.textContent = formatJpy(convertToJpy(odYearly, exchangeRate));
       odYearlyJpyResult.classList.remove("cbo");
     }
+
+    // Show comparison if user edited OD price
+    if (odUserEdited && odDefaultPrice != null) {
+      setResultComparison("calc-od-result", odMonthly, odDefaultMonthly, false);
+      setResultComparison("calc-od-yearly-result", odYearly, odDefaultYearly, false);
+      setResultComparison("calc-od-jpy-result", convertToJpy(odMonthly, exchangeRate), convertToJpy(odDefaultMonthly, exchangeRate), true);
+      setResultComparison("calc-od-yearly-jpy-result", convertToJpy(odYearly, exchangeRate), convertToJpy(odDefaultYearly, exchangeRate), true);
+    } else {
+      setResultComparison("calc-od-result", null, null, false);
+      setResultComparison("calc-od-yearly-result", null, null, false);
+      setResultComparison("calc-od-jpy-result", null, null, true);
+      setResultComparison("calc-od-yearly-jpy-result", null, null, true);
+    }
   } else {
     odResult.textContent = t("calculator.cbOnly");
     odResult.classList.add("cbo");
@@ -137,23 +201,48 @@ function updateResult() {
       odYearlyJpyResult.textContent = t("calculator.cbOnly");
       odYearlyJpyResult.classList.add("cbo");
     }
+    setResultComparison("calc-od-result", null, null, false);
+    setResultComparison("calc-od-yearly-result", null, null, false);
+    setResultComparison("calc-od-jpy-result", null, null, true);
+    setResultComparison("calc-od-yearly-jpy-result", null, null, true);
   }
 
-  // Use user-edited CB unit price if available, otherwise use data
-  const cbGpuPrice = cbUnitInput && cbUnitInput.value !== "" ? parseFloat(cbUnitInput.value) : parsePrice(row.priceCb);
+  // CB pricing
+  const cbDefaultGpuPrice = parsePrice(row.priceCb);
+  const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
+  const cbDefaultMonthly = cbDefaultGpuPrice != null ? cbDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
+  const cbDefaultYearly = calculateYearlyCost(cbDefaultMonthly);
+
+  const cbGpuPrice = cbUnitInput && cbUnitInput.value !== "" ? parseFloat(cbUnitInput.value) : cbDefaultGpuPrice;
   if (cbGpuPrice != null) {
-    const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
     const cbMonthly = cbGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount;
     const cbYearly = calculateYearlyCost(cbMonthly);
     cbResult.textContent = formatCurrency(cbMonthly);
     if (cbYearlyResult) cbYearlyResult.textContent = formatCurrency(cbYearly);
     if (cbJpyResult) cbJpyResult.textContent = formatJpy(convertToJpy(cbMonthly, exchangeRate));
     if (cbYearlyJpyResult) cbYearlyJpyResult.textContent = formatJpy(convertToJpy(cbYearly, exchangeRate));
+
+    // Show comparison if user edited CB price
+    if (cbUserEdited && cbDefaultGpuPrice != null) {
+      setResultComparison("calc-cb-result", cbMonthly, cbDefaultMonthly, false);
+      setResultComparison("calc-cb-yearly-result", cbYearly, cbDefaultYearly, false);
+      setResultComparison("calc-cb-jpy-result", convertToJpy(cbMonthly, exchangeRate), convertToJpy(cbDefaultMonthly, exchangeRate), true);
+      setResultComparison("calc-cb-yearly-jpy-result", convertToJpy(cbYearly, exchangeRate), convertToJpy(cbDefaultYearly, exchangeRate), true);
+    } else {
+      setResultComparison("calc-cb-result", null, null, false);
+      setResultComparison("calc-cb-yearly-result", null, null, false);
+      setResultComparison("calc-cb-jpy-result", null, null, true);
+      setResultComparison("calc-cb-yearly-jpy-result", null, null, true);
+    }
   } else {
     cbResult.textContent = "-";
     if (cbYearlyResult) cbYearlyResult.textContent = "-";
     if (cbJpyResult) cbJpyResult.textContent = "-";
     if (cbYearlyJpyResult) cbYearlyJpyResult.textContent = "-";
+    setResultComparison("calc-cb-result", null, null, false);
+    setResultComparison("calc-cb-yearly-result", null, null, false);
+    setResultComparison("calc-cb-jpy-result", null, null, true);
+    setResultComparison("calc-cb-yearly-jpy-result", null, null, true);
   }
 }
 
@@ -239,6 +328,8 @@ export function initCalculator() {
   }
 
   document.addEventListener("lang-changed", () => {
+    const row = GPU_DATA.find((r) => r.size === select?.value);
+    if (row) updateDefaultPriceDisplay(row);
     updateResult();
   });
 

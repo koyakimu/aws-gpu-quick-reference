@@ -15,7 +15,7 @@
 .calculator-form {
   display: flex;
   gap: 16px;
-  align-items: flex-end;
+  align-items: flex-start;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
@@ -57,29 +57,8 @@
   box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
 }
 
-.calculator-unit-prices {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-}
-
-.unit-price-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.unit-price-item label {
-  font-size: 0.85em;
-  color: #8899a6;
-}
-
-.unit-price-input-wrapper {
+/* Unit price fields inline in form */
+.unit-price-field .unit-price-input-wrapper {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -91,7 +70,7 @@
   font-family: "Consolas", "Monaco", monospace;
 }
 
-.unit-price-input-wrapper input {
+.unit-price-field .unit-price-input-wrapper input {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #e8eaed;
@@ -102,13 +81,13 @@
   width: 110px;
 }
 
-.unit-price-input-wrapper input:focus {
+.unit-price-field .unit-price-input-wrapper input:focus {
   outline: none;
   border-color: var(--aws-orange);
   box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
 }
 
-.unit-price-input-wrapper input.user-edited {
+.unit-price-field .unit-price-input-wrapper input.user-edited {
   border-color: var(--aws-orange);
   background: rgba(255, 153, 0, 0.08);
 }
@@ -128,6 +107,12 @@
 .unit-price-reset:hover {
   color: var(--aws-orange);
   border-color: var(--aws-orange);
+}
+
+.unit-price-default {
+  font-size: 0.78em;
+  color: #6b7d8e;
+  font-family: "Consolas", "Monaco", monospace;
 }
 
 .calculator-result {
@@ -165,6 +150,26 @@
   font-size: 1em;
 }
 
+.result-default {
+  font-size: 0.78em;
+  color: #6b7d8e;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.result-diff {
+  font-size: 0.82em;
+  font-weight: 600;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.result-diff.diff-increase {
+  color: #ef5350;
+}
+
+.result-diff.diff-decrease {
+  color: #66bb6a;
+}
+
 .calculator-disclaimer {
   font-size: 0.8em;
   color: #8899a6;
@@ -190,11 +195,7 @@
     width: 100%;
   }
 
-  .calculator-unit-prices {
-    flex-direction: column;
-  }
-
-  .unit-price-input-wrapper input {
+  .unit-price-field .unit-price-input-wrapper input {
     width: 100%;
     flex: 1;
   }
