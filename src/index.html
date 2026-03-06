@@ -137,6 +137,24 @@
             <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
           </div>
         </div>
+        <div class="calculator-unit-prices">
+          <div class="unit-price-item">
+            <label for="calc-od-unit-price" data-i18n="calculator.odUnitPriceLabel">On-Demand 単価 ($/h)</label>
+            <div class="unit-price-input-wrapper">
+              <span class="unit-price-prefix">$</span>
+              <input type="number" id="calc-od-unit-price" step="0.01" min="0" placeholder="-" />
+              <button type="button" id="calc-od-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice">↺</button>
+            </div>
+          </div>
+          <div class="unit-price-item">
+            <label for="calc-cb-unit-price" data-i18n="calculator.cbUnitPriceLabel">CB 単価 ($/GPU/h)</label>
+            <div class="unit-price-input-wrapper">
+              <span class="unit-price-prefix">$</span>
+              <input type="number" id="calc-cb-unit-price" step="0.01" min="0" placeholder="-" />
+              <button type="button" id="calc-cb-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice">↺</button>
+            </div>
+          </div>
+        </div>
         <div class="calculator-result">
           <div class="result-card">
             <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
