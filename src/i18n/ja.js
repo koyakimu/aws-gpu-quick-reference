@@ -14,6 +14,9 @@ export const ja = {
     fp16: "FP16",
     fp8: "FP8",
     fp4: "FP4",
+    cuda: "CUDA",
+    dense: "Dense",
+    sparse: "Sparse",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -82,7 +85,7 @@ export const ja = {
     pcieNote:
       "Gen5はGen4の約2倍の帯域幅。CPU-GPU間のデータ転送速度に影響。",
     fpNote:
-      "TFLOPS値（Sparsity有効時）。FP8は主にTransformer推論で使用。FP4はBlackwell (B200/B300)以降で対応。T4/V100はFP8非対応。*付きは予想値。",
+      "TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。*付きは予想値。",
     refTitle: "公式リファレンス",
     refAccelerated: "EC2 Accelerated Computing インスタンス一覧",
     refOnDemand: "EC2 On-Demand 料金",

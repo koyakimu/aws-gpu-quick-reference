@@ -165,20 +165,41 @@ export function renderTable() {
     tr.appendChild(vramCell);
 
     const estClass = row.est ? "est" : null;
-    const fp16Cell = document.createElement("td");
-    if (estClass) fp16Cell.className = estClass;
-    fp16Cell.appendChild(createPerfContent(row.fp16PerGpu, row.count, row.est));
-    tr.appendChild(fp16Cell);
 
-    const fp8Cell = document.createElement("td");
-    if (estClass) fp8Cell.className = estClass;
-    fp8Cell.appendChild(createPerfContent(row.fp8PerGpu, row.count, row.est));
-    tr.appendChild(fp8Cell);
+    const fp16CudaCell = document.createElement("td");
+    if (estClass) fp16CudaCell.className = estClass;
+    fp16CudaCell.appendChild(createPerfContent(row.fp16NonTc, row.count, row.est));
+    tr.appendChild(fp16CudaCell);
 
-    const fp4Cell = document.createElement("td");
-    if (estClass) fp4Cell.className = estClass;
-    fp4Cell.appendChild(createPerfContent(row.fp4PerGpu, row.count, row.est));
-    tr.appendChild(fp4Cell);
+    const fp16DenseCell = document.createElement("td");
+    if (estClass) fp16DenseCell.className = estClass;
+    fp16DenseCell.appendChild(createPerfContent(row.fp16Dense, row.count, row.est));
+    tr.appendChild(fp16DenseCell);
+
+    const fp16SparseCell = document.createElement("td");
+    if (estClass) fp16SparseCell.className = estClass;
+    fp16SparseCell.appendChild(createPerfContent(row.fp16Sparse, row.count, row.est));
+    tr.appendChild(fp16SparseCell);
+
+    const fp8DenseCell = document.createElement("td");
+    if (estClass) fp8DenseCell.className = estClass;
+    fp8DenseCell.appendChild(createPerfContent(row.fp8Dense, row.count, row.est));
+    tr.appendChild(fp8DenseCell);
+
+    const fp8SparseCell = document.createElement("td");
+    if (estClass) fp8SparseCell.className = estClass;
+    fp8SparseCell.appendChild(createPerfContent(row.fp8Sparse, row.count, row.est));
+    tr.appendChild(fp8SparseCell);
+
+    const fp4DenseCell = document.createElement("td");
+    if (estClass) fp4DenseCell.className = estClass;
+    fp4DenseCell.appendChild(createPerfContent(row.fp4Dense, row.count, row.est));
+    tr.appendChild(fp4DenseCell);
+
+    const fp4SparseCell = document.createElement("td");
+    if (estClass) fp4SparseCell.className = estClass;
+    fp4SparseCell.appendChild(createPerfContent(row.fp4Sparse, row.count, row.est));
+    tr.appendChild(fp4SparseCell);
 
     tr.appendChild(createCell("td", row.efa, "efa"));
     tr.appendChild(createCell("td", row.pcie, "pcie"));
