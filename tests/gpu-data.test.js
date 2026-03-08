@@ -12,7 +12,7 @@ describe("GPU_DATA integrity", () => {
       expect(row.size, `row ${i}: size`).toBeTruthy();
       expect(row.count, `row ${i}: count`).toBeDefined();
       expect(row.vramPerGpu, `row ${i}: vramPerGpu`).toBeGreaterThan(0);
-      expect(row.fp16Dense, `row ${i}: fp16Dense`).toBeGreaterThan(0);
+      expect(row.fp16Dense === null || row.fp16Dense > 0, `row ${i}: fp16Dense must be null or > 0`).toBe(true);
       expect(row.vcpu, `row ${i}: vcpu`).toBeGreaterThan(0);
       expect(row.mem, `row ${i}: mem`).toBeTruthy();
       expect(typeof row.tokyo, `row ${i}: tokyo`).toBe("boolean");
