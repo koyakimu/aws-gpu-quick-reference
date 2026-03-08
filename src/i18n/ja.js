@@ -78,7 +78,7 @@ export const ja = {
     priceNote:
       "2025年6月の値下げ反映済み。東京リージョン On-Demand 価格 (USD)。CB = Capacity Blocks。TBD = 価格未発表。",
     g7eNote:
-      "NVIDIA RTX PRO 6000 Blackwell Server Edition GPU搭載。G6eの2.3倍の推論性能、2倍のVRAM (96GB/GPU)。48xlargeのみEFA対応。現在 us-east-1/us-east-2 のみ。",
+      "NVIDIA RTX PRO Server 6000 (Blackwell) GPU搭載。FP16/FP8値は公式データシートに記載なく、Blackwellアーキテクチャの精度別スループット比とFP32公称値から算出した推定値（*付き）。48xlargeのみEFA対応。現在 us-east-1/us-east-2 のみ。",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 最新・最高性能、On-Demand利用可 / P5e: H200 + EFAv2 + PCIe Gen4 → CB専用、P5enより低コスト / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB、最もコスパ良好",
     efaNote:
       "Elastic Fabric Adapter。マルチノード分散学習に必須。v4 > v3 > v2 > v1 の順で高性能。",
@@ -87,12 +87,18 @@ export const ja = {
     fpNote:
       "TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。*付きは予想値。",
     refTitle: "公式リファレンス",
+    refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing インスタンス一覧",
     refOnDemand: "EC2 On-Demand 料金",
     refCb: "Capacity Blocks for ML",
     refEfa: "Elastic Fabric Adapter (EFA)",
     refUserGuide: "EC2 ユーザーガイド - アクセラレーテッドコンピューティング",
     refBlog: "AWS Blog - EC2 カテゴリ（最新情報）",
+    refNvidiaTitle: "NVIDIA GPU データソース",
+    refNvidiaDataCenter: "NVIDIA Data Center GPUs（製品ページ・データシート）",
+    refDgxB200: "DGX B200（B200 スペック）",
+    refDgxB300: "DGX B300（B300 スペック）",
+    refGpuSpecNote: "GPU演算性能値はNVIDIA公式データシート・製品ページに基づいています。テーブル内のGPU名をクリックすると各GPUの公式ページに遷移します。",
     disclaimerTitle: "免責事項",
     disclaimerBefore:
       "本ページの情報は参考用であり、正確性を保証するものではありません。価格・仕様・リージョン対応状況は予告なく変更される場合があります。最新かつ正確な情報については、必ず",

@@ -225,14 +225,15 @@
         <h3 data-i18n="notes.title">📝 Notes</h3>
         <ul>
           <li><strong>価格:</strong> <span data-i18n="notes.priceNote">2025年6月の値下げ反映済み。東京リージョン On-Demand 価格 (USD)。CB = Capacity Blocks。TBD = 価格未発表。</span></li>
-          <li><strong>G7e (NEW):</strong> <span data-i18n="notes.g7eNote">NVIDIA RTX PRO 6000 Blackwell Server Edition GPU搭載。</span></li>
+          <li><strong>G7e (NEW):</strong> <span data-i18n="notes.g7eNote">NVIDIA RTX PRO Server 6000 (Blackwell) GPU搭載。FP16/FP8値は公式データシートに記載なく、Blackwellアーキテクチャの精度別スループット比とFP32公称値から算出した推定値（*付き）。48xlargeのみEFA対応。現在 us-east-1/us-east-2 のみ。</span></li>
           <li><strong>P5en vs P5e vs P5:</strong> <span data-i18n="notes.p5CompNote">P5en: H200 + EFAv3 + PCIe Gen5...</span></li>
           <li><strong>EFA:</strong> <span data-i18n="notes.efaNote">Elastic Fabric Adapter。マルチノード分散学習に必須。</span></li>
           <li><strong>PCIe:</strong> <span data-i18n="notes.pcieNote">Gen5はGen4の約2倍の帯域幅。</span></li>
-          <li><strong>FP16/FP8/FP4:</strong> <span data-i18n="notes.fpNote">TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。</span></li>
+          <li><strong>FP16/FP8/FP4:</strong> <span data-i18n="notes.fpNote">TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。*付きは予想値。</span></li>
         </ul>
 
         <h3 style="margin-top: 15px" data-i18n="notes.refTitle">🔗 公式リファレンス</h3>
+        <h4 style="margin-top: 10px; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8" data-i18n="notes.refAwsTitle">AWS</h4>
         <ul>
           <li><a href="https://aws.amazon.com/ec2/instance-types/#Accelerated_Computing" target="_blank" data-i18n="notes.refAccelerated">EC2 Accelerated Computing インスタンス一覧</a></li>
           <li><a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" data-i18n="notes.refOnDemand">EC2 On-Demand 料金</a></li>
@@ -241,6 +242,13 @@
           <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/accelerated-computing-instances.html" target="_blank" data-i18n="notes.refUserGuide">EC2 ユーザーガイド - アクセラレーテッドコンピューティング</a></li>
           <li><a href="https://aws.amazon.com/blogs/aws/category/compute/amazon-ec2/" target="_blank" data-i18n="notes.refBlog">AWS Blog - EC2 カテゴリ（最新情報）</a></li>
         </ul>
+        <h4 style="margin-top: 10px; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8" data-i18n="notes.refNvidiaTitle">NVIDIA GPU データソース</h4>
+        <ul>
+          <li><a href="https://www.nvidia.com/en-us/data-center/" target="_blank" data-i18n="notes.refNvidiaDataCenter">NVIDIA Data Center GPUs（製品ページ・データシート）</a></li>
+          <li><a href="https://www.nvidia.com/en-us/data-center/dgx-b200/" target="_blank" data-i18n="notes.refDgxB200">DGX B200（B200 スペック）</a></li>
+          <li><a href="https://www.nvidia.com/en-us/data-center/dgx-b300/" target="_blank" data-i18n="notes.refDgxB300">DGX B300（B300 スペック）</a></li>
+        </ul>
+        <p style="font-size: 0.85em; opacity: 0.7; margin-top: 5px" data-i18n="notes.refGpuSpecNote">GPU演算性能値はNVIDIA公式データシート・製品ページに基づいています。テーブル内のGPU名をクリックすると各GPUの公式ページに遷移します。</p>
 
         <h3 style="margin-top: 15px" data-i18n="notes.disclaimerTitle">⚠️ 免責事項</h3>
         <p class="disclaimer-text">
