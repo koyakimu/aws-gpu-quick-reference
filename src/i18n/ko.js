@@ -50,7 +50,7 @@ export const ko = {
     cbMonthly: "Capacity Blocks 월간 비용",
     cbYearly: "Capacity Blocks 연간 비용",
     cbOnly: "CB 전용",
-    odUnitPriceLabel: "On-Demand 단가 ($/h)",
+    odUnitPriceLabel: "On-Demand 단가 ($/GPU/h)",
     cbUnitPriceLabel: "CB 단가 ($/GPU/h)",
     resetPrice: "기본값으로 복원",
     defaultPrice: "기본값",

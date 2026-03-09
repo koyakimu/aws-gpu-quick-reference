@@ -50,7 +50,7 @@ export const ja = {
     cbMonthly: "Capacity Blocks 月額",
     cbYearly: "Capacity Blocks 年額",
     cbOnly: "CB専用",
-    odUnitPriceLabel: "On-Demand 単価 ($/h)",
+    odUnitPriceLabel: "On-Demand 単価 ($/GPU/h)",
     cbUnitPriceLabel: "CB 単価 ($/GPU/h)",
     resetPrice: "デフォルトに戻す",
     defaultPrice: "デフォルト",

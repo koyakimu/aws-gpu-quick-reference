@@ -59,6 +59,7 @@ function getUniqueInstances() {
       size: row.size,
       label: `${row.size} (${gpuName} x${row.count})`,
       price: row.price,
+      priceGpu: row.priceGpu,
       priceCb: row.priceCb,
       count: row.count,
       cbOnly: isCbOnly(row),
@@ -70,12 +71,12 @@ function updateDefaultPriceDisplay(row) {
   const odDefault = document.getElementById("calc-od-default-price");
   const cbDefault = document.getElementById("calc-cb-default-price");
 
-  const odPrice = parsePrice(row.price);
+  const odGpuPrice = parsePrice(row.priceGpu);
   const cbPrice = parsePrice(row.priceCb);
 
   if (odDefault) {
-    odDefault.textContent = odPrice != null
-      ? `${t("calculator.defaultPrice")}: $${odPrice.toFixed(2)}`
+    odDefault.textContent = odGpuPrice != null
+      ? `${t("calculator.defaultPrice")}: $${odGpuPrice.toFixed(2)}`
       : `${t("calculator.defaultPrice")}: -`;
   }
   if (cbDefault) {
@@ -90,11 +91,11 @@ function updateUnitPrices(row) {
   const cbInput = document.getElementById("calc-cb-unit-price");
   if (!odInput || !cbInput) return;
 
-  const odPrice = parsePrice(row.price);
+  const odGpuPrice = parsePrice(row.priceGpu);
   const cbPrice = parsePrice(row.priceCb);
 
   if (!odUserEdited) {
-    odInput.value = odPrice != null ? odPrice.toFixed(2) : "";
+    odInput.value = odGpuPrice != null ? odGpuPrice.toFixed(2) : "";
     odInput.classList.remove("user-edited");
   }
   if (!cbUserEdited) {
@@ -148,14 +149,15 @@ function updateResult() {
   const row = GPU_DATA.find((r) => r.size === instanceSize);
   if (!row) return;
 
-  // Default prices from data
-  const odDefaultPrice = parsePrice(row.price);
-  const odDefaultMonthly = calculateMonthlyCost(odDefaultPrice, instanceCount);
+  // Default prices from data (per-GPU)
+  const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
+  const odDefaultGpuPrice = parsePrice(row.priceGpu);
+  const odDefaultMonthly = odDefaultGpuPrice != null ? odDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
   const odDefaultYearly = calculateYearlyCost(odDefaultMonthly);
 
-  // User-adjusted price
-  const odPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : odDefaultPrice;
-  const odMonthly = calculateMonthlyCost(odPrice, instanceCount);
+  // User-adjusted price (per-GPU)
+  const odGpuPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : odDefaultGpuPrice;
+  const odMonthly = odGpuPrice != null ? odGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
   const odYearly = calculateYearlyCost(odMonthly);
 
   if (odMonthly != null) {
@@ -175,7 +177,7 @@ function updateResult() {
     }
 
     // Show comparison if user edited OD price
-    if (odUserEdited && odDefaultPrice != null) {
+    if (odUserEdited && odDefaultGpuPrice != null) {
       setResultComparison("calc-od-result", odMonthly, odDefaultMonthly, false);
       setResultComparison("calc-od-yearly-result", odYearly, odDefaultYearly, false);
       setResultComparison("calc-od-jpy-result", convertToJpy(odMonthly, exchangeRate), convertToJpy(odDefaultMonthly, exchangeRate), true);
@@ -209,7 +211,6 @@ function updateResult() {
 
   // CB pricing
   const cbDefaultGpuPrice = parsePrice(row.priceCb);
-  const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
   const cbDefaultMonthly = cbDefaultGpuPrice != null ? cbDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
   const cbDefaultYearly = calculateYearlyCost(cbDefaultMonthly);
 
@@ -307,8 +308,8 @@ export function initCalculator() {
       odUserEdited = false;
       const row = GPU_DATA.find((r) => r.size === select?.value);
       if (row) {
-        const odPrice = parsePrice(row.price);
-        odUnitInput.value = odPrice != null ? odPrice.toFixed(2) : "";
+        const odGpuPrice = parsePrice(row.priceGpu);
+        odUnitInput.value = odGpuPrice != null ? odGpuPrice.toFixed(2) : "";
         odUnitInput.classList.remove("user-edited");
       }
       updateResult();

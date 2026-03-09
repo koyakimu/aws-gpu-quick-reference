@@ -50,7 +50,7 @@ export const en = {
     cbMonthly: "Capacity Blocks Monthly",
     cbYearly: "Capacity Blocks Yearly",
     cbOnly: "CB Only",
-    odUnitPriceLabel: "On-Demand Unit Price ($/h)",
+    odUnitPriceLabel: "On-Demand Unit Price ($/GPU/h)",
     cbUnitPriceLabel: "CB Unit Price ($/GPU/h)",
     resetPrice: "Reset to default",
     defaultPrice: "Default",
