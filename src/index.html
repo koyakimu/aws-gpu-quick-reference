@@ -142,6 +142,10 @@
             <input type="number" id="calc-count" value="1" min="1" max="100" />
           </div>
           <div class="calculator-input">
+            <label for="calc-days" data-i18n="calculator.daysLabel">日数</label>
+            <input type="number" id="calc-days" value="30" min="1" max="3650" />
+          </div>
+          <div class="calculator-input">
             <label for="calc-exchange-rate" data-i18n="calculator.exchangeRateLabel">為替レート (USD→JPY)</label>
             <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
           </div>
@@ -166,28 +170,54 @@
         </div>
         <div class="calculator-result">
           <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+            <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額 (USD)</span>
             <span class="result-value" id="calc-od-result">-</span>
             <span class="result-default" id="calc-od-result-default"></span>
             <span class="result-diff" id="calc-od-result-diff"></span>
           </div>
           <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandYearly">On-Demand 年額</span>
+            <span class="result-label" data-i18n="calculator.onDemandYearly">On-Demand 年額 (USD)</span>
             <span class="result-value" id="calc-od-yearly-result">-</span>
             <span class="result-default" id="calc-od-yearly-result-default"></span>
             <span class="result-diff" id="calc-od-yearly-result-diff"></span>
           </div>
           <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額</span>
+            <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額 (USD)</span>
             <span class="result-value" id="calc-cb-result">-</span>
             <span class="result-default" id="calc-cb-result-default"></span>
             <span class="result-diff" id="calc-cb-result-diff"></span>
           </div>
           <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbYearly">Capacity Blocks 年額</span>
+            <span class="result-label" data-i18n="calculator.cbYearly">Capacity Blocks 年額 (USD)</span>
             <span class="result-value" id="calc-cb-yearly-result">-</span>
             <span class="result-default" id="calc-cb-yearly-result-default"></span>
             <span class="result-diff" id="calc-cb-yearly-result-diff"></span>
+          </div>
+        </div>
+        <div class="calculator-result">
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定 (USD)</span>
+            <span class="result-value" id="calc-od-days-result">-</span>
+            <span class="result-default" id="calc-od-days-result-default"></span>
+            <span class="result-diff" id="calc-od-days-result-diff"></span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定 (USD)</span>
+            <span class="result-value" id="calc-cb-days-result">-</span>
+            <span class="result-default" id="calc-cb-days-result-default"></span>
+            <span class="result-diff" id="calc-cb-days-result-diff"></span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.onDemandDaysJpy">On-Demand 日数指定 (JPY)</span>
+            <span class="result-value" id="calc-od-days-jpy-result">-</span>
+            <span class="result-default" id="calc-od-days-jpy-result-default"></span>
+            <span class="result-diff" id="calc-od-days-jpy-result-diff"></span>
+          </div>
+          <div class="result-card">
+            <span class="result-label" data-i18n="calculator.cbDaysJpy">CB 日数指定 (JPY)</span>
+            <span class="result-value" id="calc-cb-days-jpy-result">-</span>
+            <span class="result-default" id="calc-cb-days-jpy-result-default"></span>
+            <span class="result-diff" id="calc-cb-days-jpy-result-diff"></span>
           </div>
         </div>
         <div class="calculator-result">

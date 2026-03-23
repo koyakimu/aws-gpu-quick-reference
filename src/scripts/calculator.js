@@ -2,6 +2,7 @@ import { GPU_DATA } from "./gpu-data.js";
 import { t } from "./i18n.js";
 
 const HOURS_PER_MONTH = 720;
+const HOURS_PER_DAY = 24;
 const MONTHS_PER_YEAR = 12;
 
 let odUserEdited = false;
@@ -25,6 +26,11 @@ export function calculateMonthlyCost(hourlyPrice, count) {
 export function calculateYearlyCost(monthlyCost) {
   if (monthlyCost == null) return null;
   return monthlyCost * MONTHS_PER_YEAR;
+}
+
+export function calculateDaysCost(hourlyPrice, days, count) {
+  if (hourlyPrice == null || days == null || count == null) return null;
+  return hourlyPrice * HOURS_PER_DAY * days * count;
 }
 
 export function convertToJpy(usdAmount, exchangeRate) {
@@ -128,6 +134,7 @@ function setResultComparison(resultId, currentValue, defaultValue, isJpy) {
 function updateResult() {
   const select = document.getElementById("calc-instance");
   const countInput = document.getElementById("calc-count");
+  const daysInput = document.getElementById("calc-days");
   const exchangeRateInput = document.getElementById("calc-exchange-rate");
   const odUnitInput = document.getElementById("calc-od-unit-price");
   const cbUnitInput = document.getElementById("calc-cb-unit-price");
@@ -139,11 +146,16 @@ function updateResult() {
   const odYearlyJpyResult = document.getElementById("calc-od-yearly-jpy-result");
   const cbJpyResult = document.getElementById("calc-cb-jpy-result");
   const cbYearlyJpyResult = document.getElementById("calc-cb-yearly-jpy-result");
+  const odDaysResult = document.getElementById("calc-od-days-result");
+  const cbDaysResult = document.getElementById("calc-cb-days-result");
+  const odDaysJpyResult = document.getElementById("calc-od-days-jpy-result");
+  const cbDaysJpyResult = document.getElementById("calc-cb-days-jpy-result");
 
   if (!select || !countInput || !odResult || !cbResult) return;
 
   const instanceSize = select.value;
   const instanceCount = parseInt(countInput.value) || 1;
+  const days = parseInt(daysInput?.value) || 30;
   const exchangeRate = parseFloat(exchangeRateInput?.value) || 150;
 
   const row = GPU_DATA.find((r) => r.size === instanceSize);
@@ -176,17 +188,33 @@ function updateResult() {
       odYearlyJpyResult.classList.remove("cbo");
     }
 
+    // Days calculation for OD
+    const odDaysCost = odGpuPrice != null ? odGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount : null;
+    const odDefaultDaysCost = odDefaultGpuPrice != null ? odDefaultGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount : null;
+    if (odDaysResult) {
+      odDaysResult.textContent = formatCurrency(odDaysCost);
+      odDaysResult.classList.remove("cbo");
+    }
+    if (odDaysJpyResult) {
+      odDaysJpyResult.textContent = formatJpy(convertToJpy(odDaysCost, exchangeRate));
+      odDaysJpyResult.classList.remove("cbo");
+    }
+
     // Show comparison if user edited OD price
     if (odUserEdited && odDefaultGpuPrice != null) {
       setResultComparison("calc-od-result", odMonthly, odDefaultMonthly, false);
       setResultComparison("calc-od-yearly-result", odYearly, odDefaultYearly, false);
       setResultComparison("calc-od-jpy-result", convertToJpy(odMonthly, exchangeRate), convertToJpy(odDefaultMonthly, exchangeRate), true);
       setResultComparison("calc-od-yearly-jpy-result", convertToJpy(odYearly, exchangeRate), convertToJpy(odDefaultYearly, exchangeRate), true);
+      setResultComparison("calc-od-days-result", odDaysCost, odDefaultDaysCost, false);
+      setResultComparison("calc-od-days-jpy-result", convertToJpy(odDaysCost, exchangeRate), convertToJpy(odDefaultDaysCost, exchangeRate), true);
     } else {
       setResultComparison("calc-od-result", null, null, false);
       setResultComparison("calc-od-yearly-result", null, null, false);
       setResultComparison("calc-od-jpy-result", null, null, true);
       setResultComparison("calc-od-yearly-jpy-result", null, null, true);
+      setResultComparison("calc-od-days-result", null, null, false);
+      setResultComparison("calc-od-days-jpy-result", null, null, true);
     }
   } else {
     odResult.textContent = t("calculator.cbOnly");
@@ -203,10 +231,20 @@ function updateResult() {
       odYearlyJpyResult.textContent = t("calculator.cbOnly");
       odYearlyJpyResult.classList.add("cbo");
     }
+    if (odDaysResult) {
+      odDaysResult.textContent = t("calculator.cbOnly");
+      odDaysResult.classList.add("cbo");
+    }
+    if (odDaysJpyResult) {
+      odDaysJpyResult.textContent = t("calculator.cbOnly");
+      odDaysJpyResult.classList.add("cbo");
+    }
     setResultComparison("calc-od-result", null, null, false);
     setResultComparison("calc-od-yearly-result", null, null, false);
     setResultComparison("calc-od-jpy-result", null, null, true);
     setResultComparison("calc-od-yearly-jpy-result", null, null, true);
+    setResultComparison("calc-od-days-result", null, null, false);
+    setResultComparison("calc-od-days-jpy-result", null, null, true);
   }
 
   // CB pricing
@@ -223,27 +261,41 @@ function updateResult() {
     if (cbJpyResult) cbJpyResult.textContent = formatJpy(convertToJpy(cbMonthly, exchangeRate));
     if (cbYearlyJpyResult) cbYearlyJpyResult.textContent = formatJpy(convertToJpy(cbYearly, exchangeRate));
 
+    // Days calculation for CB
+    const cbDaysCost = cbGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount;
+    const cbDefaultDaysCost = cbDefaultGpuPrice != null ? cbDefaultGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount : null;
+    if (cbDaysResult) cbDaysResult.textContent = formatCurrency(cbDaysCost);
+    if (cbDaysJpyResult) cbDaysJpyResult.textContent = formatJpy(convertToJpy(cbDaysCost, exchangeRate));
+
     // Show comparison if user edited CB price
     if (cbUserEdited && cbDefaultGpuPrice != null) {
       setResultComparison("calc-cb-result", cbMonthly, cbDefaultMonthly, false);
       setResultComparison("calc-cb-yearly-result", cbYearly, cbDefaultYearly, false);
       setResultComparison("calc-cb-jpy-result", convertToJpy(cbMonthly, exchangeRate), convertToJpy(cbDefaultMonthly, exchangeRate), true);
       setResultComparison("calc-cb-yearly-jpy-result", convertToJpy(cbYearly, exchangeRate), convertToJpy(cbDefaultYearly, exchangeRate), true);
+      setResultComparison("calc-cb-days-result", cbDaysCost, cbDefaultDaysCost, false);
+      setResultComparison("calc-cb-days-jpy-result", convertToJpy(cbDaysCost, exchangeRate), convertToJpy(cbDefaultDaysCost, exchangeRate), true);
     } else {
       setResultComparison("calc-cb-result", null, null, false);
       setResultComparison("calc-cb-yearly-result", null, null, false);
       setResultComparison("calc-cb-jpy-result", null, null, true);
       setResultComparison("calc-cb-yearly-jpy-result", null, null, true);
+      setResultComparison("calc-cb-days-result", null, null, false);
+      setResultComparison("calc-cb-days-jpy-result", null, null, true);
     }
   } else {
     cbResult.textContent = "-";
     if (cbYearlyResult) cbYearlyResult.textContent = "-";
     if (cbJpyResult) cbJpyResult.textContent = "-";
     if (cbYearlyJpyResult) cbYearlyJpyResult.textContent = "-";
+    if (cbDaysResult) cbDaysResult.textContent = "-";
+    if (cbDaysJpyResult) cbDaysJpyResult.textContent = "-";
     setResultComparison("calc-cb-result", null, null, false);
     setResultComparison("calc-cb-yearly-result", null, null, false);
     setResultComparison("calc-cb-jpy-result", null, null, true);
     setResultComparison("calc-cb-yearly-jpy-result", null, null, true);
+    setResultComparison("calc-cb-days-result", null, null, false);
+    setResultComparison("calc-cb-days-jpy-result", null, null, true);
   }
 }
 
@@ -278,6 +330,7 @@ export function initCalculator() {
 
   const select = document.getElementById("calc-instance");
   const countInput = document.getElementById("calc-count");
+  const daysInput = document.getElementById("calc-days");
   const exchangeRateInput = document.getElementById("calc-exchange-rate");
   const odUnitInput = document.getElementById("calc-od-unit-price");
   const cbUnitInput = document.getElementById("calc-cb-unit-price");
@@ -286,6 +339,7 @@ export function initCalculator() {
 
   if (select) select.addEventListener("change", onInstanceChange);
   if (countInput) countInput.addEventListener("input", updateResult);
+  if (daysInput) daysInput.addEventListener("input", updateResult);
   if (exchangeRateInput) exchangeRateInput.addEventListener("input", updateResult);
 
   if (odUnitInput) {
