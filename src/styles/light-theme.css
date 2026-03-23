@@ -132,9 +132,12 @@
   color: #1a242f;
 }
 
-[data-theme="light"] .result-card {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.08);
+[data-theme="light"] .result-item {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .result-currency-header {
+  border-bottom-color: var(--aws-orange);
 }
 
 [data-theme="light"] .result-label {
