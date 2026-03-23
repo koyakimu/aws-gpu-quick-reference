@@ -115,22 +115,44 @@
   font-family: "Consolas", "Monaco", monospace;
 }
 
-.calculator-result {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
+.calculator-results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 12px;
 }
 
-.result-card {
+.result-currency-column {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 16px 24px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  min-width: 200px;
+  gap: 0;
+}
+
+.result-currency-header {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--aws-orange);
+  padding: 8px 16px;
+  border-bottom: 2px solid var(--aws-orange);
+  margin-bottom: 4px;
+}
+
+.result-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.calculator-monthly-note {
+  font-size: 0.8em;
+  color: #8899a6;
+  margin-bottom: 12px;
 }
 
 .result-label {
@@ -200,11 +222,7 @@
     flex: 1;
   }
 
-  .calculator-result {
-    flex-direction: column;
-  }
-
-  .result-card {
-    min-width: unset;
+  .calculator-results-grid {
+    grid-template-columns: 1fr;
   }
 }

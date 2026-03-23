@@ -1,9 +1,14 @@
 import { GPU_DATA } from "./gpu-data.js";
-import { t } from "./i18n.js";
+import { t, getLang } from "./i18n.js";
 
 const HOURS_PER_MONTH = 720;
 const HOURS_PER_DAY = 24;
 const MONTHS_PER_YEAR = 12;
+
+const CURRENCY_CONFIG = {
+  ja: { currency: "JPY", symbol: "¥", defaultRate: 150, locale: "ja-JP" },
+  ko: { currency: "KRW", symbol: "₩", defaultRate: 1400, locale: "ko-KR" },
+};
 
 let odUserEdited = false;
 let cbUserEdited = false;
@@ -47,9 +52,11 @@ function formatCurrency(amount) {
   return "$" + amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function formatJpy(amount) {
+function formatLocalCurrency(amount) {
   if (amount == null) return "-";
-  return "¥" + Math.round(amount).toLocaleString("ja-JP");
+  const config = CURRENCY_CONFIG[getLang()];
+  if (!config) return "-";
+  return config.symbol + Math.round(amount).toLocaleString(config.locale);
 }
 
 function formatDiff(diff, formatter) {
@@ -112,12 +119,12 @@ function updateUnitPrices(row) {
   updateDefaultPriceDisplay(row);
 }
 
-function setResultComparison(resultId, currentValue, defaultValue, isJpy) {
+function setResultComparison(resultId, currentValue, defaultValue, isLocal) {
   const defaultEl = document.getElementById(resultId + "-default");
   const diffEl = document.getElementById(resultId + "-diff");
   if (!defaultEl || !diffEl) return;
 
-  const formatter = isJpy ? formatJpy : formatCurrency;
+  const formatter = isLocal ? formatLocalCurrency : formatCurrency;
 
   if (currentValue != null && defaultValue != null && currentValue !== defaultValue) {
     defaultEl.textContent = `${t("calculator.defaultCost")}: ${formatter(defaultValue)}`;
@@ -131,6 +138,22 @@ function setResultComparison(resultId, currentValue, defaultValue, isJpy) {
   }
 }
 
+function hasLocalCurrency() {
+  return CURRENCY_CONFIG[getLang()] != null;
+}
+
+function updateLocalCurrencyVisibility() {
+  const localColumn = document.getElementById("local-currency-column");
+  const exchangeField = document.getElementById("calc-exchange-rate-field");
+  const grid = document.querySelector(".calculator-results-grid");
+
+  const showLocal = hasLocalCurrency();
+
+  if (localColumn) localColumn.style.display = showLocal ? "" : "none";
+  if (exchangeField) exchangeField.style.display = showLocal ? "" : "none";
+  if (grid) grid.style.gridTemplateColumns = showLocal ? "1fr 1fr" : "1fr";
+}
+
 function updateResult() {
   const select = document.getElementById("calc-instance");
   const countInput = document.getElementById("calc-count");
@@ -138,18 +161,18 @@ function updateResult() {
   const exchangeRateInput = document.getElementById("calc-exchange-rate");
   const odUnitInput = document.getElementById("calc-od-unit-price");
   const cbUnitInput = document.getElementById("calc-cb-unit-price");
+
+  // USD results
   const odResult = document.getElementById("calc-od-result");
-  const odYearlyResult = document.getElementById("calc-od-yearly-result");
   const cbResult = document.getElementById("calc-cb-result");
-  const cbYearlyResult = document.getElementById("calc-cb-yearly-result");
-  const odJpyResult = document.getElementById("calc-od-jpy-result");
-  const odYearlyJpyResult = document.getElementById("calc-od-yearly-jpy-result");
-  const cbJpyResult = document.getElementById("calc-cb-jpy-result");
-  const cbYearlyJpyResult = document.getElementById("calc-cb-yearly-jpy-result");
   const odDaysResult = document.getElementById("calc-od-days-result");
   const cbDaysResult = document.getElementById("calc-cb-days-result");
-  const odDaysJpyResult = document.getElementById("calc-od-days-jpy-result");
-  const cbDaysJpyResult = document.getElementById("calc-cb-days-jpy-result");
+
+  // Local currency results
+  const odLocalResult = document.getElementById("calc-od-local-result");
+  const cbLocalResult = document.getElementById("calc-cb-local-result");
+  const odDaysLocalResult = document.getElementById("calc-od-days-local-result");
+  const cbDaysLocalResult = document.getElementById("calc-cb-days-local-result");
 
   if (!select || !countInput || !odResult || !cbResult) return;
 
@@ -157,145 +180,127 @@ function updateResult() {
   const instanceCount = parseInt(countInput.value) || 1;
   const days = parseInt(daysInput?.value) || 30;
   const exchangeRate = parseFloat(exchangeRateInput?.value) || 150;
+  const showLocal = hasLocalCurrency();
 
   const row = GPU_DATA.find((r) => r.size === instanceSize);
   if (!row) return;
 
-  // Default prices from data (per-GPU)
   const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
+
+  // --- On-Demand ---
   const odDefaultGpuPrice = parsePrice(row.priceGpu);
   const odDefaultMonthly = odDefaultGpuPrice != null ? odDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
-  const odDefaultYearly = calculateYearlyCost(odDefaultMonthly);
-
-  // User-adjusted price (per-GPU)
   const odGpuPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : odDefaultGpuPrice;
   const odMonthly = odGpuPrice != null ? odGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
-  const odYearly = calculateYearlyCost(odMonthly);
 
   if (odMonthly != null) {
     odResult.textContent = formatCurrency(odMonthly);
     odResult.classList.remove("cbo");
-    if (odYearlyResult) {
-      odYearlyResult.textContent = formatCurrency(odYearly);
-      odYearlyResult.classList.remove("cbo");
-    }
-    if (odJpyResult) {
-      odJpyResult.textContent = formatJpy(convertToJpy(odMonthly, exchangeRate));
-      odJpyResult.classList.remove("cbo");
-    }
-    if (odYearlyJpyResult) {
-      odYearlyJpyResult.textContent = formatJpy(convertToJpy(odYearly, exchangeRate));
-      odYearlyJpyResult.classList.remove("cbo");
-    }
 
-    // Days calculation for OD
-    const odDaysCost = odGpuPrice != null ? odGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount : null;
+    const odDaysCost = odGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount;
     const odDefaultDaysCost = odDefaultGpuPrice != null ? odDefaultGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount : null;
     if (odDaysResult) {
       odDaysResult.textContent = formatCurrency(odDaysCost);
       odDaysResult.classList.remove("cbo");
     }
-    if (odDaysJpyResult) {
-      odDaysJpyResult.textContent = formatJpy(convertToJpy(odDaysCost, exchangeRate));
-      odDaysJpyResult.classList.remove("cbo");
+
+    if (showLocal) {
+      if (odLocalResult) {
+        odLocalResult.textContent = formatLocalCurrency(convertToJpy(odMonthly, exchangeRate));
+        odLocalResult.classList.remove("cbo");
+      }
+      if (odDaysLocalResult) {
+        odDaysLocalResult.textContent = formatLocalCurrency(convertToJpy(odDaysCost, exchangeRate));
+        odDaysLocalResult.classList.remove("cbo");
+      }
     }
 
-    // Show comparison if user edited OD price
     if (odUserEdited && odDefaultGpuPrice != null) {
       setResultComparison("calc-od-result", odMonthly, odDefaultMonthly, false);
-      setResultComparison("calc-od-yearly-result", odYearly, odDefaultYearly, false);
-      setResultComparison("calc-od-jpy-result", convertToJpy(odMonthly, exchangeRate), convertToJpy(odDefaultMonthly, exchangeRate), true);
-      setResultComparison("calc-od-yearly-jpy-result", convertToJpy(odYearly, exchangeRate), convertToJpy(odDefaultYearly, exchangeRate), true);
       setResultComparison("calc-od-days-result", odDaysCost, odDefaultDaysCost, false);
-      setResultComparison("calc-od-days-jpy-result", convertToJpy(odDaysCost, exchangeRate), convertToJpy(odDefaultDaysCost, exchangeRate), true);
+      if (showLocal) {
+        setResultComparison("calc-od-local-result", convertToJpy(odMonthly, exchangeRate), convertToJpy(odDefaultMonthly, exchangeRate), true);
+        setResultComparison("calc-od-days-local-result", convertToJpy(odDaysCost, exchangeRate), convertToJpy(odDefaultDaysCost, exchangeRate), true);
+      }
     } else {
       setResultComparison("calc-od-result", null, null, false);
-      setResultComparison("calc-od-yearly-result", null, null, false);
-      setResultComparison("calc-od-jpy-result", null, null, true);
-      setResultComparison("calc-od-yearly-jpy-result", null, null, true);
       setResultComparison("calc-od-days-result", null, null, false);
-      setResultComparison("calc-od-days-jpy-result", null, null, true);
+      if (showLocal) {
+        setResultComparison("calc-od-local-result", null, null, true);
+        setResultComparison("calc-od-days-local-result", null, null, true);
+      }
     }
   } else {
     odResult.textContent = t("calculator.cbOnly");
     odResult.classList.add("cbo");
-    if (odYearlyResult) {
-      odYearlyResult.textContent = t("calculator.cbOnly");
-      odYearlyResult.classList.add("cbo");
-    }
-    if (odJpyResult) {
-      odJpyResult.textContent = t("calculator.cbOnly");
-      odJpyResult.classList.add("cbo");
-    }
-    if (odYearlyJpyResult) {
-      odYearlyJpyResult.textContent = t("calculator.cbOnly");
-      odYearlyJpyResult.classList.add("cbo");
-    }
     if (odDaysResult) {
       odDaysResult.textContent = t("calculator.cbOnly");
       odDaysResult.classList.add("cbo");
     }
-    if (odDaysJpyResult) {
-      odDaysJpyResult.textContent = t("calculator.cbOnly");
-      odDaysJpyResult.classList.add("cbo");
+    if (showLocal) {
+      if (odLocalResult) {
+        odLocalResult.textContent = t("calculator.cbOnly");
+        odLocalResult.classList.add("cbo");
+      }
+      if (odDaysLocalResult) {
+        odDaysLocalResult.textContent = t("calculator.cbOnly");
+        odDaysLocalResult.classList.add("cbo");
+      }
     }
     setResultComparison("calc-od-result", null, null, false);
-    setResultComparison("calc-od-yearly-result", null, null, false);
-    setResultComparison("calc-od-jpy-result", null, null, true);
-    setResultComparison("calc-od-yearly-jpy-result", null, null, true);
     setResultComparison("calc-od-days-result", null, null, false);
-    setResultComparison("calc-od-days-jpy-result", null, null, true);
+    if (showLocal) {
+      setResultComparison("calc-od-local-result", null, null, true);
+      setResultComparison("calc-od-days-local-result", null, null, true);
+    }
   }
 
-  // CB pricing
+  // --- CB ---
   const cbDefaultGpuPrice = parsePrice(row.priceCb);
   const cbDefaultMonthly = cbDefaultGpuPrice != null ? cbDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
-  const cbDefaultYearly = calculateYearlyCost(cbDefaultMonthly);
-
   const cbGpuPrice = cbUnitInput && cbUnitInput.value !== "" ? parseFloat(cbUnitInput.value) : cbDefaultGpuPrice;
+
   if (cbGpuPrice != null) {
     const cbMonthly = cbGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount;
-    const cbYearly = calculateYearlyCost(cbMonthly);
     cbResult.textContent = formatCurrency(cbMonthly);
-    if (cbYearlyResult) cbYearlyResult.textContent = formatCurrency(cbYearly);
-    if (cbJpyResult) cbJpyResult.textContent = formatJpy(convertToJpy(cbMonthly, exchangeRate));
-    if (cbYearlyJpyResult) cbYearlyJpyResult.textContent = formatJpy(convertToJpy(cbYearly, exchangeRate));
 
-    // Days calculation for CB
     const cbDaysCost = cbGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount;
     const cbDefaultDaysCost = cbDefaultGpuPrice != null ? cbDefaultGpuPrice * HOURS_PER_DAY * days * gpuCount * instanceCount : null;
     if (cbDaysResult) cbDaysResult.textContent = formatCurrency(cbDaysCost);
-    if (cbDaysJpyResult) cbDaysJpyResult.textContent = formatJpy(convertToJpy(cbDaysCost, exchangeRate));
 
-    // Show comparison if user edited CB price
+    if (showLocal) {
+      if (cbLocalResult) cbLocalResult.textContent = formatLocalCurrency(convertToJpy(cbMonthly, exchangeRate));
+      if (cbDaysLocalResult) cbDaysLocalResult.textContent = formatLocalCurrency(convertToJpy(cbDaysCost, exchangeRate));
+    }
+
     if (cbUserEdited && cbDefaultGpuPrice != null) {
       setResultComparison("calc-cb-result", cbMonthly, cbDefaultMonthly, false);
-      setResultComparison("calc-cb-yearly-result", cbYearly, cbDefaultYearly, false);
-      setResultComparison("calc-cb-jpy-result", convertToJpy(cbMonthly, exchangeRate), convertToJpy(cbDefaultMonthly, exchangeRate), true);
-      setResultComparison("calc-cb-yearly-jpy-result", convertToJpy(cbYearly, exchangeRate), convertToJpy(cbDefaultYearly, exchangeRate), true);
       setResultComparison("calc-cb-days-result", cbDaysCost, cbDefaultDaysCost, false);
-      setResultComparison("calc-cb-days-jpy-result", convertToJpy(cbDaysCost, exchangeRate), convertToJpy(cbDefaultDaysCost, exchangeRate), true);
+      if (showLocal) {
+        setResultComparison("calc-cb-local-result", convertToJpy(cbMonthly, exchangeRate), convertToJpy(cbDefaultMonthly, exchangeRate), true);
+        setResultComparison("calc-cb-days-local-result", convertToJpy(cbDaysCost, exchangeRate), convertToJpy(cbDefaultDaysCost, exchangeRate), true);
+      }
     } else {
       setResultComparison("calc-cb-result", null, null, false);
-      setResultComparison("calc-cb-yearly-result", null, null, false);
-      setResultComparison("calc-cb-jpy-result", null, null, true);
-      setResultComparison("calc-cb-yearly-jpy-result", null, null, true);
       setResultComparison("calc-cb-days-result", null, null, false);
-      setResultComparison("calc-cb-days-jpy-result", null, null, true);
+      if (showLocal) {
+        setResultComparison("calc-cb-local-result", null, null, true);
+        setResultComparison("calc-cb-days-local-result", null, null, true);
+      }
     }
   } else {
     cbResult.textContent = "-";
-    if (cbYearlyResult) cbYearlyResult.textContent = "-";
-    if (cbJpyResult) cbJpyResult.textContent = "-";
-    if (cbYearlyJpyResult) cbYearlyJpyResult.textContent = "-";
     if (cbDaysResult) cbDaysResult.textContent = "-";
-    if (cbDaysJpyResult) cbDaysJpyResult.textContent = "-";
+    if (showLocal) {
+      if (cbLocalResult) cbLocalResult.textContent = "-";
+      if (cbDaysLocalResult) cbDaysLocalResult.textContent = "-";
+    }
     setResultComparison("calc-cb-result", null, null, false);
-    setResultComparison("calc-cb-yearly-result", null, null, false);
-    setResultComparison("calc-cb-jpy-result", null, null, true);
-    setResultComparison("calc-cb-yearly-jpy-result", null, null, true);
     setResultComparison("calc-cb-days-result", null, null, false);
-    setResultComparison("calc-cb-days-jpy-result", null, null, true);
+    if (showLocal) {
+      setResultComparison("calc-cb-local-result", null, null, true);
+      setResultComparison("calc-cb-days-local-result", null, null, true);
+    }
   }
 }
 
@@ -323,6 +328,16 @@ function onInstanceChange() {
   cbUserEdited = false;
   updateUnitPrices(row);
   updateResult();
+}
+
+function updateExchangeRateForLang() {
+  const exchangeRateInput = document.getElementById("calc-exchange-rate");
+  if (!exchangeRateInput) return;
+
+  const config = CURRENCY_CONFIG[getLang()];
+  if (config) {
+    exchangeRateInput.value = config.defaultRate;
+  }
 }
 
 export function initCalculator() {
@@ -385,10 +400,15 @@ export function initCalculator() {
   document.addEventListener("lang-changed", () => {
     const row = GPU_DATA.find((r) => r.size === select?.value);
     if (row) updateDefaultPriceDisplay(row);
+    updateLocalCurrencyVisibility();
+    updateExchangeRateForLang();
     updateResult();
   });
 
-  // Initialize unit prices for the first selected instance
+  // Initialize for current language
+  updateLocalCurrencyVisibility();
+  updateExchangeRateForLang();
+
   const initialRow = GPU_DATA.find((r) => r.size === select?.value);
   if (initialRow) updateUnitPrices(initialRow);
 

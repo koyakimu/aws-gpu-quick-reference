@@ -145,7 +145,7 @@
             <label for="calc-days" data-i18n="calculator.daysLabel">日数</label>
             <input type="number" id="calc-days" value="30" min="1" max="3650" />
           </div>
-          <div class="calculator-input">
+          <div class="calculator-input" id="calc-exchange-rate-field">
             <label for="calc-exchange-rate" data-i18n="calculator.exchangeRateLabel">為替レート (USD→JPY)</label>
             <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
           </div>
@@ -168,84 +168,63 @@
             <span class="unit-price-default" id="calc-cb-default-price"></span>
           </div>
         </div>
-        <div class="calculator-result">
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額 (USD)</span>
-            <span class="result-value" id="calc-od-result">-</span>
-            <span class="result-default" id="calc-od-result-default"></span>
-            <span class="result-diff" id="calc-od-result-diff"></span>
+        <div class="calculator-results-grid">
+          <div class="result-currency-column">
+            <div class="result-currency-header">USD</div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+              <span class="result-value" id="calc-od-result">-</span>
+              <span class="result-default" id="calc-od-result-default"></span>
+              <span class="result-diff" id="calc-od-result-diff"></span>
+            </div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定</span>
+              <span class="result-value" id="calc-od-days-result">-</span>
+              <span class="result-default" id="calc-od-days-result-default"></span>
+              <span class="result-diff" id="calc-od-days-result-diff"></span>
+            </div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.cbMonthly">CB 月額</span>
+              <span class="result-value" id="calc-cb-result">-</span>
+              <span class="result-default" id="calc-cb-result-default"></span>
+              <span class="result-diff" id="calc-cb-result-diff"></span>
+            </div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定</span>
+              <span class="result-value" id="calc-cb-days-result">-</span>
+              <span class="result-default" id="calc-cb-days-result-default"></span>
+              <span class="result-diff" id="calc-cb-days-result-diff"></span>
+            </div>
           </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandYearly">On-Demand 年額 (USD)</span>
-            <span class="result-value" id="calc-od-yearly-result">-</span>
-            <span class="result-default" id="calc-od-yearly-result-default"></span>
-            <span class="result-diff" id="calc-od-yearly-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbMonthly">Capacity Blocks 月額 (USD)</span>
-            <span class="result-value" id="calc-cb-result">-</span>
-            <span class="result-default" id="calc-cb-result-default"></span>
-            <span class="result-diff" id="calc-cb-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbYearly">Capacity Blocks 年額 (USD)</span>
-            <span class="result-value" id="calc-cb-yearly-result">-</span>
-            <span class="result-default" id="calc-cb-yearly-result-default"></span>
-            <span class="result-diff" id="calc-cb-yearly-result-diff"></span>
-          </div>
-        </div>
-        <div class="calculator-result">
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定 (USD)</span>
-            <span class="result-value" id="calc-od-days-result">-</span>
-            <span class="result-default" id="calc-od-days-result-default"></span>
-            <span class="result-diff" id="calc-od-days-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定 (USD)</span>
-            <span class="result-value" id="calc-cb-days-result">-</span>
-            <span class="result-default" id="calc-cb-days-result-default"></span>
-            <span class="result-diff" id="calc-cb-days-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandDaysJpy">On-Demand 日数指定 (JPY)</span>
-            <span class="result-value" id="calc-od-days-jpy-result">-</span>
-            <span class="result-default" id="calc-od-days-jpy-result-default"></span>
-            <span class="result-diff" id="calc-od-days-jpy-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbDaysJpy">CB 日数指定 (JPY)</span>
-            <span class="result-value" id="calc-cb-days-jpy-result">-</span>
-            <span class="result-default" id="calc-cb-days-jpy-result-default"></span>
-            <span class="result-diff" id="calc-cb-days-jpy-result-diff"></span>
-          </div>
-        </div>
-        <div class="calculator-result">
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandMonthlyJpy">On-Demand 月額 (JPY)</span>
-            <span class="result-value" id="calc-od-jpy-result">-</span>
-            <span class="result-default" id="calc-od-jpy-result-default"></span>
-            <span class="result-diff" id="calc-od-jpy-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.onDemandYearlyJpy">On-Demand 年額 (JPY)</span>
-            <span class="result-value" id="calc-od-yearly-jpy-result">-</span>
-            <span class="result-default" id="calc-od-yearly-jpy-result-default"></span>
-            <span class="result-diff" id="calc-od-yearly-jpy-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbMonthlyJpy">CB 月額 (JPY)</span>
-            <span class="result-value" id="calc-cb-jpy-result">-</span>
-            <span class="result-default" id="calc-cb-jpy-result-default"></span>
-            <span class="result-diff" id="calc-cb-jpy-result-diff"></span>
-          </div>
-          <div class="result-card">
-            <span class="result-label" data-i18n="calculator.cbYearlyJpy">CB 年額 (JPY)</span>
-            <span class="result-value" id="calc-cb-yearly-jpy-result">-</span>
-            <span class="result-default" id="calc-cb-yearly-jpy-result-default"></span>
-            <span class="result-diff" id="calc-cb-yearly-jpy-result-diff"></span>
+          <div class="result-currency-column" id="local-currency-column">
+            <div class="result-currency-header" id="local-currency-header" data-i18n="calculator.localCurrency">JPY</div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+              <span class="result-value" id="calc-od-local-result">-</span>
+              <span class="result-default" id="calc-od-local-result-default"></span>
+              <span class="result-diff" id="calc-od-local-result-diff"></span>
+            </div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定</span>
+              <span class="result-value" id="calc-od-days-local-result">-</span>
+              <span class="result-default" id="calc-od-days-local-result-default"></span>
+              <span class="result-diff" id="calc-od-days-local-result-diff"></span>
+            </div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.cbMonthly">CB 月額</span>
+              <span class="result-value" id="calc-cb-local-result">-</span>
+              <span class="result-default" id="calc-cb-local-result-default"></span>
+              <span class="result-diff" id="calc-cb-local-result-diff"></span>
+            </div>
+            <div class="result-item">
+              <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定</span>
+              <span class="result-value" id="calc-cb-days-local-result">-</span>
+              <span class="result-default" id="calc-cb-days-local-result-default"></span>
+              <span class="result-diff" id="calc-cb-days-local-result-diff"></span>
+            </div>
           </div>
         </div>
+        <p class="calculator-monthly-note" data-i18n="calculator.monthlyNote">※ 月額は720h/月で計算</p>
         <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">
           概算値です。RI/Savings Plans等の割引は含まれません。正確な料金はAWS公式をご確認ください。
         </p>
