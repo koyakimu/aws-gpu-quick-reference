@@ -46,7 +46,7 @@ describe("calculateYearlyCost", () => {
 describe("calculateDaysCost", () => {
   it("calculates cost for specified days (24h * price * days * count)", () => {
     expect(calculateDaysCost(3.78, 30, 1)).toBeCloseTo(2721.6);
-    expect(calculateDaysCost(3.78, 182, 1)).toBeCloseTo(16504.32);
+    expect(calculateDaysCost(3.78, 182, 1)).toBeCloseTo(16511.04);
     expect(calculateDaysCost(3.78, 365, 1)).toBeCloseTo(33112.8);
     expect(calculateDaysCost(3.78, 365, 2)).toBeCloseTo(66225.6);
   });
