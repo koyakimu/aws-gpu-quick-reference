@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parsePrice, calculateMonthlyCost, calculateYearlyCost, convertToJpy, isCbOnly } from "../src/scripts/calculator.js";
+import { parsePrice, calculateMonthlyCost, calculateYearlyCost, calculateDaysCost, convertToJpy, isCbOnly } from "../src/scripts/calculator.js";
 
 describe("parsePrice", () => {
   it("parses dollar string to number", () => {
@@ -40,6 +40,27 @@ describe("calculateYearlyCost", () => {
 
   it("returns null when monthly cost is null", () => {
     expect(calculateYearlyCost(null)).toBeNull();
+  });
+});
+
+describe("calculateDaysCost", () => {
+  it("calculates cost for specified days (24h * price * days * count)", () => {
+    expect(calculateDaysCost(3.78, 30, 1)).toBeCloseTo(2721.6);
+    expect(calculateDaysCost(3.78, 182, 1)).toBeCloseTo(16504.32);
+    expect(calculateDaysCost(3.78, 365, 1)).toBeCloseTo(33112.8);
+    expect(calculateDaysCost(3.78, 365, 2)).toBeCloseTo(66225.6);
+  });
+
+  it("returns null when price is null", () => {
+    expect(calculateDaysCost(null, 30, 1)).toBeNull();
+  });
+
+  it("returns null when days is null", () => {
+    expect(calculateDaysCost(3.78, null, 1)).toBeNull();
+  });
+
+  it("returns null when count is null", () => {
+    expect(calculateDaysCost(3.78, 30, null)).toBeNull();
   });
 });
 
