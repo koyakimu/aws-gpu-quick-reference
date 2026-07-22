@@ -75,7 +75,7 @@ export const ja = {
   notes: {
     title: "Notes",
     priceNote:
-      "2025年6月の値下げ反映済み。東京リージョン On-Demand 価格 (USD)。CB = Capacity Blocks。TBD = 価格未発表。",
+      "us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。TBD = 価格未発表。2026年7月更新。",
     g7eNote:
       "NVIDIA RTX PRO Server 6000 (Blackwell) GPU搭載。FP16/FP8値は公式データシートに記載なく、Blackwellアーキテクチャの精度別スループット比とFP32公称値から算出した推定値（*付き）。48xlargeのみEFA対応。現在 us-east-1/us-east-2 のみ。",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 最新・最高性能、On-Demand利用可 / P5e: H200 + EFAv2 + PCIe Gen4 → CB専用、P5enより低コスト / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB、最もコスパ良好",
