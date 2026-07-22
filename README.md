@@ -5,7 +5,7 @@ AWS EC2 GPUアクセラレーテッドインスタンスの包括的でインタ
 ## 特徴
 
 - 📊 すべてのNVIDIA GPU世代に対応: Blackwell, Hopper, Ada Lovelace, Ampere, Turing, Volta
-- 💰 東京リージョンのOn-Demand価格とCapacity Blocks価格（2025年6月の値下げを反映）
+- 💰 On-Demand価格（us-east-1）とCapacity Blocks価格（東京リージョン優先）を掲載
 - 🎨 世代別カラーコーディングで視覚的に識別しやすい
 - 🔗 AWS公式ドキュメントへの直接リンク
 - ⚡ HPC/MLワークロード計画のためのEFAバージョンとPCIe世代情報
@@ -26,54 +26,41 @@ mainブランチへのプッシュで自動的にデプロイされます。
 
 ## ローカル開発
 
-ビルドツールは不要です。すべてのコード（HTML、CSS、JavaScript、データ）は `index.html` に含まれています。
+Vite + vite-plugin-singlefile でビルドします。ソースは `src/` 配下にモジュール分割されています。
 
 ```bash
 # リポジトリをクローン
 git clone https://github.com/koyakimu/aws-gpu-quick-reference.git
-
-# ローカルでindex.htmlを開く
 cd aws-gpu-quick-reference
-open index.html  # macOS
-# または
-xdg-open index.html  # Linux
-# または
-start index.html  # Windows
+
+# 依存関係をインストール
+npm install
+
+# 開発サーバー起動（HMR対応）
+npm run dev
+
+# 単体テスト
+npm test
+
+# ビルド（dist/index.html に単一HTMLを出力）
+npm run build
 ```
-
-または、簡単なHTTPサーバーを起動：
-
-```bash
-# Python 3の場合
-python3 -m http.server 8000
-
-# Node.jsの場合
-npx http-server
-```
-
-ブラウザで `http://localhost:8000` を開きます。
 
 ## データ更新方法
 
-`index.html` 内の `GPU_DATA` 配列を編集してください。各エントリは以下の形式です：
+`src/scripts/gpu-data.js` の `GPU_DATA` 配列を編集してください。各エントリはオブジェクト形式です：
 
-```javascript
-[generation, gpuModel, ec2Type, instanceSize, gpuCount, vram, fp16, fp8,
- efaVersion, pcie, vcpu, memory, nvme, onDemandPrice, pricePerGpu, cbPrice, tokyoAvailable]
-```
-
-各フィールドの説明：
 ```javascript
 {
-  generation: 'GPU世代',
-  gpuModel: 'GPUモデル名',
-  ec2Type: 'EC2インスタンスタイプ',
-  instanceSize: 'インスタンスサイズ',
-  gpuCount: 'GPU搭載数',
-  vram: 'VRAM容量（GB）',
-  fp16: 'FP16性能（TFLOPS）',
-  fp8: 'FP8性能（TFLOPS）',
-  efaVersion: 'EFAバージョン',
+  gen: 'GPU世代',
+  gpu: 'GPUモデル名',
+  ec2: 'EC2インスタンスタイプ',
+  size: 'インスタンスサイズ',
+  count: 'GPU搭載数',
+  vramPerGpu: 'GPU1基あたりVRAM容量（GB）',
+  fp16Dense: 'FP16性能 Dense（TFLOPS）',
+  fp8Dense: 'FP8性能 Dense（TFLOPS）',
+  efa: 'EFAバージョン',
   pcie: 'PCIe世代',
   vcpu: 'vCPU数',
   mem: 'メモリ容量',
@@ -84,6 +71,8 @@ npx http-server
   tokyo: '東京リージョン対応（true/false）'
 }
 ```
+
+GPUスペックの参照元は `data/aws-ec2-nvidia-gpu-specs.json` です。
 
 ## 公式リファレンス
 
