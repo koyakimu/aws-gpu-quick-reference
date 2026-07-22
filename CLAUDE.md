@@ -82,3 +82,5 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 - 東京リージョン（ap-northeast-1）がある場合はその値を使用
 - ない場合は最も一般的なリージョン（us-east-1等）を使用
 - 価格は小数点第2位まで表示（例: $3.93）
+
+**この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
