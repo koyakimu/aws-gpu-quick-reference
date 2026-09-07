@@ -44,6 +44,7 @@ export const ko = {
     families: "패밀리",
     columns: "열",
     region: "리전",
+    allRegions: "전체 리전",
     rowCount: "{shown} / {total} 행",
   },
   groups: {

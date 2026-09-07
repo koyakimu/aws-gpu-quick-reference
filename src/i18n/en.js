@@ -44,6 +44,7 @@ export const en = {
     families: "Family",
     columns: "Columns",
     region: "Region",
+    allRegions: "All regions",
     rowCount: "{shown} / {total} rows",
   },
   groups: {

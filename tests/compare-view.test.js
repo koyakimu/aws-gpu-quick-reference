@@ -204,13 +204,6 @@ describe("saveState / loadState", () => {
   });
 });
 
-describe("regionFilter", () => {
-  it("is a no-op until PR 4 implements it", () => {
-    expect(regionFilter(ROWS, "ap-northeast-1")).toEqual(ROWS);
-    expect(regionFilter(ROWS, null)).toEqual(ROWS);
-  });
-});
-
 describe("filterRows", () => {
   it("returns everything when no filter is set", () => {
     expect(filterRows(ROWS, defaultState())).toHaveLength(4);
@@ -422,11 +415,6 @@ describe("initCompareView", () => {
     expect(sizes).toEqual(["g6e.xlarge", "g6.xlarge"]); // 1.86 → 0.80
   });
 
-  it("keeps the region filter hidden in this PR", () => {
-    initCompareView({ rows: ROWS, now: NOW });
-    expect(document.getElementById("region-filter").hidden).toBe(true);
-  });
-
   it("shows the empty-result message when nothing matches", () => {
     initCompareView({ rows: ROWS, now: NOW });
     const box = document.querySelector('[data-family="P5"]');
@@ -465,5 +453,47 @@ describe("initCompareView", () => {
     document.getElementById("compare-row-count").textContent = "";
     view.update();
     expect(document.getElementById("compare-row-count").textContent).toBe("4 / 4 行");
+  });
+});
+
+describe("region filter", () => {
+  const FILE = {
+    generatedAt: "2026-09-07T09:00:00Z",
+    regions: [
+      { code: "us-east-1", name: "US East (N. Virginia)" },
+      { code: "ap-northeast-1", name: "Asia Pacific (Tokyo)" },
+    ],
+    availability: {
+      "p6-b200.48xlarge": { "us-east-1": "both" },
+      "p5.48xlarge": { "us-east-1": "both", "ap-northeast-1": "cb" },
+      "g6.xlarge": { "ap-northeast-1": "od" },
+      "g6e.xlarge": {},
+    },
+  };
+
+  it("passes every row through when no region is selected", () => {
+    expect(regionFilter(ROWS, null, FILE)).toHaveLength(ROWS.length);
+  });
+
+  it("keeps only rows available in the selected region", () => {
+    expect(regionFilter(ROWS, "ap-northeast-1", FILE).map((r) => r.size)).toEqual([
+      "p5.48xlarge",
+      "g6.xlarge",
+    ]);
+  });
+
+  it("builds the select from regions.json and hides the filter without it", () => {
+    initCompareView({ rows: ROWS, regionsFile: FILE });
+    const select = document.getElementById("region-select");
+    expect(document.getElementById("region-filter").hidden).toBe(false);
+    expect([...select.options].map((o) => o.value)).toEqual(["", "us-east-1", "ap-northeast-1"]);
+
+    select.value = "ap-northeast-1";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(2);
+
+    mountPanel();
+    initCompareView({ rows: ROWS, regionsFile: null });
+    expect(document.getElementById("region-filter").hidden).toBe(true);
   });
 });

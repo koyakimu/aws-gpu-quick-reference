@@ -44,6 +44,7 @@ export const ja = {
     families: "ファミリ",
     columns: "列",
     region: "リージョン",
+    allRegions: "全リージョン",
     rowCount: "{shown} / {total} 行",
   },
   groups: {
