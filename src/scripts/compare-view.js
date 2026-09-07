@@ -2,7 +2,7 @@
 // 描画そのものは table-engine.js に任せる。
 import { createTable, EMPTY } from "./table-engine.js";
 import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
-import { isNew, parseCount, formatNumber } from "./format.js";
+import { parseCount, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
 
 export const STORAGE_KEY = "gpu-ref-compare";
@@ -11,31 +11,18 @@ export const STORAGE_KEY = "gpu-ref-compare";
 export const COLUMN_GROUPS = ["instance", "gpu", "performance", "connect", "system", "price"];
 
 // GPU 名のチップ。世代で色が変わり、データシートがあればリンクにする。
-// now は isNew に渡すためだけの引数。テストが時間経過で壊れないよう注入可能にしている。
-function makeGpuChip(now) {
-  return (value, row) => {
-    const url = GPU_DATASHEET_LINKS[row.gpu];
-    const chip = document.createElement(url ? "a" : "span");
-    chip.className = `chip chip-${row.gen}`;
-    chip.textContent = row.gpu;
-    if (url) {
-      chip.href = url;
-      chip.target = "_blank";
-      chip.rel = "noopener";
-      chip.title = `${row.gpu} datasheet`;
-    }
-
-    if (!isNew(row.addedAt, now)) return chip;
-
-    // 直近 3 か月以内に追加された行には NEW バッジを添える (仕様 4.1)。
-    const frag = document.createDocumentFragment();
-    frag.appendChild(chip);
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = "NEW";
-    frag.appendChild(badge);
-    return frag;
-  };
+function gpuChip(value, row) {
+  const url = GPU_DATASHEET_LINKS[row.gpu];
+  const chip = document.createElement(url ? "a" : "span");
+  chip.className = `chip chip-${row.gen}`;
+  chip.textContent = row.gpu;
+  if (url) {
+    chip.href = url;
+    chip.target = "_blank";
+    chip.rel = "noopener";
+    chip.title = `${row.gpu} datasheet`;
+  }
+  return chip;
 }
 
 // ファミリ名は EC2 インスタンス種別のページへのリンク。
@@ -99,7 +86,7 @@ const PERF_COLUMNS = [
 export const COMPARE_COLUMNS = [
   { key: "size", group: "instance", labelKey: "table.instanceSize", type: "text", sticky: true, mono: true },
   { key: "ec2", group: "instance", labelKey: "table.ec2Type", type: "text", format: familyLink },
-  { key: "gpu", group: "gpu", labelKey: "table.gpuModel", type: "text", format: makeGpuChip() },
+  { key: "gpu", group: "gpu", labelKey: "table.gpuModel", type: "text", format: gpuChip },
   {
     key: "count",
     group: "gpu",
@@ -206,7 +193,8 @@ function toggleInArray(list, value) {
   else list.splice(index, 1);
 }
 
-export function initCompareView({ rows = GPU_DATA, now = new Date() } = {}) {
+// 呼び出し側が渡す余分なオプション (旧 now など) は無視する。
+export function initCompareView({ rows = GPU_DATA } = {}) {
   const mount = document.getElementById("compare-table");
   if (!mount) return { update() {} };
 
@@ -217,13 +205,8 @@ export function initCompareView({ rows = GPU_DATA, now = new Date() } = {}) {
 
   const state = loadState();
 
-  // NEW バッジの基準日だけは呼び出しごとに変わるので、GPU 列の format を差し替える。
-  const columns = COMPARE_COLUMNS.map((column) =>
-    column.key === "gpu" ? { ...column, format: makeGpuChip(now) } : column,
-  );
-
   const table = createTable({
-    columns,
+    columns: COMPARE_COLUMNS,
     rows: filterRows(rows, state),
     state,
     onStateChange(next) {

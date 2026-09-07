@@ -22,7 +22,6 @@ const ROWS = [
   { gen: "ada", gpu: "L40S", gpuKey: "l40s", ec2: "G6e", size: "g6e.xlarge", count: 1, price: 1.86, priceCb: null, tokyo: true, addedAt: "2024-08" },
 ];
 
-// NEW バッジのテストが時間経過で壊れないよう、now は必ず固定値を渡す。
 const NOW = new Date(Date.UTC(2026, 8, 15));
 
 function mountPanel() {
@@ -290,19 +289,6 @@ describe("initCompareView", () => {
     expect(chip.tagName).toBe("A");
     expect(chip.getAttribute("href")).toContain("nvidia.com");
     expect(chip.getAttribute("rel")).toBe("noopener");
-  });
-
-  it("badges only the rows added within three months of now", () => {
-    initCompareView({ rows: ROWS, now: NOW });
-    const badges = [...document.querySelectorAll("#compare-table tbody .badge")];
-    expect(badges).toHaveLength(1);
-    expect(badges[0].textContent).toBe("NEW");
-    expect(badges[0].closest("tr").textContent).toContain("p6-b200.48xlarge");
-  });
-
-  it("drops the NEW badge once the row is old", () => {
-    initCompareView({ rows: ROWS, now: new Date(Date.UTC(2027, 5, 1)) });
-    expect(document.querySelectorAll("#compare-table tbody .badge")).toHaveLength(0);
   });
 
   it("shows the family on every row — no rowspans anywhere", () => {
