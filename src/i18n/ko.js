@@ -86,12 +86,19 @@ export const ko = {
     fpNote:
       "TFLOPS 값. CUDA = TensorCore 미사용 시 성능. Dense = 밀집 행렬 연산, Sparse = 구조적 희소성(2:4) 활성화 시. FP8은 Hopper 이후, FP4는 Blackwell 이후 지원. Turing/Volta는 Sparsity 미지원. *는 예상 값.",
     refTitle: "공식 레퍼런스",
+    refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing 인스턴스 목록",
     refOnDemand: "EC2 On-Demand 요금",
     refCb: "Capacity Blocks for ML",
     refEfa: "Elastic Fabric Adapter (EFA)",
     refUserGuide: "EC2 사용자 가이드 - 가속 컴퓨팅",
     refBlog: "AWS Blog - EC2 카테고리 (최신 정보)",
+    refNvidiaTitle: "NVIDIA GPU 데이터 소스",
+    refNvidiaDataCenter: "NVIDIA Data Center GPUs (제품 페이지 · 데이터시트)",
+    refDgxB200: "DGX B200 (B200 사양)",
+    refDgxB300: "DGX B300 (B300 사양)",
+    refGpuSpecNote:
+      "GPU 연산 성능 값은 NVIDIA 공식 데이터시트 및 제품 페이지를 기준으로 합니다. 표의 GPU 이름을 클릭하면 각 GPU의 공식 페이지로 이동합니다.",
     disclaimerTitle: "면책 조항",
     disclaimerBefore:
       "본 페이지의 정보는 참고용이며, 정확성을 보장하지 않습니다. 가격·사양·리전 지원 현황은 사전 통지 없이 변경될 수 있습니다. 최신 정확한 정보는 반드시 ",
