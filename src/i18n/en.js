@@ -57,6 +57,8 @@ export const en = {
     daysLabel: "Days",
     onDemandDays: "On-Demand by Days",
     cbDays: "CB by Days",
+    exchangeRateLabel: "Exchange Rate (USD→JPY)",
+    localCurrency: "JPY",
     monthlyNote: "* Monthly is calculated at 720h/month",
     disclaimer:
       "Estimated values. Does not include RI/Savings Plans discounts. Please verify with the official AWS pricing page.",
