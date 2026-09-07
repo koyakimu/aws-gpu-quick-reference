@@ -96,12 +96,16 @@ const CB_FEED = {
   "u-p6e-gb200x72": {
     pricing: [{ region: "US East (N. Virginia)", region_code: "us-east-1", accelerator_hourly_rate_usd: 12.36 }],
   },
-  // region_code が欠けた行と、通常リージョンでない行は無視する
+  // Local Zone のコードは親リージョンに寄せる。region_code が欠けた行は無視する
   "g6.xlarge": {
     pricing: [
       { region: "US East (Dallas)", region_code: "us-east-1-dfw-1", accelerator_hourly_rate_usd: 1.0 },
       { region: "Unknown", accelerator_hourly_rate_usd: 1.0 },
     ],
+  },
+  // 通常リージョンの形に寄せられないコードだけを持つ行は捨てる
+  "g6e.xlarge": {
+    pricing: [{ region: "AWS GovCloud (US-West)", region_code: "us-gov-west-1", accelerator_hourly_rate_usd: 1.0 }],
   },
   "trn2.48xlarge": {
     pricing: [{ region: "US East (N. Virginia)", region_code: "us-east-1", accelerator_hourly_rate_usd: 1.0 }],
@@ -122,7 +126,8 @@ describe("cbAvailability", () => {
     const map = cbAvailability(CB_FEED, new Set([...WANTED, "u-p6e-gb200x72"]));
     expect([...map.get("p5.48xlarge")].sort()).toEqual(["ap-northeast-1", "us-east-1"]);
     expect([...map.get("u-p6e-gb200x72")]).toEqual(["us-east-1"]); // UltraServer は CB のみ
-    expect(map.has("g6.xlarge")).toBe(false); // Local Zone と region_code 無しだけ
+    expect([...map.get("g6.xlarge")]).toEqual(["us-east-1"]); // Local Zone は親リージョンへ
+    expect(map.has("g6e.xlarge")).toBe(false); // GovCloud は通常リージョンでない
     expect(map.has("trn2.48xlarge")).toBe(false); // wantedSizes に無い
   });
 });

@@ -12,6 +12,17 @@ const ATTRIBUTE = /^ {8}"([A-Za-z]+)" : "(.*?)",?$/;
 // region_index.json は 106 件返すが、そのうち 34 件がこれに一致する。
 export const STANDARD_REGION = /^[a-z]{2}-[a-z]+-\d$/;
 
+// CB フィードは Local Zone / Wavelength のコード (us-east-1-dfw-2a) で提供を
+// 書いてくることがある。列は通常リージョンだけなので、親リージョンに寄せる。
+// 先頭が通常リージョンの形をしていないコード (us-gov-west-1 等) は捨てる。
+const REGION_PREFIX = /^[a-z]{2}-[a-z]+-\d/;
+
+export function parentRegion(code) {
+  if (typeof code !== "string") return null;
+  const match = REGION_PREFIX.exec(code);
+  return match ? match[0] : null;
+}
+
 // 地理グループ順 (仕様 4.2): 北米 -> 南米 -> 欧州 -> 中東・アフリカ -> アジア太平洋
 export const REGION_GROUPS = ["na", "sa", "eu", "meaf", "ap"];
 
@@ -92,15 +103,15 @@ export async function scanInstanceTypes(lines, wantedSizes) {
 }
 
 // CB 価格 JSON の instance_types から size -> リージョンコード集合を作る。
-// region_code を持たないエントリと通常リージョン以外は捨てる。
+// region_code を持たないエントリと、親リージョンに寄せられないコードは捨てる。
 export function cbAvailability(instanceTypes, wantedSizes) {
   const map = new Map();
   for (const [size, info] of Object.entries(instanceTypes)) {
     if (!wantedSizes.has(size)) continue;
     const codes = new Set();
     for (const entry of info?.pricing ?? []) {
-      const code = entry?.region_code;
-      if (typeof code === "string" && STANDARD_REGION.test(code)) codes.add(code);
+      const code = parentRegion(entry?.region_code);
+      if (code) codes.add(code);
     }
     if (codes.size > 0) map.set(size, codes);
   }
