@@ -17,9 +17,10 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    # 34 リージョン x 約 100MB (products セクションのみ) を並列 3 で読む。
-    # 実測ベースの見込みは転送量 3〜4GB / 3〜8 分。詰まったときのために余裕を持たせる。
-    timeout-minutes: 45
+    # 34 リージョン x index.json 全体 (約 300〜480MB) を並列 3 で読む。
+    # 提供状況 (products) だけでなく On-Demand 価格 (terms) も採るため、
+    # products で打ち切っていた頃の 2〜3 倍を落とす。見込みは転送量 10〜15GB / 20〜40 分。
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +29,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Update region availability from the AWS Price List
+      - name: Update region availability and pricing from the AWS Price List
         run: node scripts/update-regions.mjs
 
       - name: Commit and deploy if changed
@@ -36,7 +37,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if git diff --quiet; then
-            echo "No availability changes."
+            echo "No region data changes."
             exit 0
           fi
           npm ci
@@ -44,7 +45,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/regions.json
-          git commit -m "chore: リージョン提供状況を自動更新"
+          git commit -m "chore: リージョン提供状況と価格を自動更新"
           # 他のデータ更新ワークフローが先に push していても non-fast-forward で落ちないようにする
           git pull --rebase origin main
           git push

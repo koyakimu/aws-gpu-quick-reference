@@ -1,6 +1,7 @@
 import { GPU_DATA } from "./gpu-data.js";
 import { parseCount } from "./format.js";
 import { t, getLang } from "./i18n.js";
+import { getPrice, PRICE_REGION_EVENT } from "./price-region.js";
 
 const HOURS_PER_MONTH = 720;
 const HOURS_PER_DAY = 24;
@@ -44,6 +45,13 @@ export function convertToJpy(usdAmount, exchangeRate) {
   return usdAmount * exchangeRate;
 }
 
+// 単価の既定値はヘッダで選んだリージョンの価格から採る (price-region.js)。
+// od は GPU 1 枚あたり ($/GPU)、cb はもともと GPU 1 枚あたり。
+export function unitPrices(row) {
+  const { gpu, cb } = getPrice(row);
+  return { od: parsePrice(gpu), cb: parsePrice(cb) };
+}
+
 export function isCbOnly(row) {
   return row.price == null;
 }
@@ -83,8 +91,8 @@ function updateDefaultPriceDisplay(row) {
   const odDefault = document.getElementById("calc-od-default-price");
   const cbDefault = document.getElementById("calc-cb-default-price");
 
-  const odGpuPrice = parsePrice(row.priceGpu);
-  const cbPrice = parsePrice(row.priceCb);
+  const odGpuPrice = unitPrices(row).od;
+  const cbPrice = unitPrices(row).cb;
 
   if (odDefault) {
     odDefault.textContent = odGpuPrice != null
@@ -103,8 +111,8 @@ function updateUnitPrices(row) {
   const cbInput = document.getElementById("calc-cb-unit-price");
   if (!odInput || !cbInput) return;
 
-  const odGpuPrice = parsePrice(row.priceGpu);
-  const cbPrice = parsePrice(row.priceCb);
+  const odGpuPrice = unitPrices(row).od;
+  const cbPrice = unitPrices(row).cb;
 
   if (!odUserEdited) {
     odInput.value = odGpuPrice != null ? odGpuPrice.toFixed(2) : "";
@@ -187,7 +195,7 @@ function updateResult() {
   const gpuCount = parseCount(row.count);
 
   // --- On-Demand ---
-  const odDefaultGpuPrice = parsePrice(row.priceGpu);
+  const odDefaultGpuPrice = unitPrices(row).od;
   const odDefaultMonthly = odDefaultGpuPrice != null ? odDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
   const odGpuPrice = odUnitInput && odUnitInput.value !== "" ? parseFloat(odUnitInput.value) : odDefaultGpuPrice;
   const odMonthly = odGpuPrice != null ? odGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
@@ -255,7 +263,7 @@ function updateResult() {
   }
 
   // --- CB ---
-  const cbDefaultGpuPrice = parsePrice(row.priceCb);
+  const cbDefaultGpuPrice = unitPrices(row).cb;
   const cbDefaultMonthly = cbDefaultGpuPrice != null ? cbDefaultGpuPrice * HOURS_PER_MONTH * gpuCount * instanceCount : null;
   const cbGpuPrice = cbUnitInput && cbUnitInput.value !== "" ? parseFloat(cbUnitInput.value) : cbDefaultGpuPrice;
 
@@ -376,7 +384,7 @@ export function initCalculator() {
       odUserEdited = false;
       const row = GPU_DATA.find((r) => r.size === select?.value);
       if (row) {
-        const odGpuPrice = parsePrice(row.priceGpu);
+        const odGpuPrice = unitPrices(row).od;
         odUnitInput.value = odGpuPrice != null ? odGpuPrice.toFixed(2) : "";
         odUnitInput.classList.remove("user-edited");
       }
@@ -388,13 +396,23 @@ export function initCalculator() {
       cbUserEdited = false;
       const row = GPU_DATA.find((r) => r.size === select?.value);
       if (row) {
-        const cbPrice = parsePrice(row.priceCb);
+        const cbPrice = unitPrices(row).cb;
         cbUnitInput.value = cbPrice != null ? cbPrice.toFixed(2) : "";
         cbUnitInput.classList.remove("user-edited");
       }
       updateResult();
     });
   }
+
+  // 価格のリージョンが変わったら単価を選択リージョンの既定値に戻す。
+  // 手入力した値は残さない (どのリージョンの単価か分からなくなるため)。
+  document.addEventListener(PRICE_REGION_EVENT, () => {
+    const row = GPU_DATA.find((r) => r.size === select?.value);
+    odUserEdited = false;
+    cbUserEdited = false;
+    if (row) updateUnitPrices(row);
+    updateResult();
+  });
 
   document.addEventListener("lang-changed", () => {
     const row = GPU_DATA.find((r) => r.size === select?.value);

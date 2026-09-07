@@ -2,14 +2,18 @@ import { describe, it, expect } from "vitest";
 import {
   scanInstanceTypes,
   cbAvailability,
+  cbPricesByRegion,
   mergeAvailability,
+  mergePrices,
   regionGroup,
   regionOrder,
   carryOverRegions,
+  carryOverPrices,
   sameExceptGeneratedAt,
   REGION_GROUPS,
   STANDARD_REGION,
 } from "../scripts/lib/regions.mjs";
+import { PRICE_LIST_FIXTURE } from "./fixtures/price-list.mjs";
 
 // AWS Price List の region index.json を切り詰めた固定入力。
 // インデント幅が意味を持つのでそのまま維持すること。
@@ -191,5 +195,57 @@ describe("carryOverRegions and sameExceptGeneratedAt", () => {
     const next = { generatedAt: "2026-09-08T00:00:00Z", regions: previous.regions, availability: previous.availability };
     expect(sameExceptGeneratedAt(next, previous)).toBe(true);
     expect(sameExceptGeneratedAt({ ...next, availability: fresh }, previous)).toBe(false);
+  });
+});
+
+describe("scanInstanceTypes with prices", () => {
+  it("reads terms.OnDemand and returns the hourly price per wanted size", async () => {
+    // update-od-pricing と同じフィクスチャ。products で打ち切らずに terms まで読む。
+    const wanted = new Set(["p5.48xlarge", "g6f.large", "m5.large"]);
+    const { sizes, prices } = await scanInstanceTypes(PRICE_LIST_FIXTURE.split("\n"), wanted, {
+      withPrices: true,
+    });
+    expect([...sizes].sort()).toEqual(["g6f.large", "m5.large", "p5.48xlarge"]);
+    expect(prices.get("p5.48xlarge")).toBeCloseTo(55.044); // Windows の 99.99 でも Reserved の 11.11 でもない
+    expect(prices.get("g6f.large")).toBeCloseTo(0.201);
+    // 価格を採らない既定のモードでは terms を読まない
+    const plain = await scanInstanceTypes(PRICE_LIST_FIXTURE.split("\n"), wanted);
+    expect(plain.prices.size).toBe(0);
+  });
+});
+
+describe("cbPricesByRegion, mergePrices and carryOverPrices", () => {
+  it("lands od / cb per region in the file shape and restores failed regions", () => {
+    const cb = cbPricesByRegion(CB_FEED, new Set(["p5.48xlarge", "g6.xlarge"]));
+    expect(cb.get("p5.48xlarge").get("ap-northeast-1")).toBe(4.5);
+    expect(cb.get("g6.xlarge").get("us-east-1")).toBe(1.0); // Local Zone は親リージョンへ
+
+    const od = new Map([
+      ["us-east-1", new Map([["p5.48xlarge", 55.044], ["g6.xlarge", 0.8]])],
+      ["ap-northeast-1", new Map([["g6.xlarge", 1.17]])],
+    ]);
+    const prices = mergePrices(["p5.48xlarge", "g6.xlarge", "p3.2xlarge"], od, cb);
+    expect(prices["p5.48xlarge"]).toEqual({
+      "ap-northeast-1": { od: null, cb: 4.5 }, // CB だけのリージョンも書く
+      "us-east-1": { od: 55.04, cb: 3.93 },
+    });
+    expect(prices["g6.xlarge"]).toEqual({
+      "ap-northeast-1": { od: 1.17, cb: null },
+      "us-east-1": { od: 0.8, cb: 1.0 },
+    });
+    expect(prices["p3.2xlarge"]).toEqual({}); // どこにも価格が無い
+
+    // 取得に失敗したリージョンは前回の od を戻し、今回の cb は残す
+    const restored = carryOverPrices(
+      { "p5.48xlarge": { "us-east-1": { od: null, cb: 5.19 } } },
+      { "p5.48xlarge": { "us-east-1": { od: 55.04, cb: 4.72 } } },
+      ["us-east-1"],
+    );
+    expect(restored["p5.48xlarge"]["us-east-1"]).toEqual({ od: 55.04, cb: 5.19 });
+
+    // prices の違いも「変化あり」として拾う
+    const base = { regions: [], availability: {}, prices };
+    expect(sameExceptGeneratedAt({ ...base, generatedAt: "b" }, { ...base, generatedAt: "a" })).toBe(true);
+    expect(sameExceptGeneratedAt({ ...base, prices: {} }, base)).toBe(false);
   });
 });

@@ -52,7 +52,8 @@
       <header class="top">
         <div class="brand">
           <h1>AWS GPU Reference</h1>
-          <small class="mono" id="pricing-caption">pricing %PRICING_AS_OF% · us-east-1</small>
+          <small class="mono" id="pricing-caption">pricing %PRICING_AS_OF% ·</small>
+          <select id="price-region" class="ctl mono" aria-label="pricing region" hidden></select>
         </div>
 
         <nav class="tabs" id="tabs" role="tablist">
@@ -199,6 +200,7 @@
           <h3 data-i18n="notes.title">Notes</h3>
           <ul>
             <li><strong>価格:</strong> <span data-i18n="notes.priceNote">us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。価格基準: %PRICING_AS_OF%。</span></li>
+            <li><strong>価格リージョン:</strong> <span data-i18n="notes.priceRegionNote">ヘッダ右のリージョン選択で、価格列と計算ツールの金額が切り替わります。</span></li>
             <li><strong>G7e (NEW):</strong> <span data-i18n="notes.g7eNote">G7e は NVIDIA RTX PRO 6000 Blackwell Server Edition、G7 は RTX PRO 4500 Blackwell Server Edition を搭載。</span></li>
             <li><strong>P5en vs P5e vs P5:</strong> <span data-i18n="notes.p5CompNote">P5en: H200 + EFAv3 + PCIe Gen5...</span></li>
             <li><strong>EFA:</strong> <span data-i18n="notes.efaNote">Elastic Fabric Adapter。マルチノード分散学習に必須。</span></li>

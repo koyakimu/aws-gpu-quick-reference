@@ -128,17 +128,29 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 
 **この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば `data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
 
-#### リージョン提供有無 (data/regions.json)
+#### リージョン別の提供有無と価格 (data/regions.json)
 
 `data/regions.json` は `scripts/update-regions.mjs` が生成する。**手で編集しない。**
+`availability`（提供有無）と `prices`（リージョン別価格）の 2 本を持つ。
 
-- AWS Price List の `region_index.json` から通常リージョン (Local Zone と GovCloud を除く 34 件) を取り、各リージョンの `index.json` の `products` セクションをストリームで走査して Linux / Shared の提供有無を判定する
-- Capacity Blocks 側は CB 価格 JSON の `instance_types.<size>.pricing[].region_code` から取る。UltraServer は Price List に載らないため CB のみで判定する
-- `products` は `terms` より前にあるので、`terms` に着いた時点でストリームを閉じる。これがないと 1 リージョン 480MB を丸ごと落とすことになる (実測: us-east-1 の `products` は 208MB、af-south-1 は 72MB)
-- 1 リージョンの取得失敗では止まらない。そのリージョンは前回値を保持して警告のみ。全リージョン失敗のときだけ終了コード 1
-- `availability` のリージョンキーは並列走査の完了順ではなくリージョンコード順に詰め直す。実行ごとにキー順が変わると `sameExceptGeneratedAt` が毎回「差分あり」と判定してしまうため
+```jsonc
+"prices": {
+  "p5.48xlarge": {
+    "ap-northeast-1": {"od": 68.8, "cb": 4.72},  // od = インスタンス単位の $/h
+    "us-east-1": {"od": 55.04, "cb": 5.19}       // cb = GPU 1 枚あたりの $/h (priceCb と同じ単位)
+  }
+}
+```
 
-**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST の cron と `workflow_dispatch` で実行し、差分があれば main にコミットして deploy を起動する。1 回あたりの転送量は約 3〜4GB、実行時間は 3〜8 分。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
+- AWS Price List の `region_index.json` から通常リージョン (Local Zone と GovCloud を除く 34 件) を取り、各リージョンの `index.json` をストリームで走査する。`products` で Linux / Shared の提供有無を、`terms.OnDemand` で時間単価を採る。走査器は `scripts/lib/od-pricing.mjs` の `scanPriceListFull` 1 本で、`update-od-pricing.mjs`（us-east-1 のみ）と共有する
+- 価格の条件は Linux / Shared / Used / preInstalledSw NA / BYOL 以外、複数該当時は最安。提供有無の判定はそれより緩く Linux / Shared だけを見る
+- Capacity Blocks 側は CB 価格 JSON の `instance_types.<size>.pricing[]` から `region_code`（Local Zone は親リージョンに寄せる）と `accelerator_hourly_rate_usd` を取る
+- `terms` まで読むため 1 リージョン 300〜480MB を丸ごと落とす（提供有無だけを見ていた頃の 2〜3 倍）。実測は 34 リージョンで転送 10〜15GB・2〜5 分（回線次第。CI の `timeout-minutes` は 90）
+- 1 リージョンの取得失敗では止まらない。そのリージョンは前回値を保持して警告のみ（価格は前回の `od` だけ戻し、`cb` は今回の値を使う）。全リージョン失敗のときだけ終了コード 1
+- `availability` / `prices` のリージョンキーは並列走査の完了順ではなくリージョンコード順に揃える。実行ごとにキー順が変わると `sameExceptGeneratedAt` が毎回「差分あり」と判定してしまうため
+- UI 側はヘッダの `#price-region` で選んだリージョンの価格を `src/scripts/price-region.js` 経由で読む。既定は `us-east-1` で、`prices` に値が無ければ `instances.json` の `price` / `priceCb` に落ちる
+
+**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST の cron と `workflow_dispatch` で実行し、差分があれば main にコミットして deploy を起動する。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
 
 ### GPU 機能マトリクス (data/gpu-features.json)
 

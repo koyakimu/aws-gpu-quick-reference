@@ -3,6 +3,8 @@
 
 // index.json は 2 スペースインデントで整形されている。1 リージョン 480MB あり
 // JSON.parse できないため行単位で走査する (od-pricing.mjs と同じ方針)。
+import { scanPriceListFull } from "./od-pricing.mjs";
+import { roundUsd } from "./instances-file.mjs";
 const SECTION = /^ {2}"(products|terms)" : \{$/;
 const PRODUCT_START = /^ {4}"[A-Z0-9]+" : \{$/;
 const PRODUCT_END = /^ {4}\},?$/;
@@ -59,7 +61,16 @@ export function regionOrder(regions) {
 // 呼び出し側がストリームを渡していれば、この break でダウンロードも止まる
 // (480MB のうち products は 200MB 程度で、残りを読まずに済む)。
 // location はリージョンの表示名 (例 "US East (N. Virginia)") として使う。
-export async function scanInstanceTypes(lines, wantedSizes) {
+//
+// withPrices: true にすると terms.OnDemand まで読み進め、リージョン別の時間単価も
+// 返す (prices: size -> USD)。走査は od-pricing.mjs の scanPriceListFull に任せる。
+// この場合は products で打ち切れないので、index.json を最後まで落とすことになる
+// (products のみの約 2〜3 倍の転送量)。
+export async function scanInstanceTypes(lines, wantedSizes, { withPrices = false } = {}) {
+  if (withPrices) {
+    const { present, prices, location } = await scanPriceListFull(lines, wantedSizes);
+    return { sizes: present, location, prices };
+  }
   const sizes = new Set();
   let location = null;
   let section = null;
@@ -99,7 +110,7 @@ export async function scanInstanceTypes(lines, wantedSizes) {
     }
   }
 
-  return { sizes, location };
+  return { sizes, location, prices: new Map() };
 }
 
 // CB 価格 JSON の instance_types から size -> リージョンコード集合を作る。
@@ -153,9 +164,70 @@ export function carryOverRegions(availability, previous, regionCodes) {
   return result;
 }
 
+// CB 価格フィードから size -> (リージョン -> GPU 1 枚あたりの時間単価) を作る。
+// availability と同じく Local Zone のコードは親リージョンに寄せる。
+// 同じ親リージョンに複数エントリが来たときは安い方を採る。
+export function cbPricesByRegion(instanceTypes, wantedSizes) {
+  const map = new Map();
+  for (const [size, info] of Object.entries(instanceTypes)) {
+    if (!wantedSizes.has(size)) continue;
+    const perRegion = new Map();
+    for (const entry of info?.pricing ?? []) {
+      const code = parentRegion(entry?.region_code);
+      const rate = entry?.accelerator_hourly_rate_usd;
+      if (!code || !Number.isFinite(rate)) continue;
+      const previous = perRegion.get(code);
+      if (previous == null || rate < previous) perRegion.set(code, roundUsd(rate));
+    }
+    if (perRegion.size > 0) map.set(size, perRegion);
+  }
+  return map;
+}
+
+// data/regions.json の prices マップを作る。
+//   odByRegion   Map<regionCode, Map<size, USD/時>>  (インスタンス単位の On-Demand 価格)
+//   cbBySize     Map<size, Map<regionCode, USD/時>>  (GPU 1 枚あたりの CB 価格)
+// 片方しか無いリージョンは、無い側を null にして書く。どちらも無ければキーを書かない。
+// リージョンのキーはコード順に揃える (実行ごとの並び替えで差分が出ないように)。
+export function mergePrices(sizes, odByRegion, cbBySize) {
+  const prices = {};
+  for (const size of sizes) {
+    const perRegion = new Map();
+    for (const [region, bySize] of odByRegion) {
+      const od = bySize.get(size);
+      if (od != null) perRegion.set(region, { od: roundUsd(od), cb: null });
+    }
+    for (const [region, cb] of cbBySize.get(size) ?? []) {
+      const current = perRegion.get(region);
+      if (current) current.cb = cb;
+      else perRegion.set(region, { od: null, cb });
+    }
+    prices[size] = Object.fromEntries([...perRegion.entries()].sort((a, b) => a[0].localeCompare(b[0])));
+  }
+  return prices;
+}
+
+// 取得に失敗したリージョンの On-Demand 価格を前回ファイルから戻す。
+// CB 価格は 1 本のフィードから取るのでリージョン単位の失敗が無く、今回の値を残す。
+export function carryOverPrices(prices, previous, regionCodes) {
+  const failed = new Set(regionCodes);
+  const result = {};
+  for (const [size, perRegion] of Object.entries(prices)) {
+    const next = { ...perRegion };
+    for (const region of failed) {
+      const od = previous?.[size]?.[region]?.od;
+      if (od == null) continue;
+      next[region] = { od, cb: next[region]?.cb ?? null };
+    }
+    result[size] = next;
+  }
+  return result;
+}
+
 // generatedAt だけが違うなら「変化なし」。書き換えを避けるための判定 (仕様 7.1)。
 export function sameExceptGeneratedAt(a, b) {
   if (!a || !b) return false;
-  const strip = (file) => JSON.stringify({ regions: file.regions, availability: file.availability });
+  const strip = (file) =>
+    JSON.stringify({ regions: file.regions, availability: file.availability, prices: file.prices ?? null });
   return strip(a) === strip(b);
 }
