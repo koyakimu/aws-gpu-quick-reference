@@ -5,7 +5,7 @@ import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
 import { parseCount, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
 import { REGIONS_FILE } from "./regions-data.js";
-import { getPrice, PRICE_REGION_EVENT } from "./price-region.js";
+import { getPrice, getPriceRegion, PRICE_REGION_EVENT } from "./price-region.js";
 import { GPU_SPECS } from "./gpu-specs-data.js";
 import {
   buildFamilyCheckboxes,
@@ -185,7 +185,7 @@ export function defaultState() {
     hiddenGroups: [],
     generations: [],
     families: [],
-    region: null,
+    onlyInRegion: false,
   };
 }
 
@@ -231,7 +231,8 @@ export function filterRows(rows, state, file = REGIONS_FILE) {
     if (families.size > 0 && !families.has(row.ec2)) return false;
     return true;
   });
-  return regionFilter(filtered, state.region, file);
+  // 絞り込みの基準はヘッダの価格リージョン。チェックが外れていれば全行。
+  return regionFilter(filtered, state.onlyInRegion ? getPriceRegion() : null, file);
 }
 
 export function formatRowCount(shown, total) {
@@ -313,42 +314,20 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     columnBox.replaceChildren(fragment);
   }
 
-  // リージョン選択は regions.json があるときだけ出す (仕様 5.2 / 10)。
-  // 単一選択で、保存はしない。
-  function buildRegionFilter() {
-    const box = document.getElementById("region-filter");
-    if (!box) return;
-    if (!regionsFile) {
-      box.hidden = true;
-      box.replaceChildren();
-      return;
-    }
-    const select = document.createElement("select");
-    select.id = "region-select";
-    select.className = "ctl";
-
-    const all = document.createElement("option");
-    all.value = "";
-    all.textContent = t("filters.allRegions");
-    select.appendChild(all);
-
-    for (const region of regionsFile.regions) {
-      const option = document.createElement("option");
-      option.value = region.code;
-      option.textContent = region.code;
-      option.title = region.name;
-      select.appendChild(option);
-    }
-    select.value = state.region || "";
-
-    select.addEventListener("change", () => {
-      state.region = select.value || null;
+  // 提供リージョンの絞り込みは regions.json があるときだけ出す (仕様 5.2 / 10)。
+  // 基準はヘッダの価格リージョンで、保存はしない。
+  function initOnlyInRegion() {
+    const checkbox = document.getElementById("only-in-region");
+    if (!checkbox) return;
+    const box = document.getElementById("only-in-region-ctl") || checkbox.closest("label");
+    if (box) box.hidden = !regionsFile;
+    if (!regionsFile) return;
+    checkbox.checked = state.onlyInRegion;
+    checkbox.addEventListener("change", () => {
+      state.onlyInRegion = checkbox.checked;
       notifyStateChanged();
       update();
     });
-
-    box.replaceChildren(select);
-    box.hidden = false;
   }
 
   bindGenerationToggle(genBox, state, () => {
@@ -377,7 +356,7 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
   buildGenerationFilters();
   buildFamilyFilters();
   buildColumnToggles();
-  buildRegionFilter();
+  initOnlyInRegion();
   update();
 
   // Regions タブのフィルタバーは同じ state を映す 2 つ目の UI なので、
@@ -393,7 +372,8 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     update();
   });
 
-  // ヘッダで価格のリージョンが変わったら金額を引き直す (行の絞り込みは変えない)。
+  // ヘッダで価格のリージョンが変わったら金額を引き直す。
+  // 「選択リージョンで提供のみ」がオンなら行の絞り込みもここで追従する。
   document.addEventListener(PRICE_REGION_EVENT, update);
 
   // 言語切替のたびに見出しとフィルタのラベルを引き直す。
@@ -401,7 +381,6 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
   document.addEventListener("lang-changed", () => {
     buildGenerationFilters();
     buildColumnToggles();
-    buildRegionFilter();
     update();
   });
 

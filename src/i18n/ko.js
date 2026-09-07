@@ -1,5 +1,8 @@
 export const ko = {
   header: {
+    priceRegion: "가격 리전:",
+    priceRegionTitle: "가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 기본 단가가 이 리전의 값으로 바뀝니다.",
+    pricingAsOf: "(가격 기준 %PRICING_AS_OF%)",
     updated: "업데이트",
   },
   table: {
@@ -45,8 +48,7 @@ export const ko = {
   filters: {
     families: "패밀리",
     columns: "열",
-    region: "리전",
-    allRegions: "전체 리전",
+    onlyInRegion: "선택한 리전에서 제공되는 것만",
     rowCount: "{shown} / {total} 행",
   },
   groups: {
@@ -152,7 +154,7 @@ export const ko = {
     priceNote:
       "%PRICE_REGION%의 On-Demand 가격 (USD). CB = Capacity Blocks의 GPU 1장당 단가. 가격 기준: %PRICING_AS_OF%.",
     priceRegionNote:
-      "헤더의 리전 선택으로 가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 단가가 바뀝니다. 비교 탭의 리전 필터는 행을 걸러내는 별도의 설정입니다.",
+      "헤더의 리전 선택으로 가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 단가가 바뀝니다. 비교 탭의 \"선택한 리전에서 제공되는 것만\"을 체크하면 해당 리전에서 제공되는 행만 남습니다.",
     g7eNote:
       "G7e는 NVIDIA RTX PRO 6000 Blackwell Server Edition, G7은 RTX PRO 4500 Blackwell Server Edition 탑재. G7e의 FP16/FP8/FP4는 공식 데이터시트가 반올림한 PFLOPS 표기(스파스 기준 FP16 1 / FP8 2 / FP4 4 PFLOPS)만 제시하므로 그 값과 Dense = 절반을 채택한 근사값(*표시). G7도 동일하게 공식 공표값(스파스 기준 FP16 406 / FP8 811 TFLOPS, FP4 1.6 PFLOPS)을 쓰고 Dense는 그 절반으로 한 근사값. 48xlarge만 EFA 지원.",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 최신·최고 성능, On-Demand 이용 가능 / P5e: H200 + EFAv2 + PCIe Gen4 → CB 전용, P5en보다 저렴 / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB, 가성비 우수",

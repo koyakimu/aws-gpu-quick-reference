@@ -22,15 +22,16 @@ function openCalculatorFromHash() {
   if (box) box.open = true;
 }
 
-// ヘッダのキャプションはデータの正 (instances.json) に合わせる。
-// HTML 側の %PRICING_AS_OF% はビルド時に埋まるフォールバック。
-// リージョン選択が出ているときは、リージョン名はその select が持つ。
+// 価格リージョンの表示。select が出ているときはそれが値を持ち、
+// regions.json が無くて select を出せないときだけ既定リージョンを素の文字で見せる。
+// 「（価格基準 YYYY-MM）」は data-i18n="header.pricingAsOf" 側で入る。
 function setPricingCaption() {
-  const el = document.getElementById("pricing-caption");
-  if (!el) return;
+  const fallback = document.getElementById("price-region-static");
+  if (!fallback) return;
   const select = document.getElementById("price-region");
-  const caption = `pricing ${PRICING_META.pricingAsOf} ·`;
-  el.textContent = select && !select.hidden ? caption : `${caption} ${PRICING_META.pricingRegion}`;
+  const showFallback = !select || select.hidden;
+  fallback.textContent = showFallback ? PRICING_META.pricingRegion : "";
+  fallback.hidden = !showFallback;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

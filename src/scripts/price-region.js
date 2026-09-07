@@ -1,6 +1,5 @@
 // ヘッダで選んだ「価格のリージョン」を持つ。比較表の価格列と計算ツールが参照する。
-// 提供状況の絞り込み (compare-view.js の #region-select) とは別物で、
-// あちらは行を絞り、こちらは金額を差し替える。
+// 比較タブの「選択リージョンで提供のみ」(#only-in-region) もこのリージョンを基準に行を絞る。
 import { REGIONS_FILE } from "./regions-data.js";
 import { PRICING_META } from "./gpu-data.js";
 import { parseCount } from "./format.js";
