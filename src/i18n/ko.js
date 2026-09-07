@@ -75,7 +75,7 @@ export const ko = {
   notes: {
     title: "Notes",
     priceNote:
-      "2025년 6월 가격 인하 반영. 도쿄 리전 On-Demand 가격 (USD). CB = Capacity Blocks. TBD = 가격 미발표.",
+      "us-east-1 (버지니아 북부)의 On-Demand 가격 (USD). CB = Capacity Blocks (도쿄 리전 우선, 미제공 시 미국 리전). TBD = 가격 미발표. 가격 기준: %PRICING_AS_OF%.",
     g7eNote:
       "NVIDIA RTX PRO 6000 Blackwell Server Edition GPU 탑재. G6e 대비 2.3배 추론 성능, 2배 VRAM (96GB/GPU). 48xlarge만 EFA 지원. 현재 us-east-1/us-east-2만 가능.",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 최신·최고 성능, On-Demand 이용 가능 / P5e: H200 + EFAv2 + PCIe Gen4 → CB 전용, P5en보다 저렴 / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB, 가성비 우수",

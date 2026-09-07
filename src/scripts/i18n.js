@@ -1,6 +1,7 @@
 import { ja } from "../i18n/ja.js";
 import { en } from "../i18n/en.js";
 import { ko } from "../i18n/ko.js";
+import { PRICING_META } from "./gpu-data.js";
 
 const STORAGE_KEY = "gpu-ref-lang";
 const dictionaries = { ja, en, ko };
@@ -36,7 +37,11 @@ export function t(key) {
     if (value == null) return key;
     value = value[k];
   }
-  return value != null ? value : key;
+  if (value == null) return key;
+  // 価格の基準月はデータ (data/instances.json) が持つので、辞書側は置換子だけ持つ
+  return typeof value === "string"
+    ? value.replaceAll("%PRICING_AS_OF%", PRICING_META.pricingAsOf)
+    : value;
 }
 
 function applyTranslations() {

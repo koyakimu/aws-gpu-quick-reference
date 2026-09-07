@@ -75,7 +75,7 @@ export const en = {
   notes: {
     title: "Notes",
     priceNote:
-      "On-Demand pricing (USD) for us-east-1 (N. Virginia). CB = Capacity Blocks (Tokyo region when available, otherwise US regions). TBD = pricing not yet announced. Updated July 2026.",
+      "On-Demand pricing (USD) for us-east-1 (N. Virginia). CB = Capacity Blocks (Tokyo region when available, otherwise US regions). TBD = pricing not yet announced. Pricing as of %PRICING_AS_OF%.",
     g7eNote:
       "Powered by NVIDIA RTX PRO Server 6000 (Blackwell) GPU. FP16/FP8 values (*) are estimates derived from Blackwell architecture throughput ratios and official FP32 spec, as the official datasheet does not list them. Only 48xlarge supports EFA. Currently us-east-1/us-east-2 only.",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → Latest & highest performance, On-Demand available / P5e: H200 + EFAv2 + PCIe Gen4 → CB only, lower cost than P5en / P5: H100 + EFAv2 + PCIe Gen4 → 640GB VRAM, best cost-performance",

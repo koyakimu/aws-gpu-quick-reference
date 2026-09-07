@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS, PRICING_META } from "../src/scripts/gpu-data.js";
 import specs from "../data/aws-ec2-nvidia-gpu-specs.json";
+import { ja } from "../src/i18n/ja.js";
+import { en } from "../src/i18n/en.js";
+import { ko } from "../src/i18n/ko.js";
 
 describe("GPU_DATA integrity", () => {
   it("has entries", () => {
@@ -206,6 +209,18 @@ describe("instances.json agrees with aws-ec2-nvidia-gpu-specs.json", () => {
       const spec = byName.get(SPEC_NAMES[row.gpu]);
       const expected = spec.fp16_tflops_non_tensor ?? null;
       expect(row.fp16NonTc, `${row.size} (${row.gpu}): fp16NonTc`).toBe(expected);
+    });
+  });
+});
+
+describe("priceNote carries the pricingAsOf placeholder", () => {
+  it("is present in every language", () => {
+    [
+      ["ja", ja],
+      ["en", en],
+      ["ko", ko],
+    ].forEach(([lang, dict]) => {
+      expect(dict.notes.priceNote, `${lang}`).toContain("%PRICING_AS_OF%");
     });
   });
 });
