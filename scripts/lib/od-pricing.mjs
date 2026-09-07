@@ -127,6 +127,13 @@ export async function scanPriceList(lines, wantedSizes) {
 
 // instances に On-Demand 価格と東京リージョンの有無を反映した新しい配列を返す。
 // 入力は変更しない。UltraServer は Price List に載らないため素通しする。
+//
+// tokyo は「On-Demand か Capacity Blocks のどちらかで東京から使えるか」を表す。
+// この関数が判定できるのは On-Demand のぶんだけなので、us-east-1 で On-Demand 価格が
+// 付いた行にしか tokyo を書かない。Capacity Blocks 専用の行 (p5e.48xlarge など) と
+// UltraServer は On-Demand の terms を持たず、東京の index.json にも出てこないため、
+// ここで判定すると必ず false になってしまう。それらの tokyo は CB 価格スクリプトと
+// regions データが持つので、既存の値をそのまま残す。
 export function applyOdPricing(instances, usEast1Prices, tokyoSizes) {
   const changes = [];
 
@@ -144,7 +151,7 @@ export function applyOdPricing(instances, usEast1Prices, tokyoSizes) {
       next.priceGpu = priceGpu;
     }
 
-    if (row.unit !== "ultraserver") {
+    if (rawPrice != null) {
       const tokyo = tokyoSizes.has(row.size);
       if (next.tokyo !== tokyo) changes.push(`${row.size} tokyo: ${next.tokyo} -> ${tokyo}`);
       next.tokyo = tokyo;

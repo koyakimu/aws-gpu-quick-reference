@@ -304,11 +304,24 @@ describe("applyOdPricing", () => {
     expect(instances[0].priceGpu).toBe(6.88);
   });
 
-  it("sets tokyo from the ap-northeast-1 size set", () => {
-    const { instances } = applyOdPricing(base, new Map(), new Set(["g6f.large"]));
+  it("sets tokyo from the ap-northeast-1 size set for priced rows", () => {
+    const prices = new Map([
+      ["p5.48xlarge", 55.04],
+      ["g6f.large", 0.2],
+    ]);
+    const { instances } = applyOdPricing(base, prices, new Set(["g6f.large"]));
     expect(instances[0].tokyo).toBe(false);
     expect(instances[1].tokyo).toBe(true);
-    expect(instances[2].tokyo).toBe(false);
+  });
+
+  it("keeps tokyo for a row with no On-Demand price, even when absent from tokyoSizes", () => {
+    // p5e.48xlarge は Capacity Blocks 専用で On-Demand の terms を持たない。
+    // 東京の index.json にも出てこないが、CB では東京から使えるので true のまま残す。
+    const prices = new Map([["p5.48xlarge", 55.04]]);
+    const { instances, changes } = applyOdPricing(base, prices, new Set(["p5.48xlarge"]));
+    expect(instances[2].size).toBe("p5e.48xlarge");
+    expect(instances[2].tokyo).toBe(true);
+    expect(changes.some((c) => c.includes("p5e.48xlarge"))).toBe(false);
   });
 
   it("leaves UltraServer rows alone (they are not in the Price List)", () => {
@@ -339,7 +352,7 @@ describe("applyOdPricing", () => {
   });
 
   it("reports no changes when nothing moved", () => {
-    // p5e.48xlarge は tokyo: true なので、変化なしを期待するなら東京の集合に含める。
+    // On-Demand 価格が 1 件も付かなければ price も tokyo も書き換えない。
     const { changes } = applyOdPricing(base, new Map(), new Set(["g6f.large", "p5e.48xlarge"]));
     expect(changes).toEqual([]);
   });
