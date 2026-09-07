@@ -123,20 +123,52 @@ a:hover {
     padding: var(--sp-3);
   }
 
-  /* ヘッダは 2 段: ロゴ + 切替、その下にタブ */
-  .top {
+  /* ヘッダは 2 段: 1 段目がロゴ + 言語/テーマ切替、2 段目がタブ。
+     価格リージョンだけロゴの下に 1 行はみ出す。
+     header.css の .top / .brand より後に効かせたいので .app で詳細度を上げる */
+  .app .top {
     flex-wrap: wrap;
-    row-gap: var(--sp-2);
+    align-items: center;
+    gap: var(--sp-2);
   }
-  .tabs {
+  /* basis 0 にして、ロゴ + 切替が 1 行に収まるようにする。
+     入り切らない価格リージョンはブランド内で 2 行目に折り返る */
+  .app .brand {
+    order: 1;
+    flex: 1 1 0;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+    column-gap: var(--sp-1);
+    row-gap: 0;
+  }
+  /* ロゴに 1 行を占有させ、価格リージョンは必ずその下の行に置く
+     (basis は 0 のブランド幅に対する 100% なので、ヘッダ全体は広がらない) */
+  .app .brand h1 {
+    flex: 0 0 100%;
+  }
+  .app .top-controls {
+    order: 2;
+    flex: 0 0 auto;
+  }
+  .app .tabs {
     order: 3;
     width: 100%;
     overflow-x: auto;
   }
-  /* 375px では価格注記が収まらないので、ロゴの下に折り返す */
-  .brand {
-    flex-wrap: wrap;
-    row-gap: 0;
+  .app #price-region {
+    /* select は最長の選択肢ぶんの幅を持つ。折り返しは縮小より先に決まるので、
+       余白を詰めてブランド幅に収める */
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    /* リージョン名を切らずに「価格リージョン: [select]」を 1 行に収めるため、
+       左の余白だけ詰める */
+    padding-left: 0;
+  }
+  /* 「（価格基準 …）」は狭い画面では省く。DOM には残すので言語切替の対象は変わらない */
+  .app #pricing-caption {
+    display: none;
   }
 
   .bar {
