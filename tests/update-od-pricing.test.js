@@ -305,13 +305,18 @@ describe("applyOdPricing", () => {
   });
 
   it("sets tokyo from the ap-northeast-1 size set for priced rows", () => {
+    // 両方向に動かす。開始値と同じ値を期待すると、tokyo の書き込みを消しても通ってしまう。
+    // p5.48xlarge は tokyo: false から true へ、g6f.large は true から false へ。
+    // 価格は fixture と同じ値を渡し、変化するのが tokyo だけになるようにしている。
     const prices = new Map([
       ["p5.48xlarge", 55.04],
       ["g6f.large", 0.2],
     ]);
-    const { instances } = applyOdPricing(base, prices, new Set(["g6f.large"]));
-    expect(instances[0].tokyo).toBe(false);
-    expect(instances[1].tokyo).toBe(true);
+    const { instances, changes } = applyOdPricing(base, prices, new Set(["p5.48xlarge"]));
+    expect(instances[0].tokyo).toBe(true);
+    expect(instances[1].tokyo).toBe(false);
+    expect(changes).toContain("p5.48xlarge tokyo: false -> true");
+    expect(changes).toContain("g6f.large tokyo: true -> false");
   });
 
   it("keeps tokyo for a row with no On-Demand price, even when absent from tokyoSizes", () => {
@@ -324,8 +329,11 @@ describe("applyOdPricing", () => {
     expect(changes.some((c) => c.includes("p5e.48xlarge"))).toBe(false);
   });
 
-  it("leaves UltraServer rows alone (they are not in the Price List)", () => {
+  it("leaves an UltraServer row alone because it gets no us-east-1 price", () => {
+    // applyOdPricing は unit を見ない。UltraServer は Price List に載らず
+    // us-east-1 の価格が付かないため、価格なしの行と同じ経路で素通しされる。
     const { instances } = applyOdPricing(base, new Map(), new Set());
+    expect(instances[3].unit).toBe("ultraserver");
     expect(instances[3].tokyo).toBe(true);
     expect(instances[3].price).toBeNull();
   });
