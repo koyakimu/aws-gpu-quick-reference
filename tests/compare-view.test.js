@@ -74,10 +74,14 @@ describe("COLUMN_GROUPS and COMPARE_COLUMNS", () => {
     }
   });
 
-  it("makes exactly one column sticky, and it is the instance size", () => {
+  it("makes exactly one column sticky, and it is the GPU chip", () => {
     const sticky = COMPARE_COLUMNS.filter((c) => c.sticky);
     expect(sticky).toHaveLength(1);
-    expect(sticky[0].key).toBe("size");
+    expect(sticky[0].key).toBe("gpu");
+  });
+
+  it("keeps the instance size in a mono font", () => {
+    expect(column("size").mono).toBe(true);
   });
 
   it("covers every field the mockup's table shows", () => {
@@ -96,7 +100,7 @@ describe("COLUMN_GROUPS and COMPARE_COLUMNS", () => {
 
   it("puts the GPU chip before the EC2 family (NVIDIA-side first)", () => {
     const keys = COMPARE_COLUMNS.map((c) => c.key);
-    expect(keys.slice(0, 4)).toEqual(["size", "gpu", "ec2", "count"]);
+    expect(keys.slice(0, 4)).toEqual(["gpu", "ec2", "size", "count"]);
   });
 
   it("has no generation column — the chip carries it", () => {
@@ -269,8 +273,8 @@ describe("initCompareView", () => {
     expect(rows[0].classList.contains("band-blackwell")).toBe(true);
     expect(rows[0].textContent).toBe("Blackwell");
     expect(rows[1].classList.contains("band")).toBe(false);
-    expect(rows[1].children[1].textContent).toBe("B200");
-    expect(rows[1].children[2].textContent).toBe("P6-B200");
+    expect(rows[1].children[0].textContent).toBe("B200");
+    expect(rows[1].children[1].textContent).toBe("P6-B200");
   });
 
   it("mounts the engine's frame inside #compare-table", () => {
@@ -414,7 +418,7 @@ describe("initCompareView", () => {
       (th) => th.dataset.key === "price",
     );
     priceHeader.dispatchEvent(new Event("click", { bubbles: true }));
-    const first = document.querySelector("#compare-table tbody tr:not(.band) td");
+    const first = document.querySelector("#compare-table tbody tr:not(.band) td:nth-child(3)");
     expect(first.textContent).toBe("p6-b200.48xlarge"); // desc: 113.93 が先頭
   });
 
@@ -425,7 +429,7 @@ describe("initCompareView", () => {
     );
     priceHeader.dispatchEvent(new Event("click", { bubbles: true }));
     document.querySelector('[data-gen="ada"]').dispatchEvent(new Event("click", { bubbles: true }));
-    const sizes = [...document.querySelectorAll("#compare-table tbody tr:not(.band) td:first-child")].map(
+    const sizes = [...document.querySelectorAll("#compare-table tbody tr:not(.band) td:nth-child(3)")].map(
       (td) => td.textContent,
     );
     expect(sizes).toEqual(["g6e.xlarge", "g6.xlarge"]); // 1.86 → 0.80
