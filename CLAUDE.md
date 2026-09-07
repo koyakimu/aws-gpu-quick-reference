@@ -44,15 +44,21 @@ src/
 ### GPUスペック
 
 - GPUの演算性能等は `data/aws-ec2-nvidia-gpu-specs.json` を参照
-- 新しいGPUを追加する場合はまずJSONを更新してから `src/scripts/gpu-data.js` の `GPU_DATA` 配列を編集
+- 新しいGPUを追加する場合はまずJSONを更新してから `data/instances.json` にレコードを追加
 
-### GPU_DATA配列
+### instances.json
 
-`src/scripts/gpu-data.js` の `GPU_DATA` 配列を編集。各エントリはオブジェクト形式:
+データの正は `data/instances.json`。`src/scripts/gpu-data.js` は JSON を読むだけの薄い層で、
+`GPU_DATA` / `EC2_LINKS` / `GPU_DATASHEET_LINKS` / `PRICING_META` を export する。
+1 レコード 1 インスタンスサイズで、各レコードは次のフィールドを持つ:
+
 ```javascript
-{ gen, gpu, ec2, size, count, vramPerGpu, fp16PerGpu, fp8PerGpu,
-  efa, pcie, vcpu, mem, nvme, price, priceGpu, priceCb, tokyo }
+{ gen, gpu, gpuKey, ec2, size, unit, count, vramPerGpu,
+  fp16NonTc, fp16Dense, fp16Sparse, fp8Dense, fp8Sparse, fp4Dense, fp4Sparse,
+  est, efa, pcie, vcpu, mem, nvme, price, priceGpu, priceCb, tokyo, addedAt }
 ```
+
+`price` / `priceGpu` / `priceCb` は数値または `null`（= 提供なし）。表示時に `formatPrice` で整形する。
 
 ### 価格更新
 
@@ -73,14 +79,19 @@ https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/index.
 - AWS CLI: `aws pricing get-products --service-code AmazonEC2 --filters ...`
 - AWS SDKを使用したプログラマティックアクセス
 
+On-Demand 価格の更新は `node scripts/update-od-pricing.mjs`（手動実行のみ、自動化なし）。
+
 #### CB (Capacity Blocks) 価格更新
 
 CB価格データソース:
 https://raw.githubusercontent.com/koyakimu/ec2-capacity-blocks-for-ml-pricing-json/refs/heads/main/data/pricing.json
 
-JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerator_hourly_rate_usd` を参照し、`GPU_DATA` の `priceCb` フィールドを更新する。
+JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerator_hourly_rate_usd` を参照し、`data/instances.json` の `priceCb` フィールドを更新する。
 - 東京リージョン（ap-northeast-1）がある場合はその値を使用
-- ない場合は最も一般的なリージョン（us-east-1等）を使用
-- 価格は小数点第2位まで表示（例: $3.93）
+- ない場合は us-east-1、それも無ければ先頭に載っているリージョンを使用（東京以外を使った場合は変更ログにリージョン名を出す）
+- 価格は数値のまま小数点第2位に四捨五入して保存する（表示側で `formatPrice` が整形する）
+- CB フィードに東京が載っている行は `tokyo` を `true` にする。`tokyo` は「On-Demand か CB のどちらかで東京から使えるか」なので、CB 側からは `false` に倒さない
 
-**この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
+判定ロジックは `scripts/lib/cb-pricing.mjs` の純関数（`pickRate` / `applyCbPricing`）にあり、`tests/update-cb-pricing.test.js` でテストする。ファイルの読み書きは `scripts/lib/instances-file.mjs` の `readInstances` / `writeInstances` を使う（1 レコード 1 行の書式を保つため、別のシリアライザを書かないこと）。`scripts/update-cb-pricing.mjs` は fetch と入出力だけの薄い CLI。
+
+**この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば `data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
