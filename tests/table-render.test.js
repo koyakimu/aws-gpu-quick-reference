@@ -56,9 +56,9 @@ describe("renderTable", () => {
       "192",
       "4TB",
       "30TB",
-      "$142.42",
-      "$17.80",
-      "$14.04",
+      GPU_DATA[0].price,
+      GPU_DATA[0].priceGpu,
+      GPU_DATA[0].priceCb,
       "✕",
     ]);
   });

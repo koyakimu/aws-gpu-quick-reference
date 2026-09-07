@@ -59,10 +59,11 @@ describe("i18n key parity", () => {
   });
 
   it("all three dictionaries have the same key count", () => {
+    const n = keySet(ja).size;
+    expect(n).toBeGreaterThan(0);
     expect({
-      ja: keySet(ja).size,
       en: keySet(en).size,
       ko: keySet(ko).size,
-    }).toEqual({ ja: 83, en: 83, ko: 83 });
+    }).toEqual({ en: n, ko: n });
   });
 });

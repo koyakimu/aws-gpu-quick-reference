@@ -56,6 +56,11 @@ describe("getTheme", () => {
     stubMatchMedia(false);
     expect(getTheme()).toBe("dark");
   });
+
+  it("falls back to light when nothing is saved and the OS prefers light", () => {
+    stubMatchMedia(true);
+    expect(getTheme()).toBe("light");
+  });
 });
 
 describe("setTheme", () => {
@@ -92,6 +97,8 @@ describe("setupThemeToggle", () => {
 
   it("does nothing when the button is absent", () => {
     expect(() => setupThemeToggle()).not.toThrow();
+    expect(document.documentElement.hasAttribute("data-theme")).toBe(false);
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
   });
 
   it("labels the button for the current theme on setup", () => {
