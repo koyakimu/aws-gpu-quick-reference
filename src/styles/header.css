@@ -60,7 +60,8 @@
 .top-controls {
   display: flex;
   gap: var(--sp-2);
-  align-items: center;
+  /* select と button の内在高さが 3px ずれるので、行の高さに揃える */
+  align-items: stretch;
 }
 
 /* フィルタバー */
@@ -95,6 +96,7 @@
   align-items: center;
   gap: var(--sp-2);
   white-space: nowrap;
+  flex: 0 0 auto; /* 横スクロールするフィルタ列で潰れないように */
   transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
   list-style: none; /* <summary> のマーカーを消す */
 }

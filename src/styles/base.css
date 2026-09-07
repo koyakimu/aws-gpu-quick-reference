@@ -138,6 +138,17 @@ a:hover {
     flex-wrap: wrap;
     row-gap: var(--sp-2);
   }
+  /* 世代フィルタは折り返さず、自分の行の中で横スクロールさせる。
+     ページ本体が横に伸びるのを防ぐ (仕様 6.3)。 */
+  .filter-group {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  #gen-filters {
+    width: 100%;
+    padding-bottom: 2px;
+  }
   .row-count {
     margin-left: 0;
   }
