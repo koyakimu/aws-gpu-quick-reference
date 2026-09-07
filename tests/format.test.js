@@ -8,6 +8,10 @@ describe("formatPrice", () => {
     expect(formatPrice(3)).toBe("$3.00");
   });
 
+  it("renders zero as a price, not as a dash", () => {
+    expect(formatPrice(0)).toBe("$0.00");
+  });
+
   it("renders null as a dash", () => {
     expect(formatPrice(null)).toBe("-");
     expect(formatPrice(undefined)).toBe("-");
@@ -68,6 +72,11 @@ describe("computeSpans", () => {
       { gen: 1, gpu: 1, ec2: 1 },
       { gen: 1, gpu: 1, ec2: 1 },
     ]);
+  });
+
+  it("gives a single row a span of one in every column", () => {
+    const rows = [{ gen: "ada", gpu: "L4", ec2: "G6" }];
+    expect(computeSpans(rows)).toEqual([{ gen: 1, gpu: 1, ec2: 1 }]);
   });
 
   it("returns an empty array for no rows", () => {
