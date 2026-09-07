@@ -149,6 +149,29 @@ function buildHead(columns, state, i18n) {
   return tr;
 }
 
+// 列グループの見出し行 (ヘッダ 1 段目)。隣り合う同じ group の列を colspan でまとめる。
+// groupHeader(group) が空文字を返した列は見出しなしのセルになる (固定列など)。
+function buildGroupHead(columns, groupHeader) {
+  const tr = document.createElement("tr");
+  tr.className = "group-head";
+
+  for (let i = 0; i < columns.length; ) {
+    const group = columns[i].group;
+    let span = 1;
+    while (i + span < columns.length && columns[i + span].group === group) span++;
+
+    const th = document.createElement("th");
+    th.colSpan = span;
+    th.setAttribute("scope", "colgroup");
+    if (columns[i].sticky) th.classList.add("sticky");
+    th.textContent = groupHeader(group) || "";
+    tr.appendChild(th);
+    i += span;
+  }
+
+  return tr;
+}
+
 // 世代の帯行。全列にまたがる 1 セルだけを持つ。データ行ではないので
 // .band を付けて行数集計や絞り込みから外せるようにする。
 function buildBandRow(columns, key, label) {
@@ -225,7 +248,7 @@ function buildBody(columns, rows, state, options = {}) {
   return fragment;
 }
 
-export function createTable({ columns, rows, state, onStateChange, i18n, bandBy, bandLabel, collapseRepeats }) {
+export function createTable({ columns, rows, state, onStateChange, i18n, bandBy, bandLabel, collapseRepeats, groupHeader }) {
   const el = document.createElement("div");
   el.className = "table-frame";
 
@@ -252,7 +275,8 @@ export function createTable({ columns, rows, state, onStateChange, i18n, bandBy,
     currentState = nextState;
     const shown = visibleColumns(currentColumns, nextState.hiddenGroups);
     const sortColumn = shown.find((column) => column.key === nextState.sortKey) || null;
-    thead.replaceChildren(buildHead(shown, nextState, i18n));
+    const head = buildHead(shown, nextState, i18n);
+    thead.replaceChildren(...(groupHeader ? [buildGroupHead(shown, groupHeader), head] : [head]));
     tbody.replaceChildren(
       buildBody(shown, sortRows(nextRows, sortColumn, nextState.sortDir), nextState, {
         bandBy,

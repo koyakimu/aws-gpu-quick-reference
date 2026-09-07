@@ -117,7 +117,11 @@ describe("column formats", () => {
   });
 
   it("marks every performance column the same way", () => {
-    for (const col of COMPARE_COLUMNS.filter((c) => c.group === "performance")) {
+    // spec-* の列は gpu-specs.json から引く (行の値ではない) ので est の * は付かない。
+    const perf = COMPARE_COLUMNS.filter(
+      (c) => c.group === "performance" && !c.key.startsWith("spec-"),
+    );
+    for (const col of perf) {
       expect(col.format(10, { est: true }), `column ${col.key}`).toBe("10*");
     }
   });

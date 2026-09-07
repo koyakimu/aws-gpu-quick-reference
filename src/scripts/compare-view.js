@@ -5,6 +5,7 @@ import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
 import { parseCount, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
 import { REGIONS_FILE } from "./regions-data.js";
+import { GPU_SPECS } from "./gpu-specs-data.js";
 
 export const STORAGE_KEY = "gpu-ref-compare";
 
@@ -70,7 +71,29 @@ function priceCell(value) {
   return value == null ? EMPTY : Number(value).toFixed(2);
 }
 
-// 演算性能の 7 列。ラベル以外は同じ扱いなので定義をまとめて作る。
+// GPU 単体のスペック (gpu-specs.json) から引く列。行ではなく gpuKey に紐づく値なので、
+// format と sortValue の両方で同じ引き方をする。est の * は付けない (データシートの実測値)。
+function specValue(row, field) {
+  const spec = GPU_SPECS[row.gpuKey];
+  const value = spec ? spec[field] : null;
+  return value == null ? null : value;
+}
+
+function specColumn(field, labelKey) {
+  return {
+    key: `spec-${field}`,
+    group: "performance",
+    labelKey,
+    type: "number",
+    format: (_value, row) => {
+      const value = specValue(row, field);
+      return value == null ? EMPTY : formatNumber(value);
+    },
+    sortValue: (row) => specValue(row, field),
+  };
+}
+
+// 演算性能の列。ラベル以外は同じ扱いなので定義をまとめて作る。
 const PERF_COLUMNS = [
   ["fp16NonTc", "table.fp16Cuda"],
   ["fp16Dense", "table.fp16Dense"],
@@ -86,6 +109,9 @@ const PERF_COLUMNS = [
   type: "number",
   format: perfCell,
 }));
+
+// FP16 CUDA の直後に、GPU 単体のデータシート値 (gpu-specs.json) から引く 2 列を挟む。
+PERF_COLUMNS.splice(1, 0, specColumn("fp32", "table.fp32"), specColumn("tf32Dense", "table.tf32Dense"));
 
 export const COMPARE_COLUMNS = [
   // 読み手は NVIDIA 側 (GPU → ファミリ → サイズ) から見るので、GPU を先頭の固定列にする。
