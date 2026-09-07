@@ -3,9 +3,9 @@
 //   node scripts/update-regions.mjs
 //   node scripts/update-regions.mjs --dry-run
 //
-// 各リージョンの index.json は 480MB あるが、判定に要る products セクションは
-// ファイルの前半 (us-east-1 で約 200MB) にある。terms に着いた時点で
-// ストリームを閉じるので、1 リージョンあたりの実転送量はその範囲に収まる。
+// 各リージョンの index.json は 480MB あり、提供状況 (products) と
+// On-Demand 価格 (terms.OnDemand) の両方を読むためファイル全体を落とす。
+// 34 リージョンで 10〜15GB、並列 3 で 20〜40 分かかる。
 import { readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 import { Readable } from "node:stream";
@@ -13,9 +13,12 @@ import { readInstances } from "./lib/instances-file.mjs";
 import {
   scanInstanceTypes,
   cbAvailability,
+  cbPricesByRegion,
   mergeAvailability,
+  mergePrices,
   regionOrder,
   carryOverRegions,
+  carryOverPrices,
   sameExceptGeneratedAt,
   STANDARD_REGION,
 } from "./lib/regions.mjs";
@@ -43,16 +46,20 @@ function readPrevious() {
 // 1 レコード 1 行で書き出す。自動更新のコミット差分を読める形に保つため。
 function serialize(file) {
   const regions = file.regions.map((region) => "    " + JSON.stringify(region)).join(",\n");
-  const availability = Object.entries(file.availability)
-    .map(([size, perRegion]) => `    ${JSON.stringify(size)}: ${JSON.stringify(perRegion)}`)
-    .join(",\n");
+  const byLine = (map) =>
+    Object.entries(map)
+      .map(([size, value]) => `    ${JSON.stringify(size)}: ${JSON.stringify(value)}`)
+      .join(",\n");
   return `{
   "generatedAt": ${JSON.stringify(file.generatedAt)},
   "regions": [
 ${regions}
   ],
   "availability": {
-${availability}
+${byLine(file.availability)}
+  },
+  "prices": {
+${byLine(file.prices)}
   }
 }
 `;
@@ -84,9 +91,9 @@ async function scanRegion(code, wantedSizes) {
   if (!res.ok) throw new Error(`${res.status}`);
   const rl = createInterface({ input: Readable.fromWeb(res.body), crlfDelay: Infinity });
   try {
-    return await scanInstanceTypes(rl, wantedSizes);
+    return await scanInstanceTypes(rl, wantedSizes, { withPrices: true });
   } finally {
-    rl.close(); // terms で打ち切ったときに残りのダウンロードを止める
+    rl.close();
   }
 }
 
@@ -103,15 +110,17 @@ const previous = readPrevious();
 const previousNames = new Map((previous?.regions ?? []).map((region) => [region.code, region.name]));
 
 const scanned = new Map();
+const scannedPrices = new Map();
 const names = new Map();
 const failed = [];
 
 await mapWithConcurrency(codes, CONCURRENCY, async (code) => {
   try {
-    const { sizes, location } = await scanRegion(code, odSizes);
+    const { sizes, location, prices } = await scanRegion(code, odSizes);
     scanned.set(code, sizes);
+    scannedPrices.set(code, prices);
     names.set(code, location ?? previousNames.get(code) ?? code);
-    process.stderr.write(`  ${code}: ${sizes.size} sizes\n`);
+    process.stderr.write(`  ${code}: ${sizes.size} sizes, ${prices.size} prices\n`);
   } catch (error) {
     failed.push(code);
     names.set(code, previousNames.get(code) ?? code);
@@ -122,6 +131,9 @@ await mapWithConcurrency(codes, CONCURRENCY, async (code) => {
 // 並列走査の完了順ではなく codes の順で詰め直す。availability のキー順が
 // 実行ごとに変わると sameExceptGeneratedAt が毎回「差分あり」と判定してしまう。
 const odByRegion = new Map(codes.filter((code) => scanned.has(code)).map((code) => [code, scanned.get(code)]));
+const odPricesByRegion = new Map(
+  codes.filter((code) => scannedPrices.has(code)).map((code) => [code, scannedPrices.get(code)]),
+);
 
 if (failed.length === codes.length) {
   process.stderr.write("error: every region failed; aborting without writing\n");
@@ -130,6 +142,7 @@ if (failed.length === codes.length) {
 
 const cbFeed = await fetchJson(CB_URL);
 const cbBySize = cbAvailability(cbFeed.instance_types ?? {}, new Set(allSizes));
+const cbPrices = cbPricesByRegion(cbFeed.instance_types ?? {}, new Set(allSizes));
 // mergeAvailability は Map<region, Set<size>> を取るので向きを入れ替える。
 const cbByRegion = new Map();
 for (const [size, regions] of cbBySize) {
@@ -141,9 +154,10 @@ for (const [size, regions] of cbBySize) {
 
 const merged = mergeAvailability(allSizes, odByRegion, cbByRegion);
 // failed も同じ理由でコード順に揃える (前回値を戻すキーの順を安定させる)。
-const availability = failed.length
-  ? carryOverRegions(merged, previous?.availability, [...failed].sort())
-  : merged;
+const mergedPrices = mergePrices(allSizes, odPricesByRegion, cbPrices);
+const failedSorted = [...failed].sort();
+const availability = failed.length ? carryOverRegions(merged, previous?.availability, failedSorted) : merged;
+const prices = failed.length ? carryOverPrices(mergedPrices, previous?.prices, failedSorted) : mergedPrices;
 
 // 列に出すのは、どこかの size が提供されているリージョンだけ。
 const used = new Set();
@@ -154,7 +168,7 @@ const regions = regionOrder(
   [...used].filter((code) => STANDARD_REGION.test(code)).map((code) => ({ code, name: names.get(code) ?? code })),
 );
 
-const next = { generatedAt: new Date().toISOString(), regions, availability };
+const next = { generatedAt: new Date().toISOString(), regions, availability, prices };
 
 if (sameExceptGeneratedAt(next, previous)) {
   console.log("Region availability is up to date.");

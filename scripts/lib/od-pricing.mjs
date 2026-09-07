@@ -15,6 +15,16 @@ const PRICE_DIMENSION = /^ {12}"[A-Za-z0-9.]+" : \{$/;
 const TERM_UNIT = /^ {14}"unit" : "(.*?)",$/;
 const TERM_USD = /^ {16}"USD" : "([0-9.]+)"$/;
 
+// 提供の有無だけを見る緩い条件 (regions.mjs の scanInstanceTypes と同じ)。
+function isPresentProduct(attributes, wantedSizes) {
+  return (
+    attributes != null &&
+    attributes.operatingSystem === "Linux" &&
+    attributes.tenancy === "Shared" &&
+    wantedSizes.has(attributes.instanceType)
+  );
+}
+
 function isWantedProduct(attributes, wantedSizes) {
   return (
     attributes != null &&
@@ -29,11 +39,22 @@ function isWantedProduct(attributes, wantedSizes) {
 
 // lines: 行のイテラブル (同期・非同期どちらでもよい)。ストリームをそのまま渡せるよう
 // for await で回し、480MB を配列に溜めずに走査する。
-// 返り値は size -> 時間単価 (USD, 生の数値)。
-// 同じ instanceType に複数 SKU / 複数 offer term が該当したときは安い方を採る。
-export async function scanPriceList(lines, wantedSizes) {
+//
+// 返り値:
+//   prices   size -> 時間単価 (USD, 生の数値)。Linux / Shared / Used / NA / BYOL 以外。
+//            同じ instanceType に複数 SKU / 複数 offer term が該当したときは安い方を採る。
+//   present  そのリージョンで Linux / Shared として提供されている size の集合。
+//            価格の条件より緩い (提供の有無を見るだけなので capacitystatus 等を問わない)。
+//            update-regions.mjs の availability がこちらを使う。
+//   location リージョンの表示名 (例 "US East (N. Virginia)")。products の先頭から拾う。
+//
+// update-od-pricing.mjs (us-east-1 の価格) と update-regions.mjs (全リージョンの
+// 価格と提供状況) が同じ走査器を共有するための関数。
+export async function scanPriceListFull(lines, wantedSizes) {
   const skuToSize = new Map();
   const skuToPrice = new Map();
+  const present = new Set();
+  let location = null;
 
   let section = null;
   let termKind = null;
@@ -65,6 +86,10 @@ export async function scanPriceList(lines, wantedSizes) {
         continue;
       }
       if (PRODUCT_END.test(line)) {
+        if (location == null && attributes.location) location = attributes.location;
+        if (isPresentProduct(attributes, wantedSizes)) {
+          present.add(attributes.instanceType);
+        }
         if (isWantedProduct(attributes, wantedSizes)) {
           skuToSize.set(sku, attributes.instanceType);
         }
@@ -122,7 +147,12 @@ export async function scanPriceList(lines, wantedSizes) {
     const previous = prices.get(size);
     if (previous == null || price < previous) prices.set(size, price);
   }
-  return prices;
+  return { prices, present, location };
+}
+
+// 価格だけが要る呼び出し (update-od-pricing.mjs) 向けの薄い包み。
+export async function scanPriceList(lines, wantedSizes) {
+  return (await scanPriceListFull(lines, wantedSizes)).prices;
 }
 
 // instances に On-Demand 価格と東京リージョンの有無を反映した新しい配列を返す。
