@@ -421,3 +421,44 @@ describe("createTable interaction", () => {
     expect(document.querySelectorAll("thead th")).toHaveLength(5);
   });
 });
+
+describe("bands and collapsed repeats", () => {
+  const BAND_ROWS = [
+    { name: "beta", group: "g1", count: 8, price: 1, tokyo: false, avail: "cb" },
+    { name: "beta", group: "g1", count: 4, price: 2, tokyo: false, avail: "cb" },
+    { name: "delta", group: "g2", count: 2, price: 3, tokyo: false, avail: "cb" },
+  ];
+  const options = {
+    bandBy: (row) => row.group,
+    bandLabel: (key) => `band:${key}`,
+    collapseRepeats: { name: (row, prev) => prev.group === row.group && prev.name === row.name },
+  };
+
+  function mountBands(state) {
+    const table = createTable({ columns: COLUMNS, rows: BAND_ROWS, state, i18n, ...options });
+    document.body.replaceChildren(table.el);
+    return table;
+  }
+
+  it("inserts a band per run and blanks the repeated cell in data order", () => {
+    mountBands({ sortKey: null, sortDir: null, hiddenGroups: [] });
+    const bands = [...document.querySelectorAll("tbody tr.band")];
+    expect(bands.map((tr) => tr.textContent)).toEqual(["band:g1", "band:g2"]);
+    expect(bands[0].firstElementChild.colSpan).toBe(COLUMNS.length);
+    expect(bands[0].classList.contains("band-g1")).toBe(true);
+    expect(document.querySelectorAll("tbody tr:not(.band)")).toHaveLength(3);
+
+    const names = [...document.querySelectorAll("tbody tr:not(.band)")].map((tr) => tr.children[0]);
+    expect(names.map((td) => td.textContent)).toEqual(["beta", "", "delta"]);
+    expect(names[1].classList.contains("collapsed")).toBe(true);
+  });
+
+  it("drops the bands and shows every cell once sorted", () => {
+    const table = mountBands({ sortKey: null, sortDir: null, hiddenGroups: [] });
+    table.update(BAND_ROWS, { sortKey: "price", sortDir: "asc", hiddenGroups: [] });
+    expect(document.querySelectorAll("tbody tr.band")).toHaveLength(0);
+    expect(
+      [...document.querySelectorAll("tbody tr")].map((tr) => tr.children[0].textContent),
+    ).toEqual(["beta", "beta", "delta"]);
+  });
+});

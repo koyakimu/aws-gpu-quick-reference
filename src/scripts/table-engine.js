@@ -149,10 +149,40 @@ function buildHead(columns, state, i18n) {
   return tr;
 }
 
-function buildBody(columns, rows, state) {
-  const fragment = document.createDocumentFragment();
+// 世代の帯行。全列にまたがる 1 セルだけを持つ。データ行ではないので
+// .band を付けて行数集計や絞り込みから外せるようにする。
+function buildBandRow(columns, key, label) {
+  const tr = document.createElement("tr");
+  tr.className = `band band-${key}`;
+  const td = document.createElement("td");
+  td.className = "band-cell";
+  td.colSpan = columns.length;
+  td.textContent = label;
+  tr.appendChild(td);
+  return tr;
+}
 
-  for (const row of rows) {
+function buildBody(columns, rows, state, options = {}) {
+  const fragment = document.createDocumentFragment();
+  // 帯と繰り返しの省略はデータ順のときだけ。並べ替え中は行の連続に意味がない。
+  const grouped = state.sortKey == null;
+  const bandBy = grouped ? options.bandBy : null;
+  const collapseRepeats = grouped ? options.collapseRepeats || {} : {};
+  let bandKey;
+
+  for (let index = 0; index < rows.length; index++) {
+    const row = rows[index];
+    const prevRow = index > 0 ? rows[index - 1] : null;
+
+    if (bandBy) {
+      const key = bandBy(row);
+      if (key != null && key !== bandKey) {
+        const label = options.bandLabel ? options.bandLabel(key) : String(key);
+        fragment.appendChild(buildBandRow(columns, key, label));
+      }
+      bandKey = key;
+    }
+
     const tr = document.createElement("tr");
 
     for (const column of columns) {
@@ -165,7 +195,17 @@ function buildBody(columns, rows, state) {
       if (column.type === "price") td.classList.add("price");
       if (state.sortKey === column.key && state.sortDir) td.classList.add("sorted");
 
-      const content = column.format ? column.format(value, row) : defaultCellText(column.type, value);
+      const collapsed =
+        prevRow != null &&
+        typeof collapseRepeats[column.key] === "function" &&
+        collapseRepeats[column.key](row, prevRow);
+
+      const content = collapsed
+        ? ""
+        : column.format
+          ? column.format(value, row)
+          : defaultCellText(column.type, value);
+      if (collapsed) td.classList.add("collapsed", "dim");
       if (content instanceof Node) {
         td.appendChild(content);
       } else {
@@ -185,7 +225,7 @@ function buildBody(columns, rows, state) {
   return fragment;
 }
 
-export function createTable({ columns, rows, state, onStateChange, i18n }) {
+export function createTable({ columns, rows, state, onStateChange, i18n, bandBy, bandLabel, collapseRepeats }) {
   const el = document.createElement("div");
   el.className = "table-frame";
 
@@ -213,7 +253,13 @@ export function createTable({ columns, rows, state, onStateChange, i18n }) {
     const shown = visibleColumns(currentColumns, nextState.hiddenGroups);
     const sortColumn = shown.find((column) => column.key === nextState.sortKey) || null;
     thead.replaceChildren(buildHead(shown, nextState, i18n));
-    tbody.replaceChildren(buildBody(shown, sortRows(nextRows, sortColumn, nextState.sortDir), nextState));
+    tbody.replaceChildren(
+      buildBody(shown, sortRows(nextRows, sortColumn, nextState.sortDir), nextState, {
+        bandBy,
+        bandLabel,
+        collapseRepeats,
+      }),
+    );
   }
 
   render(rows, state);

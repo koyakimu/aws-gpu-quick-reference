@@ -89,8 +89,9 @@ const PERF_COLUMNS = [
 
 export const COMPARE_COLUMNS = [
   { key: "size", group: "instance", labelKey: "table.instanceSize", type: "text", sticky: true, mono: true },
-  { key: "ec2", group: "instance", labelKey: "table.ec2Type", type: "text", format: familyLink },
+  // 読み手は NVIDIA 側 (アーキテクチャ → GPU → ファミリ) から見るので、GPU を EC2 より先に置く。
   { key: "gpu", group: "gpu", labelKey: "table.gpuModel", type: "text", format: gpuChip },
+  { key: "ec2", group: "instance", labelKey: "table.ec2Type", type: "text", format: familyLink },
   {
     key: "count",
     group: "gpu",
@@ -214,6 +215,13 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     columns: COMPARE_COLUMNS,
     rows: filterRows(rows, state, regionsFile),
     state,
+    // データ順のときだけ世代の帯を挟み、同じ GPU / ファミリの繰り返しを空欄にする。
+    bandBy: (row) => row.gen,
+    bandLabel: (gen) => t(`generations.${gen}`),
+    collapseRepeats: {
+      gpu: (row, prev) => prev.gen === row.gen && prev.gpu === row.gpu,
+      ec2: (row, prev) => prev.gen === row.gen && prev.gpu === row.gpu && prev.ec2 === row.ec2,
+    },
     onStateChange(next) {
       // ソートだけがここから来る。保存はしない (仕様 5.2)。
       state.sortKey = next.sortKey;
