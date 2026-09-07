@@ -250,3 +250,26 @@ a.chip:hover {
 .table-frame td.collapsed {
   color: var(--fg-dim);
 }
+
+/* Features タブ: 表の下の注記一覧。番号はセルの「△ n」と対応する */
+.feature-notes {
+  margin: var(--sp-1) 0 0;
+  padding-left: var(--sp-4);
+  line-height: 1.7;
+}
+
+.feature-notes li {
+  color: var(--fg-muted);
+}
+
+/* 先頭列の GPU 名リンクは、通常のリンク色ではなく本文色で控えめに出す */
+.table-frame td.sticky a {
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--line);
+}
+
+.table-frame td.sticky a:hover {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}

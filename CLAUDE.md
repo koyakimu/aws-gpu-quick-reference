@@ -107,3 +107,13 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 - `availability` のリージョンキーは並列走査の完了順ではなくリージョンコード順に詰め直す。実行ごとにキー順が変わると `sameExceptGeneratedAt` が毎回「差分あり」と判定してしまうため
 
 **自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST の cron と `workflow_dispatch` で実行し、差分があれば main にコミットして deploy を起動する。1 回あたりの転送量は約 3〜4GB、実行時間は 3〜8 分。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
+
+### GPU 機能マトリクス (data/gpu-features.json)
+
+`data/gpu-features.json` は**手書き**。Features タブ（`src/scripts/features-view.js`）が読む。
+
+- `features[]` が列の並びと種類を決める。`gpus.<gpuKey>` が行で、値は `true` / `false` / `"partial"`
+- `"partial"` のセルには `notes.<機能キー>` に日本語の注釈を書く。表では「△ n」と番号が付き、表の下の一覧に出る
+- 機能名と説明は i18n 辞書の `features.<キー>.label` / `.desc`（ja / en / ko の 3 つとも必要）
+- `sources.<gpuKey>` に根拠にした NVIDIA データシートの URL を残す
+- GPU を追加したら `instances.json` の `gpuKey` と同じキーで 1 件足す。`tests/gpu-data.test.js` の "gpu-features.json covers every gpuKey" が、全 `gpuKey` の存在・未定義の機能キーが無いこと・`sources` の有無を検証する

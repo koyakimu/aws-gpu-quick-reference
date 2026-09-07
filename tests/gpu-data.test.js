@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS, PRICING_META } from "../src/scripts/gpu-data.js";
 import specs from "../data/aws-ec2-nvidia-gpu-specs.json";
+import features from "../data/gpu-features.json";
 import { ja } from "../src/i18n/ja.js";
 import { en } from "../src/i18n/en.js";
 import { ko } from "../src/i18n/ko.js";
@@ -222,5 +223,35 @@ describe("priceNote carries the pricingAsOf placeholder", () => {
     ].forEach(([lang, dict]) => {
       expect(dict.notes.priceNote, `${lang}`).toContain("%PRICING_AS_OF%");
     });
+  });
+});
+
+// 仕様 9: instances.json のすべての gpuKey が gpu-features.json に載っていること。
+describe("gpu-features.json covers every gpuKey", () => {
+  const featureKeys = features.features.map((f) => f.key);
+
+  it("has an entry for every distinct gpuKey in instances.json", () => {
+    const keys = [...new Set(GPU_DATA.map((row) => row.gpuKey))];
+    const missing = keys.filter((key) => !(key in features.gpus));
+    expect(missing, "gpuKey without a gpu-features.json entry").toEqual([]);
+  });
+
+  it("every entry only uses declared feature keys and valid values", () => {
+    for (const [gpuKey, entry] of Object.entries(features.gpus)) {
+      for (const [key, value] of Object.entries(entry)) {
+        if (key === "notes") continue;
+        expect(featureKeys, `${gpuKey}.${key} is not a declared feature`).toContain(key);
+        expect([true, false, "partial"], `${gpuKey}.${key}=${value}`).toContain(value);
+      }
+      for (const key of Object.keys(entry.notes ?? {})) {
+        expect(entry[key], `${gpuKey}.notes.${key} annotates a non-partial cell`).toBe("partial");
+      }
+    }
+  });
+
+  it("has a source URL for every entry", () => {
+    for (const gpuKey of Object.keys(features.gpus)) {
+      expect(features.sources?.[gpuKey], `${gpuKey}: sources`).toBeTruthy();
+    }
   });
 });
