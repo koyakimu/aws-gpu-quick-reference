@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatPrice, parseCount, computeSpans, isNew, formatNumber } from "../src/scripts/format.js";
+import { formatPrice, parseCount, computeSpans, isNew, formatNumber, formatMonth } from "../src/scripts/format.js";
 
 describe("formatPrice", () => {
   it("prefixes a dollar sign and forces two decimals", () => {
@@ -133,5 +133,18 @@ describe("formatNumber", () => {
     expect(formatNumber(0.125)).toBe("0.125");
     expect(formatNumber(1234.5678)).toBe("1,234.5678");
     expect(formatNumber(12345.6789)).toBe("12,345.6789");
+  });
+});
+
+describe("formatMonth", () => {
+  it("renders YYYY-MM in each language", () => {
+    expect(formatMonth("2026-09", "ja")).toBe("2026年9月");
+    expect(formatMonth("2026-09", "en")).toBe("September 2026");
+    expect(formatMonth("2026-09", "ko")).toBe("2026년 9월");
+  });
+
+  it("returns non YYYY-MM input unchanged", () => {
+    expect(formatMonth("2026", "en")).toBe("2026");
+    expect(formatMonth(null, "en")).toBe("");
   });
 });

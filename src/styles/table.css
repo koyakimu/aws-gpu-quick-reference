@@ -200,9 +200,6 @@ a.chip:hover {
 
 /* 世代の帯行。データ行ではないので、罫線もホバーも本文とは別扱いにする */
 .table-frame tbody tr.band td.band-cell {
-  position: sticky;
-  left: 0;
-  z-index: 1;
   background: var(--bg-raised);
   color: var(--fg-muted);
   font-size: var(--fs-xs);
@@ -213,6 +210,14 @@ a.chip:hover {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line-soft);
   border-left: 3px solid var(--chip-fg);
+}
+/* td は全列ぶんの幅を持つので sticky にしても意味がない。中のラベルだけを
+   固定して、横スクロールしても世代名が左端に残るようにする */
+.table-frame tbody tr.band td.band-cell .band-label {
+  position: sticky;
+  left: var(--sp-3);
+  z-index: 1;
+  display: inline-block;
 }
 .table-frame tbody tr.band:hover td.band-cell {
   background: var(--bg-raised);

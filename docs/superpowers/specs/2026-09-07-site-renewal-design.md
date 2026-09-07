@@ -294,6 +294,8 @@ UltraServer（`unit: "ultraserver"`）は Price List に載らないため、CB 
   「RTX PRO 6000 Blackwell SE」も fp16_tflops 1000 / fp8_tflops 2000（ともに
   `with_sparsity: true`）にした。データシートの表記が丸めた PFLOPS 単位で厳密な
   TFLOPS ではないため `est: true` は残す。
+- 2026-09 (解決済み): A10G の FP16 を Dense 125 / Sparse 250 に直した。AWS の G5 ページは FP16 TFLOPS を公表していない（250 TOPS のみ）ため、NVIDIA A10 製品ページの Dense 125 / Sparse 250 を採り、`instances.json` の g5.* 8 行と `aws-ec2-nvidia-gpu-specs.json` の A10G（`fp16_tflops` 250, `with_sparsity: true`）を揃えた。
+- 2026-09 (解決済み): L40S の FP16 Dense をデータシート値 362.05 に合わせて `instances.json` の g6e.* 8 行を 362 にした。Sparse 733 はちょうど 2 倍ではないので、`aws-ec2-nvidia-gpu-specs.json` に Dense を明示する `fp16_dense_tflops` を足し、テストはこれを優先して比較する。
 - 2026-09 (未解決): `ac.html` では g4dn / g5 / g6 / g6e / g7 / g7e の 8xlarge 以上が EFA 対応
   だが、`instances.json` の G 系の行はすべて `efa: "-"` になっている。既存行の表記に
   合わせて新規行も `"-"` としたが、EFA 列の意味を決め直す必要がある。

@@ -57,3 +57,12 @@ export function formatNumber(num) {
   const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return fraction === undefined ? grouped : `${grouped}.${fraction}`;
 }
+
+// "YYYY-MM" を言語ごとの月表記にする。ja "2026年9月" / en "September 2026" / ko "2026년 9월"。
+// 形式が違う値はそのまま返す (データ由来の文字列をそのまま出したい)。
+export function formatMonth(yyyyMm, lang = "en") {
+  const match = /^(\d{4})-(\d{2})$/.exec(typeof yyyyMm === "string" ? yyyyMm : "");
+  if (!match) return yyyyMm == null ? "" : String(yyyyMm);
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 1));
+  return new Intl.DateTimeFormat(lang, { year: "numeric", month: "long", timeZone: "UTC" }).format(date);
+}
