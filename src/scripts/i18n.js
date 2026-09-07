@@ -3,6 +3,7 @@ import { en } from "../i18n/en.js";
 import { ko } from "../i18n/ko.js";
 import { PRICING_META } from "./gpu-data.js";
 import { getPriceRegion, PRICE_REGION_EVENT } from "./price-region.js";
+import { formatMonth } from "./format.js";
 
 const STORAGE_KEY = "gpu-ref-lang";
 const dictionaries = { ja, en, ko };
@@ -43,7 +44,7 @@ export function t(key) {
   // 辞書側は置換子だけ持つ。
   return typeof value === "string"
     ? value
-        .replaceAll("%PRICING_AS_OF%", PRICING_META.pricingAsOf)
+        .replaceAll("%PRICING_AS_OF%", formatMonth(PRICING_META.pricingAsOf, currentLang))
         .replaceAll("%PRICE_REGION%", getPriceRegion())
     : value;
 }
