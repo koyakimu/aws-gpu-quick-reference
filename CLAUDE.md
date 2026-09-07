@@ -106,4 +106,4 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 - 1 リージョンの取得失敗では止まらない。そのリージョンは前回値を保持して警告のみ。全リージョン失敗のときだけ終了コード 1
 - `availability` のリージョンキーは並列走査の完了順ではなくリージョンコード順に詰め直す。実行ごとにキー順が変わると `sameExceptGeneratedAt` が毎回「差分あり」と判定してしまうため
 
-**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST と `workflow_dispatch` / `repository_dispatch`（`cb-pricing-updated`）で実行し、差分があれば main にコミットして deploy を起動する。1 回あたりの転送量は約 3〜4GB、実行時間は 3〜8 分。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
+**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST の cron と `workflow_dispatch` で実行し、差分があれば main にコミットして deploy を起動する。1 回あたりの転送量は約 3〜4GB、実行時間は 3〜8 分。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。

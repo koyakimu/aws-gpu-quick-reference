@@ -26,6 +26,7 @@ function mountPanel() {
       <div id="regions-table"></div>
       <p class="placeholder" id="regions-missing" hidden></p>
       <p class="note mono" id="regions-generated"></p>
+      <p class="note" id="regions-local-zone-note"></p>
     </section>
   `;
 }
@@ -67,7 +68,9 @@ describe("initRegionsView", () => {
     expect(first[2].textContent).toBe("—"); // eu-west-1 は提供なし
     expect(first[3].textContent).toBe("CB");
 
-    expect(document.getElementById("regions-generated").textContent).toContain("2026-09-07");
+    // ISO 文字列そのままではなく日付部分だけ出す
+    expect(document.getElementById("regions-generated").textContent).toBe("データ生成: 2026-09-07");
+    expect(document.getElementById("regions-local-zone-note").textContent).toContain("Local Zone");
     expect(document.getElementById("regions-missing").hidden).toBe(true);
     // 地理グループの表示切替 (2 段見出しの代わり)
     expect([...document.querySelectorAll("#region-groups [data-group]")].map((b) => b.dataset.group)).toEqual([

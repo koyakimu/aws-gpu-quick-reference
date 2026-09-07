@@ -64,6 +64,7 @@ export const ja = {
   },
   regions: {
     generatedAt: "データ生成: {date}",
+    localZoneNote: "Local Zone でのみ提供される CB は親リージョンの列に含めています。",
   },
   placeholders: {
     regionsMissing: "リージョン提供状況のデータはまだ生成されていません。",

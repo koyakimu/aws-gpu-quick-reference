@@ -64,6 +64,7 @@ export const en = {
   },
   regions: {
     generatedAt: "Generated: {date}",
+    localZoneNote: "CB offerings available only in a Local Zone are counted in their parent region's column.",
   },
   placeholders: {
     regionsMissing: "Region availability data has not been generated yet.",

@@ -64,6 +64,7 @@ export const ko = {
   },
   regions: {
     generatedAt: "데이터 생성: {date}",
+    localZoneNote: "Local Zone 에서만 제공되는 CB 는 상위 리전 열에 포함했습니다.",
   },
   placeholders: {
     regionsMissing: "리전 제공 현황 데이터가 아직 생성되지 않았습니다.",

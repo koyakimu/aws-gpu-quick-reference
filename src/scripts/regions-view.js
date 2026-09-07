@@ -44,6 +44,13 @@ export function withAvailability(rows, file) {
   return rows.map((row) => ({ ...row, ...(file.availability?.[row.size] ?? {}) }));
 }
 
+// ISO 文字列をそのまま出すと読みづらいので UTC の日付部分だけにする。
+export function formatGeneratedAt(iso) {
+  if (typeof iso !== "string") return "";
+  const match = /^\d{4}-\d{2}-\d{2}/.exec(iso);
+  return match ? match[0] : iso;
+}
+
 function uniqueGroups(columns) {
   const seen = [];
   for (const column of columns) {
@@ -56,6 +63,7 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
   const mount = document.getElementById("regions-table");
   const missing = document.getElementById("regions-missing");
   const generated = document.getElementById("regions-generated");
+  const note = document.getElementById("regions-local-zone-note");
   const groupBox = document.getElementById("region-groups");
   if (!mount) return { update() {} };
 
@@ -65,6 +73,7 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
     if (groupBox) groupBox.replaceChildren();
     if (missing) missing.hidden = false;
     if (generated) generated.textContent = "";
+    if (note) note.textContent = "";
     return { update() {} };
   }
   if (missing) missing.hidden = true;
@@ -107,7 +116,10 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
   function update() {
     table.update(tableRows(), tableState());
     if (generated) {
-      generated.textContent = t("regions.generatedAt").replace("{date}", file.generatedAt);
+      generated.textContent = t("regions.generatedAt").replace("{date}", formatGeneratedAt(file.generatedAt));
+    }
+    if (note) {
+      note.textContent = t("regions.localZoneNote");
     }
   }
 
@@ -144,10 +156,12 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
   }
 
   // Compare 側のフィルタ変更に追随する (仕様 5.3: state を共有)。
+  // 共有するのは世代・ファミリだけ。リージョン選択まで引き継ぐと、この表の列が
+  // 1 リージョン分に絞られて「どこで使えるか」を見る目的が潰れる。
   document.addEventListener(COMPARE_STATE_EVENT, (event) => {
     const next = event.detail?.state;
     if (!next) return;
-    state = { ...state, generations: next.generations, families: next.families, region: next.region };
+    state = { ...state, generations: next.generations, families: next.families };
     update();
   });
 

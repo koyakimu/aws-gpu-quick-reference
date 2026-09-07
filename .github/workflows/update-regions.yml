@@ -5,8 +5,6 @@ on:
     # 毎週月曜 18:00 JST (09:00 UTC)
     - cron: "0 9 * * 1"
   workflow_dispatch:
-  repository_dispatch:
-    types: [cb-pricing-updated]
 
 permissions:
   contents: write
@@ -47,6 +45,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/regions.json
           git commit -m "chore: リージョン提供状況を自動更新"
+          # 他のデータ更新ワークフローが先に push していても non-fast-forward で落ちないようにする
+          git pull --rebase origin main
           git push
           # GITHUB_TOKEN の push では deploy.yml が発火しないため明示的に起動する
           gh workflow run deploy.yml --ref main
