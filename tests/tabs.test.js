@@ -28,19 +28,23 @@ beforeEach(() => {
 });
 
 describe("TAB_IDS", () => {
-  it("is the four tabs in the order the header shows them", () => {
-    expect(TAB_IDS).toEqual(["compare", "regions", "features", "calculator"]);
+  it("is the three tabs in the order the header shows them", () => {
+    expect(TAB_IDS).toEqual(["compare", "regions", "features"]);
   });
 });
 
 describe("tabFromHash", () => {
   it("maps a known hash to its tab id", () => {
     expect(tabFromHash("#regions")).toBe("regions");
-    expect(tabFromHash("#calculator")).toBe("calculator");
+    expect(tabFromHash("#features")).toBe("features");
   });
 
   it("accepts a hash without the leading marker", () => {
     expect(tabFromHash("features")).toBe("features");
+  });
+
+  it("keeps the old #calculator link working by opening compare", () => {
+    expect(tabFromHash("#calculator")).toBe("compare");
   });
 
   it("falls back to compare for an empty or unknown hash", () => {
@@ -67,7 +71,7 @@ describe("initTabs", () => {
 
   it("keeps every panel in the DOM", () => {
     initTabs();
-    expect(document.querySelectorAll(".panel")).toHaveLength(4);
+    expect(document.querySelectorAll(".panel")).toHaveLength(3);
   });
 
   it("sets aria-selected on the buttons", () => {
@@ -78,9 +82,9 @@ describe("initTabs", () => {
 
   it("switches when a tab is clicked, and writes the hash", () => {
     initTabs();
-    button("calculator").dispatchEvent(new Event("click", { bubbles: true }));
-    expect(visiblePanels()).toEqual(["panel-calculator"]);
-    expect(window.location.hash).toBe("#calculator");
+    button("features").dispatchEvent(new Event("click", { bubbles: true }));
+    expect(visiblePanels()).toEqual(["panel-features"]);
+    expect(window.location.hash).toBe("#features");
   });
 
   it("switches when the hash changes from outside", () => {

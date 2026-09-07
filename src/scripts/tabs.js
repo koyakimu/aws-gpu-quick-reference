@@ -1,12 +1,16 @@
 // URL ハッシュでタブを切り替える。非表示のタブも DOM は描いたまま hidden で隠すので、
 // 切り替えのたびに描き直す必要がない (仕様 5.5)。
-export const TAB_IDS = ["compare", "regions", "features", "calculator"];
+export const TAB_IDS = ["compare", "regions", "features"];
+
+// 計算ツールは compare タブの中に畳んで置いてあるが、旧 #calculator リンクは生かす。
+const TAB_ALIASES = { calculator: "compare" };
 
 const DEFAULT_TAB = "compare";
 
 export function tabFromHash(hash) {
   const id = String(hash || "").replace(/^#/, "");
-  return TAB_IDS.includes(id) ? id : DEFAULT_TAB;
+  if (TAB_IDS.includes(id)) return id;
+  return TAB_ALIASES[id] || DEFAULT_TAB;
 }
 
 export function initTabs({ onChange } = {}) {

@@ -11,6 +11,13 @@ import { initCompareView } from "./compare-view.js";
 import { initCalculator } from "./calculator.js";
 import { PRICING_META } from "./gpu-data.js";
 
+// 旧 #calculator リンクは compare タブを開いたうえで計算ツールの details を展開する。
+function openCalculatorFromHash() {
+  if (window.location.hash.replace(/^#/, "") !== "calculator") return;
+  const box = document.getElementById("calculator-box");
+  if (box) box.open = true;
+}
+
 // ヘッダのキャプションはデータの正 (instances.json) に合わせる。
 // HTML 側の %PRICING_AS_OF% はビルド時に埋まるフォールバック。
 function setPricingCaption() {
@@ -26,6 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   initCompareView();
   initCalculator();
+  openCalculatorFromHash();
+  window.addEventListener("hashchange", openCalculatorFromHash);
   setupLangToggle();
   setupThemeToggle();
 });

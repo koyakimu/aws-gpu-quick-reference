@@ -190,3 +190,31 @@
   font-size: var(--fs-xs);
   color: var(--fg-muted);
 }
+
+/* 比較タブの先頭に畳んで置く計算ツール。summary が開閉ボタン (.ctl と同じ見た目) */
+.calc-box {
+  margin-bottom: var(--sp-4);
+}
+
+.calc-box > summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
+.calc-box > summary::after {
+  content: "▸";
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+
+.calc-box[open] > summary {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: var(--accent-line);
+  margin-bottom: var(--sp-3);
+}
+
+.calc-box[open] > summary::after {
+  content: "▾";
+  color: var(--accent);
+}
