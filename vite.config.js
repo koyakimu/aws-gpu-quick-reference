@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import { viteSingleFile } from "vite-plugin-singlefile";
 
 // ビルド実行日 (JST) を index.html の %BUILD_DATE% に埋め込む
