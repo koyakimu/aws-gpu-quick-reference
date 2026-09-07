@@ -28,23 +28,32 @@ async function* fetchLines(region) {
   process.stderr.write(`  done (${count} lines)\n`);
 }
 
-async function collectLines(region, wantedSizes) {
-  const buffered = [];
-  for await (const line of fetchLines(region)) buffered.push(line);
-  return scanPriceList(buffered, wantedSizes);
+function fail(message) {
+  process.stderr.write(`error: ${message}\n`);
+  process.exit(1);
 }
 
 const dryRun = process.argv.includes("--dry-run");
 const file = readInstances();
 const wantedSizes = new Set(file.instances.map((row) => row.size));
 
-const usEast1Prices = await collectLines(OD_REGION, wantedSizes);
-const tokyoPrices = await collectLines(TOKYO_REGION, wantedSizes);
+const usEast1Prices = await scanPriceList(fetchLines(OD_REGION), wantedSizes);
+const tokyoPrices = await scanPriceList(fetchLines(TOKYO_REGION), wantedSizes);
 const tokyoSizes = new Set(tokyoPrices.keys());
 
-const missing = file.instances
-  .filter((row) => row.unit !== "ultraserver" && !usEast1Prices.has(row.size) && row.price != null)
-  .map((row) => row.size);
+// 取得が途中で切れた・形式が変わった場合に、price や tokyo を空の結果で
+// 上書きしてしまわないよう、書き込み前に結果の妥当性を確かめる。
+const priceable = file.instances.filter((row) => row.unit !== "ultraserver");
+if (usEast1Prices.size === 0) fail(`no ${OD_REGION} On-Demand prices were parsed; aborting without writing`);
+if (tokyoSizes.size === 0) fail(`no ${TOKYO_REGION} On-Demand prices were parsed; aborting without writing`);
+if (usEast1Prices.size * 2 < priceable.length) {
+  fail(
+    `only ${usEast1Prices.size} of ${priceable.length} sizes were priced in ${OD_REGION}; ` +
+      "the download or the Price List format is probably broken. Aborting without writing",
+  );
+}
+
+const missing = priceable.filter((row) => !usEast1Prices.has(row.size)).map((row) => row.size);
 if (missing.length) {
   process.stderr.write(`warning: no ${OD_REGION} On-Demand price found for: ${missing.join(", ")}\n`);
 }

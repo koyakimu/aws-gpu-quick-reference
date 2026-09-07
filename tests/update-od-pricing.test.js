@@ -162,35 +162,116 @@ const FIXTURE = `{
 }
 `;
 
+// 同一 instanceType に SKU が2つ、かつ片方に offer term が2つある入力。
+// 最安値が選ばれることを確かめるために使う。
+const MIN_FIXTURE = `{
+  "products" : {
+    "GGGGGGGGGGGGGGGG" : {
+      "attributes" : {
+        "instanceType" : "p4d.24xlarge",
+        "operatingSystem" : "Linux",
+        "tenancy" : "Shared",
+        "preInstalledSw" : "NA",
+        "capacitystatus" : "Used",
+        "licenseModel" : "No License required"
+      }
+    },
+    "HHHHHHHHHHHHHHHH" : {
+      "attributes" : {
+        "instanceType" : "p4d.24xlarge",
+        "operatingSystem" : "Linux",
+        "tenancy" : "Shared",
+        "preInstalledSw" : "NA",
+        "capacitystatus" : "Used",
+        "licenseModel" : "No License required"
+      }
+    }
+  },
+  "terms" : {
+    "OnDemand" : {
+      "GGGGGGGGGGGGGGGG" : {
+        "GGGGGGGGGGGGGGGG.JRTCKXETXF" : {
+          "priceDimensions" : {
+            "GGGGGGGGGGGGGGGG.JRTCKXETXF.6YS6EN2CT7" : {
+              "unit" : "Hrs",
+              "pricePerUnit" : {
+                "USD" : "32.7726000000"
+              },
+              "appliesTo" : [ ]
+            },
+            "GGGGGGGGGGGGGGGG.JRTCKXETXF.AAAAAAAAAA" : {
+              "unit" : "Hrs",
+              "pricePerUnit" : {
+                "USD" : "28.0000000000"
+              },
+              "appliesTo" : [ ]
+            }
+          },
+          "termAttributes" : { }
+        }
+      },
+      "HHHHHHHHHHHHHHHH" : {
+        "HHHHHHHHHHHHHHHH.JRTCKXETXF" : {
+          "priceDimensions" : {
+            "HHHHHHHHHHHHHHHH.JRTCKXETXF.6YS6EN2CT7" : {
+              "unit" : "Hrs",
+              "pricePerUnit" : {
+                "USD" : "20.0000000000"
+              },
+              "appliesTo" : [ ]
+            }
+          },
+          "termAttributes" : { }
+        }
+      }
+    }
+  }
+}
+`;
+
 const LINES = FIXTURE.split("\n");
 
 describe("scanPriceList", () => {
-  it("returns the Linux / Shared / Used / NA On-Demand hourly price", () => {
-    const prices = scanPriceList(LINES, new Set(["p5.48xlarge", "g6f.large"]));
+  it("returns the Linux / Shared / Used / NA On-Demand hourly price", async () => {
+    const prices = await scanPriceList(LINES, new Set(["p5.48xlarge", "g6f.large"]));
     expect(prices.get("p5.48xlarge")).toBeCloseTo(55.044);
     expect(prices.get("g6f.large")).toBeCloseTo(0.201);
   });
 
-  it("ignores instance types that were not asked for", () => {
-    const prices = scanPriceList(LINES, new Set(["p5.48xlarge"]));
+  it("ignores instance types that were not asked for", async () => {
+    const prices = await scanPriceList(LINES, new Set(["p5.48xlarge"]));
     expect(prices.has("m5.large")).toBe(false);
   });
 
-  it("ignores Windows, Dedicated and UnusedCapacityReservation products", () => {
-    const prices = scanPriceList(LINES, new Set(["p5.48xlarge"]));
+  it("ignores Windows, Dedicated and UnusedCapacityReservation products", async () => {
+    const prices = await scanPriceList(LINES, new Set(["p5.48xlarge"]));
     // Windows の 99.99、Dedicated / UnusedCapacityReservation の SKU が
     // 選ばれていないことを、価格が Linux/Shared/Used の値であることで確かめる
     expect(prices.get("p5.48xlarge")).toBeCloseTo(55.044);
     expect(prices.size).toBe(1);
   });
 
-  it("ignores Reserved terms", () => {
-    const prices = scanPriceList(LINES, new Set(["p5.48xlarge"]));
+  it("ignores Reserved terms", async () => {
+    const prices = await scanPriceList(LINES, new Set(["p5.48xlarge"]));
     expect(prices.get("p5.48xlarge")).not.toBeCloseTo(11.11);
   });
 
-  it("returns an empty map when nothing matches", () => {
-    expect(scanPriceList(LINES, new Set(["p9.99xlarge"])).size).toBe(0);
+  it("returns an empty map when nothing matches", async () => {
+    expect((await scanPriceList(LINES, new Set(["p9.99xlarge"]))).size).toBe(0);
+  });
+
+  it("accepts an async iterable of lines (streamed download)", async () => {
+    async function* streamed() {
+      for (const line of LINES) yield line;
+    }
+    const prices = await scanPriceList(streamed(), new Set(["p5.48xlarge", "g6f.large"]));
+    expect(prices.get("p5.48xlarge")).toBeCloseTo(55.044);
+    expect(prices.get("g6f.large")).toBeCloseTo(0.201);
+  });
+
+  it("takes the cheapest price when a size has several SKUs or offer terms", async () => {
+    const prices = await scanPriceList(MIN_FIXTURE.split("\n"), new Set(["p4d.24xlarge"]));
+    expect(prices.get("p4d.24xlarge")).toBeCloseTo(20.0);
   });
 });
 

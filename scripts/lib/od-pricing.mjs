@@ -11,6 +11,7 @@ const PRODUCT_END = /^ {4}\},?$/;
 const ATTRIBUTE = /^ {8}"([A-Za-z]+)" : "(.*?)",?$/;
 const TERM_KIND = /^ {4}"([A-Za-z]+)" : \{$/;
 const TERM_SKU = /^ {6}"([A-Z0-9]+)" : \{$/;
+const PRICE_DIMENSION = /^ {12}"[A-Za-z0-9.]+" : \{$/;
 const TERM_UNIT = /^ {14}"unit" : "(.*?)",$/;
 const TERM_USD = /^ {16}"USD" : "([0-9.]+)"$/;
 
@@ -26,9 +27,11 @@ function isWantedProduct(attributes, wantedSizes) {
   );
 }
 
-// lines: 行の同期イテラブル。返り値は size -> 時間単価 (USD, 生の数値)。
-// 同じ instanceType に複数 SKU が該当したときは安い方を採る。
-export function scanPriceList(lines, wantedSizes) {
+// lines: 行のイテラブル (同期・非同期どちらでもよい)。ストリームをそのまま渡せるよう
+// for await で回し、480MB を配列に溜めずに走査する。
+// 返り値は size -> 時間単価 (USD, 生の数値)。
+// 同じ instanceType に複数 SKU / 複数 offer term が該当したときは安い方を採る。
+export async function scanPriceList(lines, wantedSizes) {
   const skuToSize = new Map();
   const skuToPrice = new Map();
 
@@ -39,7 +42,7 @@ export function scanPriceList(lines, wantedSizes) {
   let termSku = null;
   let unit = null;
 
-  for (const line of lines) {
+  for await (const line of lines) {
     const sectionMatch = SECTION.exec(line);
     if (sectionMatch) {
       section = sectionMatch[1];
@@ -83,7 +86,16 @@ export function scanPriceList(lines, wantedSizes) {
 
       const skuLine = TERM_SKU.exec(line);
       if (skuLine) {
-        termSku = skuLine[1];
+        // 目的の product に紐づかない SKU は読み飛ばす。
+        // products は terms より先に現れるので、ここで対象を絞れる。
+        termSku = skuToSize.has(skuLine[1]) ? skuLine[1] : null;
+        unit = null;
+        continue;
+      }
+      if (termSku == null) continue;
+      // priceDimension ごとに unit を捨てる。unit を持たない dimension が
+      // 直前の "Hrs" を引き継がないようにするため。
+      if (PRICE_DIMENSION.test(line)) {
         unit = null;
         continue;
       }
@@ -93,7 +105,7 @@ export function scanPriceList(lines, wantedSizes) {
         continue;
       }
       const usd = TERM_USD.exec(line);
-      if (usd && termSku != null && unit === "Hrs") {
+      if (usd && unit === "Hrs") {
         const value = Number(usd[1]);
         if (value > 0) {
           const previous = skuToPrice.get(termSku);
