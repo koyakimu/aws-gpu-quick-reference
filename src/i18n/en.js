@@ -44,6 +44,7 @@ export const en = {
     families: "Family",
     columns: "Columns",
     region: "Region",
+    allRegions: "All regions",
     rowCount: "{shown} / {total} rows",
   },
   groups: {
@@ -53,6 +54,30 @@ export const en = {
     connect: "Connect",
     system: "System",
     price: "Price",
+  },
+  regionGroups: {
+    na: "North America",
+    sa: "South America",
+    eu: "Europe",
+    meaf: "Middle East & Africa",
+    ap: "Asia Pacific",
+  },
+  regions: {
+    generatedAt: "Generated: {date}",
+    localZoneNote: "CB offerings available only in a Local Zone are counted in their parent region's column.",
+  },
+  features: {
+    legend: "✓ supported / △ limited (see notes) / blank not supported",
+    since: "Introduced in: {gen}",
+    fp8: { label: "FP8", desc: "Supports FP8 precision on the Tensor Cores" },
+    fp4: { label: "FP4", desc: "Supports FP4 precision on the Tensor Cores" },
+    nvlink: { label: "NVLink", desc: "GPUs can be linked directly over NVLink" },
+    mig: { label: "MIG", desc: "One GPU can be split into isolated instances" },
+    transformerEngine: { label: "Transformer Engine", desc: "Has the mixed-precision engine for transformers" },
+    confidentialCompute: { label: "Confidential Computing", desc: "Protects data and models while in use" },
+    nvenc: { label: "NVENC", desc: "Has a hardware video encoder" },
+    rtCores: { label: "RT Cores", desc: "Has dedicated ray-tracing cores" },
+    ecc: { label: "ECC", desc: "Supports error-correcting memory" },
   },
   placeholders: {
     regionsMissing: "Region availability data has not been generated yet.",

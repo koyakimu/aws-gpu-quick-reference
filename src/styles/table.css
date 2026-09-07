@@ -197,3 +197,79 @@ a.chip:hover {
 .empty[hidden] {
   display: none;
 }
+
+/* 世代の帯行。データ行ではないので、罫線もホバーも本文とは別扱いにする */
+.table-frame tbody tr.band td.band-cell {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg-raised);
+  color: var(--fg-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  height: auto;
+  padding: var(--sp-1) var(--cell-pad-x);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-soft);
+  border-left: 3px solid var(--chip-fg);
+}
+.table-frame tbody tr.band:hover td.band-cell {
+  background: var(--bg-raised);
+}
+.table-frame tbody tr:first-child td.band-cell {
+  border-top: 0;
+}
+
+.table-frame tr.band-blackwell td.band-cell {
+  color: var(--chip-blackwell-fg);
+  border-left-color: var(--chip-blackwell-fg);
+}
+.table-frame tr.band-hopper td.band-cell {
+  color: var(--chip-hopper-fg);
+  border-left-color: var(--chip-hopper-fg);
+}
+.table-frame tr.band-ada td.band-cell {
+  color: var(--chip-ada-fg);
+  border-left-color: var(--chip-ada-fg);
+}
+.table-frame tr.band-ampere td.band-cell {
+  color: var(--chip-ampere-fg);
+  border-left-color: var(--chip-ampere-fg);
+}
+.table-frame tr.band-turing td.band-cell {
+  color: var(--chip-turing-fg);
+  border-left-color: var(--chip-turing-fg);
+}
+.table-frame tr.band-volta td.band-cell {
+  color: var(--chip-volta-fg);
+  border-left-color: var(--chip-volta-fg);
+}
+
+/* 繰り返しを省いたセルは空欄。EMPTY のダッシュも出さない */
+.table-frame td.collapsed {
+  color: var(--fg-dim);
+}
+
+/* Features タブ: 表の下の注記一覧。番号はセルの「△ n」と対応する */
+.feature-notes {
+  margin: var(--sp-1) 0 0;
+  padding-left: var(--sp-4);
+  line-height: 1.7;
+}
+
+.feature-notes li {
+  color: var(--fg-muted);
+}
+
+/* 先頭列の GPU 名リンクは、通常のリンク色ではなく本文色で控えめに出す */
+.table-frame td.sticky a {
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--line);
+}
+
+.table-frame td.sticky a:hover {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}

@@ -94,6 +94,11 @@ describe("COLUMN_GROUPS and COMPARE_COLUMNS", () => {
     expect(keys).toContain("tokyo");
   });
 
+  it("puts the GPU chip before the EC2 family (NVIDIA-side first)", () => {
+    const keys = COMPARE_COLUMNS.map((c) => c.key);
+    expect(keys.slice(0, 4)).toEqual(["size", "gpu", "ec2", "count"]);
+  });
+
   it("has no generation column — the chip carries it", () => {
     expect(COMPARE_COLUMNS.map((c) => c.key)).not.toContain("gen");
   });
@@ -204,13 +209,6 @@ describe("saveState / loadState", () => {
   });
 });
 
-describe("regionFilter", () => {
-  it("is a no-op until PR 4 implements it", () => {
-    expect(regionFilter(ROWS, "ap-northeast-1")).toEqual(ROWS);
-    expect(regionFilter(ROWS, null)).toEqual(ROWS);
-  });
-});
-
 describe("filterRows", () => {
   it("returns everything when no filter is set", () => {
     expect(filterRows(ROWS, defaultState())).toHaveLength(4);
@@ -261,7 +259,18 @@ describe("formatRowCount", () => {
 describe("initCompareView", () => {
   it("renders one row per instance", () => {
     initCompareView({ rows: ROWS, now: NOW });
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(4);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(4);
+  });
+
+  it("opens with a generation band before the first row", () => {
+    initCompareView({ rows: ROWS, now: NOW });
+    const rows = [...document.querySelectorAll("#compare-table tbody tr")];
+    expect(rows[0].classList.contains("band")).toBe(true);
+    expect(rows[0].classList.contains("band-blackwell")).toBe(true);
+    expect(rows[0].textContent).toBe("Blackwell");
+    expect(rows[1].classList.contains("band")).toBe(false);
+    expect(rows[1].children[1].textContent).toBe("B200");
+    expect(rows[1].children[2].textContent).toBe("P6-B200");
   });
 
   it("mounts the engine's frame inside #compare-table", () => {
@@ -294,7 +303,7 @@ describe("initCompareView", () => {
   it("shows the family on every row — no rowspans anywhere", () => {
     initCompareView({ rows: ROWS, now: NOW });
     expect(document.querySelectorAll("#compare-table [rowspan]")).toHaveLength(0);
-    const familyCells = [...document.querySelectorAll("#compare-table tbody tr")].map(
+    const familyCells = [...document.querySelectorAll("#compare-table tbody tr:not(.band)")].map(
       (tr) => tr.textContent,
     );
     expect(familyCells[0]).toContain("P6-B200");
@@ -315,7 +324,7 @@ describe("initCompareView", () => {
   it("filters the table when a generation button is clicked", () => {
     initCompareView({ rows: ROWS, now: NOW });
     document.querySelector('[data-gen="ada"]').dispatchEvent(new Event("click", { bubbles: true }));
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(2);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(2);
     expect(document.getElementById("compare-row-count").textContent).toBe("2 / 4 行");
     expect(document.querySelector('[data-gen="ada"]').classList.contains("on")).toBe(true);
     expect(document.querySelector('[data-gen="ada"]').getAttribute("aria-pressed")).toBe("true");
@@ -326,7 +335,7 @@ describe("initCompareView", () => {
     const btn = document.querySelector('[data-gen="ada"]');
     btn.dispatchEvent(new Event("click", { bubbles: true }));
     btn.dispatchEvent(new Event("click", { bubbles: true }));
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(4);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(4);
     expect(btn.classList.contains("on")).toBe(false);
   });
 
@@ -343,7 +352,7 @@ describe("initCompareView", () => {
     const box = document.querySelector('[data-family="P5"]');
     box.checked = true;
     box.dispatchEvent(new Event("change", { bubbles: true }));
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(1);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(1);
   });
 
   it("does not persist the family filter", () => {
@@ -394,7 +403,7 @@ describe("initCompareView", () => {
       JSON.stringify({ hiddenGroups: ["performance"], generations: ["ada"] }),
     );
     initCompareView({ rows: ROWS, now: NOW });
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(2);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(2);
     expect(document.querySelector('[data-gen="ada"]').classList.contains("on")).toBe(true);
     expect(document.querySelector('[data-group="performance"]').checked).toBe(false);
   });
@@ -405,7 +414,7 @@ describe("initCompareView", () => {
       (th) => th.dataset.key === "price",
     );
     priceHeader.dispatchEvent(new Event("click", { bubbles: true }));
-    const first = document.querySelector("#compare-table tbody tr td");
+    const first = document.querySelector("#compare-table tbody tr:not(.band) td");
     expect(first.textContent).toBe("p6-b200.48xlarge"); // desc: 113.93 が先頭
   });
 
@@ -416,15 +425,10 @@ describe("initCompareView", () => {
     );
     priceHeader.dispatchEvent(new Event("click", { bubbles: true }));
     document.querySelector('[data-gen="ada"]').dispatchEvent(new Event("click", { bubbles: true }));
-    const sizes = [...document.querySelectorAll("#compare-table tbody tr td:first-child")].map(
+    const sizes = [...document.querySelectorAll("#compare-table tbody tr:not(.band) td:first-child")].map(
       (td) => td.textContent,
     );
     expect(sizes).toEqual(["g6e.xlarge", "g6.xlarge"]); // 1.86 → 0.80
-  });
-
-  it("keeps the region filter hidden in this PR", () => {
-    initCompareView({ rows: ROWS, now: NOW });
-    expect(document.getElementById("region-filter").hidden).toBe(true);
   });
 
   it("shows the empty-result message when nothing matches", () => {
@@ -433,7 +437,7 @@ describe("initCompareView", () => {
     box.checked = true;
     box.dispatchEvent(new Event("change", { bubbles: true }));
     document.querySelector('[data-gen="ada"]').dispatchEvent(new Event("click", { bubbles: true }));
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(0);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(0);
     expect(document.querySelector("#compare-table .empty").textContent).toBe(
       "条件に合う行がありません。",
     );
@@ -446,7 +450,7 @@ describe("initCompareView", () => {
 
   it("defaults to the real GPU_DATA when no rows are passed", () => {
     initCompareView();
-    expect(document.querySelectorAll("#compare-table tbody tr")).toHaveLength(GPU_DATA.length);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(GPU_DATA.length);
   });
 
   it("builds a generation button for every generation in the real data", () => {
@@ -465,5 +469,47 @@ describe("initCompareView", () => {
     document.getElementById("compare-row-count").textContent = "";
     view.update();
     expect(document.getElementById("compare-row-count").textContent).toBe("4 / 4 行");
+  });
+});
+
+describe("region filter", () => {
+  const FILE = {
+    generatedAt: "2026-09-07T09:00:00Z",
+    regions: [
+      { code: "us-east-1", name: "US East (N. Virginia)" },
+      { code: "ap-northeast-1", name: "Asia Pacific (Tokyo)" },
+    ],
+    availability: {
+      "p6-b200.48xlarge": { "us-east-1": "both" },
+      "p5.48xlarge": { "us-east-1": "both", "ap-northeast-1": "cb" },
+      "g6.xlarge": { "ap-northeast-1": "od" },
+      "g6e.xlarge": {},
+    },
+  };
+
+  it("passes every row through when no region is selected", () => {
+    expect(regionFilter(ROWS, null, FILE)).toHaveLength(ROWS.length);
+  });
+
+  it("keeps only rows available in the selected region", () => {
+    expect(regionFilter(ROWS, "ap-northeast-1", FILE).map((r) => r.size)).toEqual([
+      "p5.48xlarge",
+      "g6.xlarge",
+    ]);
+  });
+
+  it("builds the select from regions.json and hides the filter without it", () => {
+    initCompareView({ rows: ROWS, regionsFile: FILE });
+    const select = document.getElementById("region-select");
+    expect(document.getElementById("region-filter").hidden).toBe(false);
+    expect([...select.options].map((o) => o.value)).toEqual(["", "us-east-1", "ap-northeast-1"]);
+
+    select.value = "ap-northeast-1";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(2);
+
+    mountPanel();
+    initCompareView({ rows: ROWS, regionsFile: null });
+    expect(document.getElementById("region-filter").hidden).toBe(true);
   });
 });

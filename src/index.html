@@ -233,15 +233,27 @@
       </section>
 
       <section class="panel" id="panel-regions" role="tabpanel" hidden>
-        <p class="placeholder" data-i18n="placeholders.regionsMissing">
+        <div class="bar">
+          <div class="filter-group" id="region-groups"></div>
+        </div>
+
+        <div id="regions-table"></div>
+
+        <p class="placeholder" id="regions-missing" data-i18n="placeholders.regionsMissing" hidden>
           リージョン提供状況のデータはまだ生成されていません。
         </p>
+        <p class="note mono" id="regions-generated"></p>
+        <p class="note" id="regions-local-zone-note"></p>
       </section>
 
       <section class="panel" id="panel-features" role="tabpanel" hidden>
-        <p class="placeholder" data-i18n="placeholders.featuresMissing">
+        <div id="features-table"></div>
+
+        <p class="placeholder" id="features-missing" data-i18n="placeholders.featuresMissing" hidden>
           GPU 機能マトリクスのデータはまだ生成されていません。
         </p>
+        <p class="note" id="features-legend"></p>
+        <div class="note" id="features-notes"></div>
       </section>
 
     </div>

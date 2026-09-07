@@ -95,3 +95,25 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 判定ロジックは `scripts/lib/cb-pricing.mjs` の純関数（`pickRate` / `applyCbPricing` / `unmatchedFeedKeys`）にあり、`tests/update-cb-pricing.test.js` でテストする。ファイルの読み書きは `scripts/lib/instances-file.mjs` の `readInstances` / `writeInstances` を使う（1 レコード 1 行の書式を保つため、別のシリアライザを書かないこと）。`scripts/update-cb-pricing.mjs` は fetch と入出力だけの薄い CLI で、フィードにあって `instances.json` に無いサイズを `warning: no row for <key>` として stderr に出す（trn / inf 系は対象外なので除く）。
 
 **この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば `data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
+
+#### リージョン提供有無 (data/regions.json)
+
+`data/regions.json` は `scripts/update-regions.mjs` が生成する。**手で編集しない。**
+
+- AWS Price List の `region_index.json` から通常リージョン (Local Zone と GovCloud を除く 34 件) を取り、各リージョンの `index.json` の `products` セクションをストリームで走査して Linux / Shared の提供有無を判定する
+- Capacity Blocks 側は CB 価格 JSON の `instance_types.<size>.pricing[].region_code` から取る。UltraServer は Price List に載らないため CB のみで判定する
+- `products` は `terms` より前にあるので、`terms` に着いた時点でストリームを閉じる。これがないと 1 リージョン 480MB を丸ごと落とすことになる (実測: us-east-1 の `products` は 208MB、af-south-1 は 72MB)
+- 1 リージョンの取得失敗では止まらない。そのリージョンは前回値を保持して警告のみ。全リージョン失敗のときだけ終了コード 1
+- `availability` のリージョンキーは並列走査の完了順ではなくリージョンコード順に詰め直す。実行ごとにキー順が変わると `sameExceptGeneratedAt` が毎回「差分あり」と判定してしまうため
+
+**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST の cron と `workflow_dispatch` で実行し、差分があれば main にコミットして deploy を起動する。1 回あたりの転送量は約 3〜4GB、実行時間は 3〜8 分。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
+
+### GPU 機能マトリクス (data/gpu-features.json)
+
+`data/gpu-features.json` は**手書き**。Features タブ（`src/scripts/features-view.js`）が読む。
+
+- `features[]` が列の並びと種類を決める。`gpus.<gpuKey>` が行で、値は `true` / `false` / `"partial"`
+- `"partial"` のセルには `notes.<機能キー>` に日本語の注釈を書く。表では「△ n」と番号が付き、表の下の一覧に出る
+- 機能名と説明は i18n 辞書の `features.<キー>.label` / `.desc`（ja / en / ko の 3 つとも必要）
+- `sources.<gpuKey>` に根拠にした NVIDIA データシートの URL を残す
+- GPU を追加したら `instances.json` の `gpuKey` と同じキーで 1 件足す。`tests/gpu-data.test.js` の "gpu-features.json covers every gpuKey" が、全 `gpuKey` の存在・未定義の機能キーが無いこと・`sources` の有無を検証する

@@ -44,6 +44,7 @@ export const ja = {
     families: "ファミリ",
     columns: "列",
     region: "リージョン",
+    allRegions: "全リージョン",
     rowCount: "{shown} / {total} 行",
   },
   groups: {
@@ -53,6 +54,30 @@ export const ja = {
     connect: "接続",
     system: "システム",
     price: "価格",
+  },
+  regionGroups: {
+    na: "北米",
+    sa: "南米",
+    eu: "欧州",
+    meaf: "中東・アフリカ",
+    ap: "アジア太平洋",
+  },
+  regions: {
+    generatedAt: "データ生成: {date}",
+    localZoneNote: "Local Zone でのみ提供される CB は親リージョンの列に含めています。",
+  },
+  features: {
+    legend: "✓ 対応 / △ 一部対応（注記あり） / 空欄 非対応",
+    since: "初出世代: {gen}",
+    fp8: { label: "FP8", desc: "FP8 精度の Tensor Core 演算に対応するか" },
+    fp4: { label: "FP4", desc: "FP4 精度の Tensor Core 演算に対応するか" },
+    nvlink: { label: "NVLink", desc: "GPU 間を NVLink で直結できるか" },
+    mig: { label: "MIG", desc: "1 基の GPU を複数の独立したインスタンスに分割できるか" },
+    transformerEngine: { label: "Transformer Engine", desc: "Transformer 向けの混合精度エンジンを持つか" },
+    confidentialCompute: { label: "Confidential Computing", desc: "実行中のデータとモデルを保護する機能に対応するか" },
+    nvenc: { label: "NVENC", desc: "ハードウェア動画エンコーダを持つか" },
+    rtCores: { label: "RT Cores", desc: "レイトレーシング専用コアを持つか" },
+    ecc: { label: "ECC", desc: "メモリの誤り訂正符号に対応するか" },
   },
   placeholders: {
     regionsMissing: "リージョン提供状況のデータはまだ生成されていません。",

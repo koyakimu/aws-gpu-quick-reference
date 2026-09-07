@@ -44,6 +44,7 @@ export const ko = {
     families: "패밀리",
     columns: "열",
     region: "리전",
+    allRegions: "전체 리전",
     rowCount: "{shown} / {total} 행",
   },
   groups: {
@@ -53,6 +54,30 @@ export const ko = {
     connect: "연결",
     system: "시스템",
     price: "가격",
+  },
+  regionGroups: {
+    na: "북미",
+    sa: "남미",
+    eu: "유럽",
+    meaf: "중동·아프리카",
+    ap: "아시아 태평양",
+  },
+  regions: {
+    generatedAt: "데이터 생성: {date}",
+    localZoneNote: "Local Zone 에서만 제공되는 CB 는 상위 리전 열에 포함했습니다.",
+  },
+  features: {
+    legend: "✓ 지원 / △ 부분 지원(주석 참고) / 빈칸 미지원",
+    since: "최초 세대: {gen}",
+    fp8: { label: "FP8", desc: "Tensor Core 에서 FP8 정밀도를 지원하는지" },
+    fp4: { label: "FP4", desc: "Tensor Core 에서 FP4 정밀도를 지원하는지" },
+    nvlink: { label: "NVLink", desc: "GPU 간을 NVLink 로 직결할 수 있는지" },
+    mig: { label: "MIG", desc: "GPU 1개를 독립된 인스턴스로 분할할 수 있는지" },
+    transformerEngine: { label: "Transformer Engine", desc: "Transformer 용 혼합 정밀도 엔진을 갖추었는지" },
+    confidentialCompute: { label: "Confidential Computing", desc: "사용 중인 데이터와 모델을 보호하는지" },
+    nvenc: { label: "NVENC", desc: "하드웨어 비디오 인코더를 갖추었는지" },
+    rtCores: { label: "RT Cores", desc: "레이 트레이싱 전용 코어를 갖추었는지" },
+    ecc: { label: "ECC", desc: "오류 정정 메모리를 지원하는지" },
   },
   placeholders: {
     regionsMissing: "리전 제공 현황 데이터가 아직 생성되지 않았습니다.",
