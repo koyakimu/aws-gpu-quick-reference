@@ -1,41 +1,4 @@
-:root {
-  /* AWS カラーパレット */
-  --aws-squid-ink: #232f3e;
-  --aws-squid-ink-dark: #1a242f;
-  --aws-squid-ink-deep: #131a22;
-  --aws-orange: #ff9900;
-  --aws-orange-light: #ffac31;
-  --aws-orange-dark: #ec7211;
-  --aws-smile: #ff9900;
-  --aws-blue: #527fff;
-  --aws-teal: #44b9c6;
-  --aws-green: #7aa116;
-  --aws-purple: #8c6eff;
-
-  /* 世代別カラー（AWSカラーベース） */
-  --c-blackwell: 140, 110, 255;
-  --c-hopper: 82, 127, 255;
-  --c-ada: 68, 185, 198;
-  --c-ampere: 255, 153, 0;
-  --c-turing: 122, 161, 22;
-  --c-volta: 136, 153, 166;
-
-  /* UI カラー */
-  --c-accent: var(--aws-orange);
-  --c-price: #7aa116;
-  --c-cb: var(--aws-teal);
-  --c-inst: var(--aws-blue);
-  --c-efa: var(--aws-purple);
-  --c-pcie: #e07eac;
-  --c-warn: var(--aws-orange-light);
-  --c-est: #ffd97d;
-  --c-ok: #7aa116;
-  --c-no: #d13212;
-
-  /* レイアウト */
-  --border-radius: 12px;
-}
-
+/* リセット、body、Notes、そして 768px のメディアクエリ (サイト唯一の分岐点) */
 * {
   margin: 0;
   padding: 0;
@@ -43,34 +6,25 @@
 }
 
 body {
-  font-family:
-    "Amazon Ember", "Segoe UI", "Hiragino Sans", "Meiryo",
-    system-ui, sans-serif;
-  background: var(--aws-squid-ink-deep);
-  background-image:
-    radial-gradient(
-      ellipse at 20% 50%,
-      rgba(82, 127, 255, 0.06) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 80% 20%,
-      rgba(140, 110, 255, 0.05) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 50% 100%,
-      rgba(255, 153, 0, 0.04) 0%,
-      transparent 40%
-    );
-  color: #e8eaed;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.45;
+  background: var(--bg);
+  color: var(--fg);
   min-height: 100vh;
-  padding: 24px;
-  line-height: 1.5;
+  padding: var(--sp-5);
+  -webkit-font-smoothing: antialiased;
 }
 
-.container {
-  max-width: 100%;
+.app {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
 }
 
 a {
@@ -78,58 +32,136 @@ a {
   text-decoration: none;
 }
 a:hover {
+  color: var(--fg-strong);
   text-decoration: underline;
-  opacity: 0.9;
+}
+
+/* キーボード操作にだけ輪郭を出す */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+/* 未生成データのプレースホルダ (仕様 10) */
+.placeholder {
+  padding: var(--sp-6);
+  text-align: center;
+  color: var(--fg-muted);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
 }
 
 /* Notes */
 .notes {
-  margin-top: 24px;
-  padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--border-radius);
-  font-size: 0.9em;
+  margin-top: var(--sp-5);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-sm);
   line-height: 1.7;
+  color: var(--fg-muted);
 }
 
 .notes h3 {
-  color: var(--aws-orange);
-  margin-bottom: 12px;
-  font-size: 1.05em;
+  color: var(--fg-strong);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  margin-top: var(--sp-4);
+  margin-bottom: var(--sp-2);
+}
+.notes h3:first-child {
+  margin-top: 0;
+}
+
+.notes h4 {
+  color: var(--fg);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  margin-top: var(--sp-3);
+  margin-bottom: var(--sp-1);
 }
 
 .notes ul {
-  margin-left: 20px;
+  margin-left: var(--sp-4);
 }
 .notes li {
-  margin-bottom: 6px;
-  color: #c5cdd5;
+  margin-bottom: var(--sp-1);
 }
 .notes li strong {
-  color: #e8eaed;
+  color: var(--fg);
+  font-weight: 600;
 }
-.notes li ul {
-  margin-top: 4px;
-}
-
-.disclaimer-text {
-  color: #fdcb6e;
-  font-size: 0.9em;
-  line-height: 1.6;
-}
-.disclaimer-text a {
-  color: #74b9ff;
+.notes a {
+  color: var(--accent);
 }
 
-/* スマホ対応 */
+.note {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  margin-top: var(--sp-2);
+}
+
+/* 動きを減らす設定では遷移を止める (仕様 6.2) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* サイト唯一のブレークポイント。全ファイルのモバイル調整をここに集約する (仕様 6.3) */
 @media (max-width: 768px) {
   body {
-    padding: 12px;
+    padding: var(--sp-3);
+  }
+
+  /* ヘッダは 2 段: ロゴ + 切替、その下にタブ */
+  .top {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+  .tabs {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .bar {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+  .row-count {
+    margin-left: 0;
   }
 
   .notes {
-    padding: 14px;
-    font-size: 0.9em;
+    padding: var(--sp-3);
+  }
+
+  .calculator-section {
+    padding: var(--sp-3);
+  }
+  .calculator-form {
+    gap: var(--sp-3);
+  }
+  .calculator-input select {
+    min-width: 0;
+    width: 100%;
+  }
+  .calculator-input,
+  .unit-price-field {
+    width: 100%;
+  }
+  .calculator-results-grid {
+    grid-template-columns: 1fr;
+    gap: var(--sp-3);
   }
 }

@@ -1,70 +1,195 @@
-.site-header {
-  text-align: center;
-  margin-bottom: 24px;
-  position: relative;
+/* ヘッダ、タブ列、フィルタバー (仕様 6.3) */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-4);
 }
 
-.header-controls {
-  position: absolute;
-  top: 0;
-  right: 0;
+.brand {
   display: flex;
-  gap: 8px;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.brand h1 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg-strong);
+  white-space: nowrap;
+}
+
+.brand small {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+
+/* タブ */
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-inset);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.tab {
+  padding: var(--sp-1) var(--sp-3);
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--fg-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+.tab:hover {
+  color: var(--fg);
+}
+.tab.on {
+  background: var(--bg-active);
+  color: var(--fg-strong);
+}
+
+/* 言語・テーマ切替 */
+.top-controls {
+  display: flex;
+  gap: var(--sp-2);
   align-items: center;
 }
 
-.header-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #b0bec5;
-  padding: 6px 12px;
-  border-radius: 6px;
+/* フィルタバー */
+.bar {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  margin: var(--sp-3) 0;
+  font-size: var(--fs-sm);
+}
+
+.filter-group {
+  display: flex;
+  gap: var(--sp-1);
+  align-items: center;
+}
+.filter-group[hidden] {
+  display: none;
+}
+
+/* 汎用のコントロール。フィルタボタン、セレクト、メニューの見出しに共通 */
+.ctl {
+  padding: var(--sp-1) 9px;
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--fg);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   cursor: pointer;
-  font-size: 0.85em;
-  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  white-space: nowrap;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  list-style: none; /* <summary> のマーカーを消す */
+}
+.ctl::-webkit-details-marker {
+  display: none;
+}
+.ctl:hover {
+  color: var(--fg-strong);
+  border-color: var(--fg-dim);
+}
+.ctl.on {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: var(--accent-line);
 }
 
-.header-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #e8eaed;
+/* 世代フィルタのボタンは、選択中は世代の色をまとう。旧・凡例の代わり */
+.ctl.gen-blackwell.on {
+  color: var(--chip-blackwell-fg);
+  background: var(--chip-blackwell-bg);
+  border-color: var(--chip-blackwell-line);
+}
+.ctl.gen-hopper.on {
+  color: var(--chip-hopper-fg);
+  background: var(--chip-hopper-bg);
+  border-color: var(--chip-hopper-line);
+}
+.ctl.gen-ada.on {
+  color: var(--chip-ada-fg);
+  background: var(--chip-ada-bg);
+  border-color: var(--chip-ada-line);
+}
+.ctl.gen-ampere.on {
+  color: var(--chip-ampere-fg);
+  background: var(--chip-ampere-bg);
+  border-color: var(--chip-ampere-line);
+}
+.ctl.gen-turing.on,
+.ctl.gen-volta.on {
+  color: var(--chip-fg);
+  background: var(--chip-bg);
+  border-color: var(--chip-line);
 }
 
-#lang-select {
+select.ctl {
   appearance: auto;
+}
+
+/* ドロップダウン (ファミリ選択・列切替) */
+.menu {
+  position: relative;
+}
+.menu > summary {
   cursor: pointer;
 }
-
-#theme-toggle {
-  font-size: 1.1em;
-  padding: 6px 10px;
+.menu > summary::after {
+  content: "▾";
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 8px;
-  color: var(--aws-orange);
-  font-size: 1.9em;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.menu-body {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + var(--sp-1));
+  left: 0;
+  min-width: 180px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--sp-2);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 }
 
-.subtitle {
-  text-align: center;
-  color: #8899a6;
-  margin-bottom: 0;
-  font-size: 0.95em;
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 3px var(--sp-1);
+  font-size: var(--fs-sm);
+  color: var(--fg);
+  cursor: pointer;
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+.menu-item:hover {
+  background: var(--bg-hover);
+}
+.menu-item input {
+  accent-color: var(--accent);
 }
 
-/* スマホ対応 */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 1.4em;
-    padding-right: 0;
-  }
-
-  .header-controls {
-    position: static;
-    justify-content: center;
-    margin-bottom: 12px;
-  }
+/* 行数表示は右端 */
+.row-count {
+  margin-left: auto;
+  color: var(--fg-muted);
 }

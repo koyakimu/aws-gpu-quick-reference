@@ -1,0 +1,130 @@
+/*
+ * デザイントークン。色・余白・文字・角丸はすべてここに置く (仕様 6.1)。
+ * ダークが既定で、ライトは [data-theme="light"] でトークンだけ再定義する。
+ * コンポーネント CSS にテーマ分岐を書かないこと (仕様 6.2)。
+ */
+:root {
+  color-scheme: dark;
+
+  /* 面 */
+  --bg: #161719;
+  --bg-panel: #161719; /* 表の枠と固定列の下地。ダークは地の色と同じ */
+  --bg-raised: #1b1d20; /* thead、コントロール、メニュー */
+  --bg-hover: #1c1e22;
+  --bg-inset: #1e2023; /* タブ列の受け皿 */
+  --bg-active: #2b2d31; /* 選択中のタブ */
+
+  /* 罫線 */
+  --line: #2a2c30;
+  --line-soft: #222428;
+  --line-head: #2a2c30;
+
+  /* 文字 */
+  --fg: #d4d6da;
+  --fg-strong: #f2f3f5;
+  --fg-muted: #8b8f97;
+  --fg-dim: #5c6068;
+
+  /* アクセント。価格とソート中の列など「状態」にだけ使う */
+  --accent: #f5b95a;
+  --accent-bg: #231f14;
+  --accent-line: #3d3a2e;
+  --sorted-cell-bg: #1a1916;
+
+  /* キーボードフォーカスの輪郭 */
+  --focus-ring: #f5b95a;
+
+  /* 世代チップ。turing / volta は既定のグレーのまま */
+  --chip-fg: #a9adb5;
+  --chip-bg: #232529;
+  --chip-line: #2e3035;
+  --chip-blackwell-fg: #c4b5ff;
+  --chip-blackwell-bg: #211f30;
+  --chip-blackwell-line: #3c3560;
+  --chip-hopper-fg: #9db8ff;
+  --chip-hopper-bg: #1b2233;
+  --chip-hopper-line: #2c3a5f;
+  --chip-ada-fg: #8fd3db;
+  --chip-ada-bg: #16272a;
+  --chip-ada-line: #25444a;
+  --chip-ampere-fg: #b5d37a;
+  --chip-ampere-bg: #1e2515;
+  --chip-ampere-line: #374722;
+  --chip-turing-fg: var(--chip-fg);
+  --chip-turing-bg: var(--chip-bg);
+  --chip-turing-line: var(--chip-line);
+  --chip-volta-fg: var(--chip-fg);
+  --chip-volta-bg: var(--chip-bg);
+  --chip-volta-line: var(--chip-line);
+
+  /* 余白スケール */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+
+  /* 文字スケール */
+  --fs-xs: 11px;
+  --fs-sm: 12.5px;
+  --fs-md: 13px;
+  --fs-lg: 15px;
+  --fs-xl: 20px;
+
+  /* 書体 */
+  --font-sans: -apple-system, "Inter", "Hiragino Sans", "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", Menlo, "JetBrains Mono", ui-monospace, monospace;
+
+  /* 形。影は使わない (仕様 6.1) */
+  --radius: 5px;
+  --radius-lg: 7px;
+
+  /* 表の密度 (仕様 6.3): 行高 28px、セル余白 6px × 10px */
+  --cell-pad-y: 6px;
+  --cell-pad-x: 10px;
+  --row-height: 28px;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f7f7f8;
+  --bg-panel: #ffffff;
+  --bg-raised: #fafafb;
+  --bg-hover: #f6f6f8;
+  --bg-inset: #ebebee;
+  --bg-active: #ffffff;
+
+  --line: #dcdde2;
+  --line-soft: #eeeff2;
+  --line-head: #e1e2e6;
+
+  --fg: #2b2d31;
+  --fg-strong: #16171a;
+  --fg-muted: #6b6f77;
+  --fg-dim: #a0a4ab;
+
+  --accent: #a35f00;
+  --accent-bg: #fff6e6;
+  --accent-line: #e8c58a;
+  --sorted-cell-bg: #fffaf1;
+
+  --focus-ring: #a35f00;
+
+  --chip-fg: #5c6068;
+  --chip-bg: #f0f0f3;
+  --chip-line: #e1e2e6;
+  --chip-blackwell-fg: #5b45c7;
+  --chip-blackwell-bg: #f2effd;
+  --chip-blackwell-line: #d9d2f7;
+  --chip-hopper-fg: #2f5bd9;
+  --chip-hopper-bg: #eef3fe;
+  --chip-hopper-line: #cfdafa;
+  --chip-ada-fg: #137a86;
+  --chip-ada-bg: #e9f7f9;
+  --chip-ada-line: #c2e6ea;
+  --chip-ampere-fg: #5b7a10;
+  --chip-ampere-bg: #f3f8e6;
+  --chip-ampere-line: #d9e6b8;
+}
