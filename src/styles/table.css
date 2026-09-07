@@ -274,3 +274,20 @@ a.chip:hover {
   color: var(--accent);
   border-bottom-color: currentColor;
 }
+
+/* GPU 列 (先頭の固定列) は、同じ GPU が続く並びを 1 つの縦長セルに見せる。
+   行の区切りは td の border-bottom なので、この列だけ border-top に置き換え、
+   省略セル (= 直前の行と同じ GPU) の上辺だけを消す。
+   これで連続の途中には罫線が出ず、新しい GPU の先頭行にだけ線が引かれる。 */
+.table-frame tbody td.sticky {
+  border-bottom: 0;
+  border-top: 1px solid var(--line-soft);
+}
+.table-frame tbody td.sticky.collapsed {
+  border-top: 0;
+}
+/* 帯行の直後は帯の border-bottom が区切りになるので、二重線にしない */
+.table-frame tbody tr:first-child td.sticky,
+.table-frame tbody tr.band + tr td.sticky {
+  border-top: 0;
+}
