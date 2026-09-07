@@ -131,5 +131,7 @@ describe("formatNumber", () => {
 
   it("does not group the fractional part", () => {
     expect(formatNumber(0.125)).toBe("0.125");
+    expect(formatNumber(1234.5678)).toBe("1,234.5678");
+    expect(formatNumber(12345.6789)).toBe("12,345.6789");
   });
 });

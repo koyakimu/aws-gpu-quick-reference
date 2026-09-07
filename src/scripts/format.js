@@ -51,7 +51,9 @@ export function isNew(addedAt, now = new Date()) {
   return months >= 0 && months <= 3;
 }
 
-// 数値に 3 桁区切りを入れる。小数部には入れない。
+// 数値に 3 桁区切りを入れる。区切るのは整数部だけで、小数部はそのまま残す。
 export function formatNumber(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const [integer, fraction] = num.toString().split(".");
+  const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return fraction === undefined ? grouped : `${grouped}.${fraction}`;
 }

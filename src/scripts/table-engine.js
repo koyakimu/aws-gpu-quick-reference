@@ -8,8 +8,11 @@ export const EMPTY = "—";
 // 右寄せにする型。数値は tabular-nums で揃えたいので等幅にもする。
 const NUMERIC_TYPES = new Set(["number", "price"]);
 
-// availability / feature は「対応が手厚いほど先」で並べる。flag の true 優先と同じ考え方。
+// 順位で比べる型。数値列と同じく「昇順は小さい方が先」に揃えてあるので、
+// 初回クリック (= desc) で最良の値 (true / both / ✓) が先頭に来る。
+const RANK_TYPES = new Set(["flag", "availability", "feature"]);
 const RANKS = {
+  flag: { true: 2, false: 1 },
   availability: { both: 3, od: 2, cb: 1 },
   feature: { true: 3, partial: 2, false: 1 },
 };
@@ -19,6 +22,13 @@ const AVAILABILITY_LABELS = { both: "OD+CB", od: "OD", cb: "CB" };
 // null / undefined / 空文字は「値なし」。ソートでは常に末尾、表示では EMPTY。
 function isBlank(value) {
   return value == null || value === "";
+}
+
+// ソート上の「値なし」。数値列では数として読めない値 (NaN、"n/a" 等) も
+// 比較すると NaN を返して順序を壊すので、null と同じく末尾へ送る。
+function isMissing(type, value) {
+  if (isBlank(value)) return true;
+  return NUMERIC_TYPES.has(type) && Number.isNaN(Number(value));
 }
 
 function rankOf(type, value) {
@@ -36,8 +46,7 @@ function sortValueOf(column, row) {
 // 非 null 同士の比較。null の扱いは sortRows 側で行う。
 export function compareValues(type, a, b) {
   if (NUMERIC_TYPES.has(type)) return Number(a) - Number(b);
-  if (type === "flag") return (b === true ? 1 : 0) - (a === true ? 1 : 0);
-  if (type === "availability" || type === "feature") return rankOf(type, b) - rankOf(type, a);
+  if (RANK_TYPES.has(type)) return rankOf(type, a) - rankOf(type, b);
   return String(a).localeCompare(String(b));
 }
 
@@ -48,8 +57,8 @@ export function sortRows(rows, column, dir) {
   if (!column || !dir) return copy;
 
   const indexed = copy.map((row, index) => ({ row, index, value: sortValueOf(column, row) }));
-  const filled = indexed.filter(({ value }) => !isBlank(value));
-  const blank = indexed.filter(({ value }) => isBlank(value));
+  const filled = indexed.filter(({ value }) => !isMissing(column.type, value));
+  const blank = indexed.filter(({ value }) => isMissing(column.type, value));
 
   filled.sort((x, y) => {
     const result = compareValues(column.type, x.value, y.value);
@@ -101,6 +110,7 @@ function buildHead(columns, state, i18n) {
   for (const column of columns) {
     const th = document.createElement("th");
     th.dataset.key = column.key;
+    th.setAttribute("scope", "col");
     th.textContent = i18n(column.labelKey);
     if (column.sticky) th.classList.add("sticky");
     if (isNumericColumn(column)) th.classList.add("num");
@@ -108,8 +118,11 @@ function buildHead(columns, state, i18n) {
 
     const sortable = column.sortable !== false;
     if (sortable) {
+      // クリックできるヘッダはキーボードでも押せるようにする。
       th.classList.add("sortable");
       th.setAttribute("aria-sort", "none");
+      th.setAttribute("tabindex", "0");
+      th.setAttribute("role", "button");
     }
 
     if (state.sortKey === column.key && state.sortDir) {
@@ -177,11 +190,23 @@ export function createTable({ columns, rows, state, onStateChange, i18n }) {
   const currentColumns = columns;
 
   // ヘッダは描き直されるので、th ではなく thead に 1 度だけ委譲で張る。
-  thead.addEventListener("click", (event) => {
-    const th = event.target.closest("th");
-    if (!th || !th.classList.contains("sortable")) return;
-    if (typeof onStateChange !== "function") return;
+  function requestSort(target) {
+    const th = target.closest("th");
+    if (!th || !th.classList.contains("sortable")) return false;
+    if (typeof onStateChange !== "function") return false;
     onStateChange({ ...currentState, ...nextSortState(currentState, th.dataset.key) });
+    return true;
+  }
+
+  thead.addEventListener("click", (event) => {
+    requestSort(event.target);
+  });
+
+  // マウスと同じ操作をキーボードからも。role="button" に合わせ Enter と Space を受ける。
+  thead.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    if (!requestSort(event.target)) return;
+    if (event.key === " ") event.preventDefault(); // Space によるスクロールを止める
   });
 
   function render(nextRows, nextState) {

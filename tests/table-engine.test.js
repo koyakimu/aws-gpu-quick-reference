@@ -65,19 +65,21 @@ describe("compareValues", () => {
     expect(compareValues("text", "gamma", "beta")).toBeGreaterThan(0);
   });
 
-  it("puts flag true before false", () => {
-    expect(compareValues("flag", true, false)).toBeLessThan(0);
-    expect(compareValues("flag", false, true)).toBeGreaterThan(0);
+  // 順位型 (flag / availability / feature) は昇順で「低い順位が先」。
+  // 初回クリックが desc なので、1 回目に最良の値が先頭へ来る (数値列と同じ体験)。
+  it("orders flag false before true ascending", () => {
+    expect(compareValues("flag", true, false)).toBeGreaterThan(0);
+    expect(compareValues("flag", false, true)).toBeLessThan(0);
   });
 
-  it("ranks availability both > od > cb", () => {
-    expect(compareValues("availability", "both", "od")).toBeLessThan(0);
-    expect(compareValues("availability", "od", "cb")).toBeLessThan(0);
+  it("ranks availability cb < od < both ascending", () => {
+    expect(compareValues("availability", "both", "od")).toBeGreaterThan(0);
+    expect(compareValues("availability", "od", "cb")).toBeGreaterThan(0);
   });
 
-  it("ranks feature true > partial > false", () => {
-    expect(compareValues("feature", true, "partial")).toBeLessThan(0);
-    expect(compareValues("feature", "partial", false)).toBeLessThan(0);
+  it("ranks feature false < partial < true ascending", () => {
+    expect(compareValues("feature", true, "partial")).toBeGreaterThan(0);
+    expect(compareValues("feature", "partial", false)).toBeGreaterThan(0);
   });
 });
 
@@ -117,6 +119,18 @@ describe("sortRows", () => {
     const before = ROWS.map((r) => r.name);
     sortRows(ROWS, priceCol, "asc");
     expect(ROWS.map((r) => r.name)).toEqual(before);
+  });
+
+  it("treats unparsable numeric values as missing and sends them last", () => {
+    const col = { key: "n", type: "number" };
+    const rows = [
+      { name: "junk", n: "n/a" },
+      { name: "two", n: 2 },
+      { name: "nan", n: NaN },
+      { name: "one", n: 1 },
+    ];
+    expect(sortRows(rows, col, "asc").map((r) => r.name)).toEqual(["one", "two", "junk", "nan"]);
+    expect(sortRows(rows, col, "desc").map((r) => r.name)).toEqual(["two", "one", "junk", "nan"]);
   });
 
   // 裁定 R4: 列が sortValue を持つときは row[key] ではなくその戻り値で比べる。
@@ -308,6 +322,17 @@ describe("createTable interaction", () => {
     });
   });
 
+  it("lists the best value first on the first click of a rank column", () => {
+    const { table, onStateChange } = mount();
+    // tokyo は flag 列。1 回目のクリックは desc になり、true の行が先頭へ来る。
+    document.querySelectorAll("thead th")[3].dispatchEvent(new Event("click", { bubbles: true }));
+    const nextState = onStateChange.mock.calls[0][0];
+    expect(nextState.sortDir).toBe("desc");
+    table.update(ROWS, nextState);
+    expect(columnTexts(3)).toEqual(["✓", "✓", EMPTY]);
+    expect(columnTexts(0)).toEqual(["alpha", "gamma", "beta"]);
+  });
+
   it("does not re-render on its own — the caller drives update()", () => {
     const { table, onStateChange } = mount();
     document.querySelectorAll("thead th")[2].dispatchEvent(new Event("click", { bubbles: true }));
@@ -329,6 +354,42 @@ describe("createTable interaction", () => {
     expect(name.getAttribute("aria-sort")).toBe("none");
     expect(avail.classList.contains("sortable")).toBe(false);
     expect(avail.hasAttribute("aria-sort")).toBe(false);
+  });
+
+  it("sorts from the keyboard on Enter and Space", () => {
+    const { onStateChange } = mount();
+    const th = document.querySelectorAll("thead th")[2];
+    th.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    expect(onStateChange).toHaveBeenCalledWith({
+      sortKey: "price",
+      sortDir: "desc",
+      hiddenGroups: [],
+    });
+
+    const space = new KeyboardEvent("keydown", { key: " ", bubbles: true, cancelable: true });
+    th.dispatchEvent(space);
+    expect(onStateChange).toHaveBeenCalledTimes(2);
+    expect(space.defaultPrevented).toBe(true); // Space でのページスクロールを止める
+  });
+
+  it("ignores other keys and keys on a non-sortable header", () => {
+    const { onStateChange } = mount();
+    const [, , price, , avail] = document.querySelectorAll("thead th");
+    price.dispatchEvent(new KeyboardEvent("keydown", { key: "a", bubbles: true }));
+    avail.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    expect(onStateChange).not.toHaveBeenCalled();
+  });
+
+  it("makes sortable headers reachable by keyboard and names every header a column", () => {
+    mount();
+    const [name, , , , avail] = document.querySelectorAll("thead th");
+    expect(name.getAttribute("tabindex")).toBe("0");
+    expect(name.getAttribute("role")).toBe("button");
+    expect(avail.hasAttribute("tabindex")).toBe(false);
+    expect(avail.hasAttribute("role")).toBe(false);
+    [...document.querySelectorAll("thead th")].forEach((th) =>
+      expect(th.getAttribute("scope")).toBe("col"),
+    );
   });
 
   it("keeps the same element across update()", () => {
