@@ -1,45 +1,47 @@
+/* コスト計算ツール。ロジックは calculator.js のまま、見た目だけトークンに合わせる */
 .calculator-section {
-  margin-top: 24px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--border-radius);
+  padding: var(--sp-5);
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
 }
 
 .calculator-section h2 {
-  color: var(--aws-orange);
-  font-size: 1.2em;
-  margin-bottom: 16px;
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin-bottom: var(--sp-4);
 }
 
 .calculator-form {
   display: flex;
-  gap: 16px;
+  gap: var(--sp-4);
   align-items: flex-start;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: var(--sp-5);
 }
 
 .calculator-input {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--sp-1);
 }
 
 .calculator-input label {
-  font-size: 0.85em;
-  color: #8899a6;
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
 }
 
 .calculator-input select,
 .calculator-input input {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e8eaed;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.9em;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--sp-1) var(--sp-2);
 }
 
 .calculator-input select {
@@ -47,182 +49,144 @@
 }
 
 .calculator-input input {
-  width: 100px;
+  width: 110px;
 }
 
 .calculator-input select:focus,
 .calculator-input input:focus {
   outline: none;
-  border-color: var(--aws-orange);
-  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+  border-color: var(--accent);
 }
 
-/* Unit price fields inline in form */
+/* 単価の直接入力 */
 .unit-price-field .unit-price-input-wrapper {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 
 .unit-price-prefix {
-  font-size: 0.9em;
-  color: #8899a6;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--fg-muted);
 }
 
 .unit-price-field .unit-price-input-wrapper input {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e8eaed;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 0.9em;
-  font-family: "Consolas", "Monaco", monospace;
-  width: 110px;
+  width: 90px;
 }
 
 .unit-price-field .unit-price-input-wrapper input:focus {
-  outline: none;
-  border-color: var(--aws-orange);
-  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+  border-color: var(--accent);
 }
 
+/* 既定値から書き換えられた入力欄はアクセントで示す */
 .unit-price-field .unit-price-input-wrapper input.user-edited {
-  border-color: var(--aws-orange);
-  background: rgba(255, 153, 0, 0.08);
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-bg);
 }
 
 .unit-price-reset {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #8899a6;
-  cursor: pointer;
-  font-size: 1em;
-  padding: 4px 8px;
-  border-radius: 6px;
+  font: inherit;
+  font-size: var(--fs-xs);
   line-height: 1;
-  transition: color 0.2s, border-color 0.2s;
+  color: var(--fg-muted);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--sp-1) var(--sp-2);
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
 }
-
+/* 絵文字を使わずに「戻す」を示す (仕様 6.3) */
+.unit-price-reset::before {
+  content: "reset";
+}
 .unit-price-reset:hover {
-  color: var(--aws-orange);
-  border-color: var(--aws-orange);
+  color: var(--fg-strong);
+  border-color: var(--fg-dim);
 }
 
 .unit-price-default {
-  font-size: 0.78em;
-  color: #6b7d8e;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
 }
 
+/* 結果 */
 .calculator-results-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 12px;
+  gap: var(--sp-5);
 }
 
 .result-currency-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .result-currency-header {
-  font-size: 1.1em;
-  font-weight: 700;
-  color: var(--aws-orange);
-  padding: 8px 16px;
-  border-bottom: 2px solid var(--aws-orange);
-  margin-bottom: 4px;
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--fg-muted);
+  background: var(--bg-inset);
+  border-bottom: 1px solid var(--line-head);
 }
 
 .result-item {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--line-soft);
 }
-
 .result-item:last-child {
-  border-bottom: none;
-}
-
-.calculator-monthly-note {
-  font-size: 0.8em;
-  color: #8899a6;
-  margin-bottom: 12px;
+  border-bottom: 0;
 }
 
 .result-label {
-  font-size: 0.85em;
-  color: #8899a6;
+  flex: 1;
+  font-size: var(--fs-sm);
+  color: var(--fg-muted);
 }
 
 .result-value {
-  font-size: 1.4em;
-  font-weight: 700;
-  color: var(--c-price);
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
 }
 
+/* CB 専用など、その側の値が無い行 */
 .result-value.cbo {
-  color: var(--c-warn);
-  font-size: 1em;
+  color: var(--fg-dim);
 }
 
 .result-default {
-  font-size: 0.78em;
-  color: #6b7d8e;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-dim);
 }
 
 .result-diff {
-  font-size: 0.82em;
-  font-weight: 600;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
 }
-
 .result-diff.diff-increase {
-  color: #ef5350;
+  color: var(--chip-ampere-fg);
 }
-
 .result-diff.diff-decrease {
-  color: #66bb6a;
+  color: var(--chip-ada-fg);
 }
 
+.calculator-monthly-note,
 .calculator-disclaimer {
-  font-size: 0.8em;
-  color: #8899a6;
-  line-height: 1.5;
-}
-
-/* スマホ対応 */
-@media (max-width: 768px) {
-  .calculator-section {
-    padding: 16px;
-  }
-
-  .calculator-form {
-    flex-direction: column;
-  }
-
-  .calculator-input select {
-    min-width: unset;
-    width: 100%;
-  }
-
-  .calculator-input input {
-    width: 100%;
-  }
-
-  .unit-price-field .unit-price-input-wrapper input {
-    width: 100%;
-    flex: 1;
-  }
-
-  .calculator-results-grid {
-    grid-template-columns: 1fr;
-  }
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
 }

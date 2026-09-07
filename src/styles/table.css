@@ -1,189 +1,212 @@
-.table-wrapper {
+/* 表エンジンの共通スタイル。比較表・リージョン表・機能マトリクスが共有する */
+.table-frame {
   overflow-x: auto;
-  border-radius: var(--border-radius);
-  border: 1px solid rgba(255, 153, 0, 0.15);
-  box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
 }
 
-/* 凡例 */
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--border-radius);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9em;
-  color: #b0bec5;
-}
-
-.legend-color {
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* 世代別グラデーション（凡例用） */
-.blackwell {
-  background: linear-gradient(135deg, rgb(var(--c-blackwell)), rgba(var(--c-blackwell), 0.7));
-}
-.hopper {
-  background: linear-gradient(135deg, rgb(var(--c-hopper)), rgba(var(--c-hopper), 0.7));
-}
-.ada {
-  background: linear-gradient(135deg, rgb(var(--c-ada)), rgba(var(--c-ada), 0.7));
-}
-.ampere {
-  background: linear-gradient(135deg, rgb(var(--c-ampere)), rgba(var(--c-ampere), 0.7));
-}
-.turing {
-  background: linear-gradient(135deg, rgb(var(--c-turing)), rgba(var(--c-turing), 0.7));
-}
-.volta {
-  background: linear-gradient(135deg, rgb(var(--c-volta)), rgba(var(--c-volta), 0.7));
-}
-
-/* テーブル基本 */
-table {
+.table-frame table {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875em;
-  background: rgba(26, 36, 47, 0.9);
+  border-collapse: separate; /* sticky セルでは collapse だと罫線が消える */
+  border-spacing: 0;
+  font-size: var(--fs-md);
 }
 
-th,
-td {
-  padding: 8px 10px;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+.table-frame th,
+.table-frame td {
+  padding: var(--cell-pad-y) var(--cell-pad-x);
+  height: var(--row-height);
+  text-align: left;
   white-space: nowrap;
 }
 
-th {
-  background: var(--aws-squid-ink);
-  color: #e8eaed;
-  font-weight: 600;
+/* ヘッダ固定 */
+.table-frame thead th {
   position: sticky;
   top: 0;
-  z-index: 10;
-  font-size: 0.95em;
-  letter-spacing: 0.01em;
-  border-bottom: 2px solid rgba(255, 153, 0, 0.3);
+  z-index: 2;
+  background: var(--bg-raised);
+  color: var(--fg-muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  border-bottom: 1px solid var(--line-head);
 }
 
-th.group {
-  background: linear-gradient(180deg, rgba(255, 153, 0, 0.2), rgba(255, 153, 0, 0.1));
-  color: var(--aws-orange-light);
-  font-size: 0.85em;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 6px 10px;
+/* 並べ替えできるヘッダは中身が本物の button。ブラウザ既定の見た目を落とす */
+.table-frame th .sort-btn {
+  display: inline-flex;
+  align-items: center;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.table-frame th.num .sort-btn {
+  justify-content: flex-end;
+  width: 100%;
+}
+.table-frame th .sort-btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-tbody tr,
-tbody td {
-  transition: all 0.15s ease;
+.table-frame thead th.sortable {
+  user-select: none;
+}
+.table-frame thead th.sortable:hover {
+  color: var(--fg);
+}
+.table-frame thead th.sorted {
+  color: var(--accent);
+  background: var(--accent-bg);
 }
 
-/* 世代別行背景 */
-.row-blackwell td { background: rgba(var(--c-blackwell), 0.1); }
-.row-hopper td { background: rgba(var(--c-hopper), 0.1); }
-.row-ada td { background: rgba(var(--c-ada), 0.1); }
-.row-ampere td { background: rgba(var(--c-ampere), 0.1); }
-.row-turing td { background: rgba(var(--c-turing), 0.1); }
-.row-volta td { background: rgba(var(--c-volta), 0.1); }
-
-/* 偶数行で微妙にコントラスト */
-tbody tr:nth-child(even) td {
-  filter: brightness(1.05);
+.table-frame th .sortarrow {
+  font-size: 9px;
+  margin-left: 3px;
 }
 
-/* ホバー時 */
-td[rowspan].cell-hover { position: relative; }
-.row-blackwell td.cell-hover, td.cell-hover-blackwell { background: rgba(var(--c-blackwell), 0.55) !important; color: #fff !important; }
-.row-hopper td.cell-hover, td.cell-hover-hopper { background: rgba(var(--c-hopper), 0.55) !important; color: #fff !important; }
-.row-ada td.cell-hover, td.cell-hover-ada { background: rgba(var(--c-ada), 0.55) !important; color: #fff !important; }
-.row-ampere td.cell-hover, td.cell-hover-ampere { background: rgba(var(--c-ampere), 0.55) !important; color: #fff !important; }
-.row-turing td.cell-hover, td.cell-hover-turing { background: rgba(var(--c-turing), 0.55) !important; color: #fff !important; }
-.row-volta td.cell-hover, td.cell-hover-volta { background: rgba(var(--c-volta), 0.55) !important; color: #fff !important; }
-
-/* セル装飾クラス */
-.arch {
-  font-weight: 700;
-  text-align: center;
-  vertical-align: middle;
-  padding: 8px 12px;
-  font-size: 0.95em;
-  letter-spacing: 0.01em;
+/* 先頭列固定。ヘッダの角は両方 sticky なので z-index を 1 段上げる。
+   下地が透けるとスクロールしたセルが透けて見えるので、必ず不透明にする */
+.table-frame th.sticky,
+.table-frame td.sticky {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg-panel);
+  box-shadow: 1px 0 0 var(--line); /* 影ではなく縦の細罫 */
+}
+.table-frame thead th.sticky {
+  z-index: 3;
+  background: var(--bg-raised);
 }
 
-.gpu { font-weight: 600; color: var(--aws-orange-light); }
-.inst { font-family: "Consolas", "Monaco", monospace; color: var(--c-inst); }
-.price { color: var(--c-price); font-weight: 500; }
-.cb { color: var(--c-cb); }
-.cbo { color: var(--c-warn); font-size: 0.9em; }
-.efa { color: var(--c-efa); }
-.pcie { color: var(--c-pcie); }
-.est { color: var(--c-est); font-style: italic; }
-.ok { color: var(--c-ok); font-weight: 600; }
-.no { color: var(--c-no); }
+/* 本体 */
+.table-frame td {
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--fg);
+}
+.table-frame tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-frame td.sorted,
+.table-frame td.sticky.sorted {
+  background: var(--sorted-cell-bg);
+}
+.table-frame td.price {
+  color: var(--accent);
+}
+.table-frame td.dim,
+.table-frame td.price.dim {
+  color: var(--fg-dim);
+}
+
+.table-frame tbody tr:hover td,
+.table-frame tbody tr:hover td.sticky,
+.table-frame tbody tr:hover td.sorted {
+  background: var(--bg-hover);
+}
+
+/* 数値列は右寄せ・等幅・桁揃え */
+.table-frame th.num,
+.table-frame td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.table-frame td.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 先頭列 (インスタンス名) は本文より強い色で */
+.table-frame td.sticky {
+  color: var(--fg-strong);
+}
+.table-frame td.sticky.dim {
+  color: var(--fg-dim);
+}
+
+/* 世代チップ */
+.chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: var(--radius);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--chip-fg);
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-line);
+}
+a.chip:hover {
+  text-decoration: none;
+  border-color: var(--fg-dim);
+}
+
+.chip-blackwell {
+  color: var(--chip-blackwell-fg);
+  background: var(--chip-blackwell-bg);
+  border-color: var(--chip-blackwell-line);
+}
+.chip-hopper {
+  color: var(--chip-hopper-fg);
+  background: var(--chip-hopper-bg);
+  border-color: var(--chip-hopper-line);
+}
+.chip-ada {
+  color: var(--chip-ada-fg);
+  background: var(--chip-ada-bg);
+  border-color: var(--chip-ada-line);
+}
+.chip-ampere {
+  color: var(--chip-ampere-fg);
+  background: var(--chip-ampere-bg);
+  border-color: var(--chip-ampere-line);
+}
+.chip-turing {
+  color: var(--chip-turing-fg);
+  background: var(--chip-turing-bg);
+  border-color: var(--chip-turing-line);
+}
+.chip-volta {
+  color: var(--chip-volta-fg);
+  background: var(--chip-volta-bg);
+  border-color: var(--chip-volta-line);
+}
 
 .badge {
   display: inline-block;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.65em;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--aws-orange-dark), var(--aws-orange));
-  color: white;
-  margin-left: 4px;
-  text-transform: uppercase;
+  margin-left: var(--sp-1);
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius);
+  font-size: var(--fs-xs);
+  font-weight: 600;
   letter-spacing: 0.04em;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-line);
 }
 
-.ec2-link { color: var(--c-inst); }
-.ec2-link:hover { color: #fff; }
-.gpu-link { color: var(--c-text); text-decoration: none; }
-.gpu-link:hover { color: #fff; text-decoration: underline; }
-
-/* $/GPU(CB)列の幅を制限 */
-td.cb,
-th.cb-header {
-  max-width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.ec2-link {
+  color: var(--fg-muted);
+}
+.ec2-link:hover {
+  color: var(--fg-strong);
 }
 
-/* スマホ対応 */
-@media (max-width: 768px) {
-  table {
-    font-size: 0.85em;
-  }
-
-  th,
-  td {
-    padding: 10px 6px;
-  }
-
-  .table-wrapper {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .legend {
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 12px;
-  }
+/* 絞り込み結果が 0 件のとき */
+.empty {
+  padding: var(--sp-5);
+  text-align: center;
+  color: var(--fg-muted);
+}
+.empty[hidden] {
+  display: none;
 }

@@ -67,3 +67,62 @@ describe("i18n key parity", () => {
     }).toEqual({ en: n, ko: n });
   });
 });
+
+describe("keys the renewed UI needs", () => {
+  // 一覧に載せるのは、後続タスクが実際に読むキーだけ。
+  // Task 6 のマークアップ: tabs.*, filters.families, filters.columns, placeholders.regions/features
+  // Task 5 の compare-view.js: filters.rowCount, groups.*, table.fp*, placeholders.noRows
+  // filters.region は PR 4 で出すリージョン絞り込み (今は hidden) が使う。
+  const REQUIRED = [
+    "tabs.compare",
+    "tabs.regions",
+    "tabs.features",
+    "tabs.calculator",
+    "filters.families",
+    "filters.columns",
+    "filters.region",
+    "filters.rowCount",
+    "groups.instance",
+    "groups.gpu",
+    "groups.performance",
+    "groups.connect",
+    "groups.system",
+    "groups.price",
+    "table.fp16Cuda",
+    "table.fp16Dense",
+    "table.fp16Sparse",
+    "table.fp8Dense",
+    "table.fp8Sparse",
+    "table.fp4Dense",
+    "table.fp4Sparse",
+    "placeholders.regionsMissing",
+    "placeholders.featuresMissing",
+    "placeholders.noRows",
+  ];
+
+  it("every dictionary has all of them", () => {
+    for (const [lang, dict] of Object.entries(dictionaries)) {
+      const keys = keySet(dict);
+      const missing = REQUIRED.filter((key) => !keys.has(key));
+      expect(missing, `${lang} is missing keys`).toEqual([]);
+    }
+  });
+
+  it("the row counter carries both substitution markers", () => {
+    for (const [lang, dict] of Object.entries(dictionaries)) {
+      expect(dict.filters?.rowCount, `${lang}.filters.rowCount`).toContain("{shown}");
+      expect(dict.filters?.rowCount, `${lang}.filters.rowCount`).toContain("{total}");
+    }
+  });
+
+  it("no UI string contains an emoji", () => {
+    // 仕様 6.3: 絵文字は使わない。✓ — △ ▼ ▲ は記号なので対象外。
+    const emoji = /\p{Extended_Pictographic}/u;
+    for (const [lang, dict] of Object.entries(dictionaries)) {
+      for (const path of collectKeys(dict)) {
+        const value = path.split(".").reduce((acc, k) => acc[k], dict);
+        expect(emoji.test(value), `${lang}.${path} contains an emoji: ${value}`).toBe(false);
+      }
+    }
+  });
+});
