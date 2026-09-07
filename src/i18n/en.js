@@ -1,22 +1,13 @@
 export const en = {
   header: {
-    title: "AWS EC2 GPU Instance Reference Guide",
-    subtitle: "Compare all generations of NVIDIA GPU instances at a glance",
     updated: "Last updated",
   },
   table: {
-    generation: "Generation",
     gpuModel: "GPU",
     ec2Type: "EC2",
     instanceSize: "Size",
     gpuCount: "GPUs",
-    vram: "VRAM",
-    fp16: "FP16",
-    fp8: "FP8",
-    fp4: "FP4",
-    cuda: "CUDA",
-    dense: "Dense",
-    sparse: "Sparse",
+    vram: "VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -34,11 +25,6 @@ export const en = {
     cb: "$/GPU(CB)",
     tokyo: "Tokyo",
     cbOnly: "CB Only",
-    groupInstance: "Instance",
-    groupGpu: "GPU Performance",
-    groupConnect: "Connectivity",
-    groupSystem: "System",
-    groupPrice: "Pricing",
   },
   generations: {
     blackwell: "Blackwell",
@@ -98,11 +84,6 @@ export const en = {
   theme: {
     dark: "Dark",
     light: "Light",
-  },
-  footer: {
-    disclaimer:
-      "Information on this site is for reference only. Please check the official AWS documentation for the latest accurate information.",
-    source: "Data source",
   },
   notes: {
     title: "Notes",

@@ -1,22 +1,13 @@
 export const ja = {
   header: {
-    title: "AWS EC2 GPU インスタンス リファレンスガイド",
-    subtitle: "全世代のNVIDIA GPUインスタンスを一覧比較",
     updated: "更新日",
   },
   table: {
-    generation: "世代",
     gpuModel: "GPU",
     ec2Type: "EC2",
     instanceSize: "サイズ",
     gpuCount: "数",
-    vram: "VRAM",
-    fp16: "FP16",
-    fp8: "FP8",
-    fp4: "FP4",
-    cuda: "CUDA",
-    dense: "Dense",
-    sparse: "Sparse",
+    vram: "VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -34,11 +25,6 @@ export const ja = {
     cb: "$/GPU(CB)",
     tokyo: "東京",
     cbOnly: "CB専用",
-    groupInstance: "インスタンス",
-    groupGpu: "GPU性能",
-    groupConnect: "接続",
-    groupSystem: "システム",
-    groupPrice: "価格",
   },
   generations: {
     blackwell: "Blackwell",
@@ -98,11 +84,6 @@ export const ja = {
   theme: {
     dark: "ダーク",
     light: "ライト",
-  },
-  footer: {
-    disclaimer:
-      "本サイトの情報は参考値です。最新の正確な情報はAWS公式ドキュメントをご確認ください。",
-    source: "データソース",
   },
   notes: {
     title: "Notes",

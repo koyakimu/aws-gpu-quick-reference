@@ -1,22 +1,13 @@
 export const ko = {
   header: {
-    title: "AWS EC2 GPU 인스턴스 레퍼런스 가이드",
-    subtitle: "전 세대 NVIDIA GPU 인스턴스를 한눈에 비교",
     updated: "업데이트",
   },
   table: {
-    generation: "세대",
     gpuModel: "GPU",
     ec2Type: "EC2",
     instanceSize: "사이즈",
     gpuCount: "수",
-    vram: "VRAM",
-    fp16: "FP16",
-    fp8: "FP8",
-    fp4: "FP4",
-    cuda: "CUDA",
-    dense: "Dense",
-    sparse: "Sparse",
+    vram: "VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -34,11 +25,6 @@ export const ko = {
     cb: "$/GPU(CB)",
     tokyo: "도쿄",
     cbOnly: "CB 전용",
-    groupInstance: "인스턴스",
-    groupGpu: "GPU 성능",
-    groupConnect: "연결",
-    groupSystem: "시스템",
-    groupPrice: "가격",
   },
   generations: {
     blackwell: "Blackwell",
@@ -98,11 +84,6 @@ export const ko = {
   theme: {
     dark: "다크",
     light: "라이트",
-  },
-  footer: {
-    disclaimer:
-      "본 사이트의 정보는 참고용입니다. 최신 정확한 정보는 AWS 공식 문서를 확인하세요.",
-    source: "데이터 소스",
   },
   notes: {
     title: "Notes",

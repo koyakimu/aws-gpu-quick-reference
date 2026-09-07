@@ -44,226 +44,206 @@
     <!-- Favicon -->
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23161719'/><text x='50' y='68' font-size='58' font-family='monospace' font-weight='700' fill='%23f5b95a' text-anchor='middle'>G</text></svg>"
     />
   </head>
   <body>
-    <div class="container">
-      <div class="site-header">
-        <div class="header-controls">
-          <select id="lang-select" class="header-btn">
+    <div class="app">
+      <header class="top">
+        <div class="brand">
+          <h1>AWS GPU Reference</h1>
+          <small class="mono" id="pricing-caption">pricing %PRICING_AS_OF% · us-east-1</small>
+        </div>
+
+        <nav class="tabs" id="tabs" role="tablist">
+          <button class="tab" type="button" role="tab" data-tab="compare" data-i18n="tabs.compare">比較</button>
+          <button class="tab" type="button" role="tab" data-tab="regions" data-i18n="tabs.regions">リージョン</button>
+          <button class="tab" type="button" role="tab" data-tab="features" data-i18n="tabs.features">機能</button>
+          <button class="tab" type="button" role="tab" data-tab="calculator" data-i18n="tabs.calculator">計算</button>
+        </nav>
+
+        <div class="top-controls">
+          <select id="lang-select" class="ctl">
             <option value="ja">日本語</option>
             <option value="en">English</option>
             <option value="ko">한국어</option>
           </select>
-          <button id="theme-toggle" class="header-btn" type="button">☀️</button>
+          <button id="theme-toggle" class="ctl" type="button"></button>
         </div>
-        <h1 data-i18n="header.title">🚀 AWS EC2 GPU インスタンス リファレンスガイド</h1>
-        <p class="subtitle">
-          <span data-i18n="header.subtitle">全世代のNVIDIA GPUインスタンスを一覧比較</span>
-          <span> | </span>
-          <span data-i18n="header.updated">更新日</span>: %BUILD_DATE%
-        </p>
-      </div>
+      </header>
 
-      <div class="legend">
-        <div class="legend-item"><div class="legend-color blackwell"></div> Blackwell (2024)</div>
-        <div class="legend-item"><div class="legend-color hopper"></div> Hopper (2022)</div>
-        <div class="legend-item"><div class="legend-color ada"></div> Ada Lovelace (2022)</div>
-        <div class="legend-item"><div class="legend-color ampere"></div> Ampere (2020)</div>
-        <div class="legend-item"><div class="legend-color turing"></div> Turing (2018)</div>
-        <div class="legend-item"><div class="legend-color volta"></div> Volta (2017)</div>
-      </div>
+      <section class="panel" id="panel-compare" role="tabpanel">
+        <div class="bar">
+          <div class="filter-group" id="gen-filters"></div>
 
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="4" class="group" data-i18n="table.groupInstance">インスタンス</th>
-              <th colspan="9" class="group" data-i18n="table.groupGpu">GPU性能</th>
-              <th colspan="2" class="group" data-i18n="table.groupConnect">接続</th>
-              <th colspan="3" class="group" data-i18n="table.groupSystem">システム</th>
-              <th colspan="3" class="group" data-i18n="table.groupPrice">価格</th>
-              <th class="group"></th>
-            </tr>
-            <tr>
-              <th rowspan="2" data-i18n="table.generation">世代</th>
-              <th rowspan="2" data-i18n="table.gpuModel">GPU</th>
-              <th rowspan="2" data-i18n="table.ec2Type">EC2</th>
-              <th rowspan="2" data-i18n="table.instanceSize">サイズ</th>
-              <th rowspan="2" data-i18n="table.gpuCount">数</th>
-              <th rowspan="2" data-i18n="table.vram">VRAM</th>
-              <th colspan="3" data-i18n="table.fp16">FP16</th>
-              <th colspan="2" data-i18n="table.fp8">FP8</th>
-              <th colspan="2" data-i18n="table.fp4">FP4</th>
-              <th rowspan="2">
-                <a href="https://aws.amazon.com/hpc/efa/" target="_blank" title="Elastic Fabric Adapter"
-                  data-i18n="table.efa">EFA</a>
-              </th>
-              <th rowspan="2" data-i18n="table.pcie">PCIe</th>
-              <th rowspan="2" data-i18n="table.vcpu">vCPU</th>
-              <th rowspan="2" data-i18n="table.memory">Mem</th>
-              <th rowspan="2" data-i18n="table.nvme">NVMe</th>
-              <th rowspan="2">
-                <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" title="EC2 On-Demand 料金"
-                  data-i18n="table.onDemand">$/h</a>
-              </th>
-              <th rowspan="2" data-i18n="table.perGpu">$/GPU</th>
-              <th rowspan="2" class="cb-header">
-                <a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" title="Capacity Blocks for ML"
-                  data-i18n="table.cb">$/GPU(CB)</a>
-              </th>
-              <th rowspan="2" data-i18n="table.tokyo">東京</th>
-            </tr>
-            <tr>
-              <th data-i18n="table.cuda">CUDA</th>
-              <th data-i18n="table.dense">Dense</th>
-              <th data-i18n="table.sparse">Sparse</th>
-              <th data-i18n="table.dense">Dense</th>
-              <th data-i18n="table.sparse">Sparse</th>
-              <th data-i18n="table.dense">Dense</th>
-              <th data-i18n="table.sparse">Sparse</th>
-            </tr>
-          </thead>
-          <tbody id="gpu-table-body"></tbody>
-        </table>
-      </div>
+          <details class="menu" id="family-menu">
+            <summary class="ctl" data-i18n="filters.families">ファミリ</summary>
+            <div class="menu-body" id="family-filters"></div>
+          </details>
 
-      <!-- コスト計算ツール -->
-      <section id="cost-calculator" class="calculator-section">
-        <h2 data-i18n="calculator.title">簡易コスト計算</h2>
-        <div class="calculator-form">
-          <div class="calculator-input">
-            <label for="calc-instance" data-i18n="calculator.instanceLabel">インスタンスタイプ</label>
-            <select id="calc-instance"></select>
-          </div>
-          <div class="calculator-input">
-            <label for="calc-count" data-i18n="calculator.countLabel">台数</label>
-            <input type="number" id="calc-count" value="1" min="1" max="100" />
-          </div>
-          <div class="calculator-input">
-            <label for="calc-days" data-i18n="calculator.daysLabel">日数</label>
-            <input type="number" id="calc-days" value="30" min="1" max="3650" />
-          </div>
-          <div class="calculator-input" id="calc-exchange-rate-field">
-            <label for="calc-exchange-rate" data-i18n="calculator.exchangeRateLabel">為替レート (USD→JPY)</label>
-            <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
-          </div>
-          <div class="calculator-input unit-price-field">
-            <label for="calc-od-unit-price" data-i18n="calculator.odUnitPriceLabel">On-Demand 単価 ($/GPU/h)</label>
-            <div class="unit-price-input-wrapper">
-              <span class="unit-price-prefix">$</span>
-              <input type="number" id="calc-od-unit-price" step="0.01" min="0" placeholder="-" />
-              <button type="button" id="calc-od-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice">↺</button>
-            </div>
-            <span class="unit-price-default" id="calc-od-default-price"></span>
-          </div>
-          <div class="calculator-input unit-price-field">
-            <label for="calc-cb-unit-price" data-i18n="calculator.cbUnitPriceLabel">CB 単価 ($/GPU/h)</label>
-            <div class="unit-price-input-wrapper">
-              <span class="unit-price-prefix">$</span>
-              <input type="number" id="calc-cb-unit-price" step="0.01" min="0" placeholder="-" />
-              <button type="button" id="calc-cb-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice">↺</button>
-            </div>
-            <span class="unit-price-default" id="calc-cb-default-price"></span>
-          </div>
+          <details class="menu" id="column-menu">
+            <summary class="ctl" data-i18n="filters.columns">列</summary>
+            <div class="menu-body" id="column-toggles"></div>
+          </details>
+
+          <!-- リージョンフィルタは PR 4 で regions.json が入ってから出す -->
+          <div class="filter-group" id="region-filter" hidden></div>
+
+          <span class="row-count mono" id="compare-row-count"></span>
         </div>
-        <div class="calculator-results-grid">
-          <div class="result-currency-column">
-            <div class="result-currency-header">USD</div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
-              <span class="result-value" id="calc-od-result">-</span>
-              <span class="result-default" id="calc-od-result-default"></span>
-              <span class="result-diff" id="calc-od-result-diff"></span>
-            </div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定</span>
-              <span class="result-value" id="calc-od-days-result">-</span>
-              <span class="result-default" id="calc-od-days-result-default"></span>
-              <span class="result-diff" id="calc-od-days-result-diff"></span>
-            </div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.cbMonthly">CB 月額</span>
-              <span class="result-value" id="calc-cb-result">-</span>
-              <span class="result-default" id="calc-cb-result-default"></span>
-              <span class="result-diff" id="calc-cb-result-diff"></span>
-            </div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定</span>
-              <span class="result-value" id="calc-cb-days-result">-</span>
-              <span class="result-default" id="calc-cb-days-result-default"></span>
-              <span class="result-diff" id="calc-cb-days-result-diff"></span>
-            </div>
-          </div>
-          <div class="result-currency-column" id="local-currency-column">
-            <div class="result-currency-header" id="local-currency-header" data-i18n="calculator.localCurrency">JPY</div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
-              <span class="result-value" id="calc-od-local-result">-</span>
-              <span class="result-default" id="calc-od-local-result-default"></span>
-              <span class="result-diff" id="calc-od-local-result-diff"></span>
-            </div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定</span>
-              <span class="result-value" id="calc-od-days-local-result">-</span>
-              <span class="result-default" id="calc-od-days-local-result-default"></span>
-              <span class="result-diff" id="calc-od-days-local-result-diff"></span>
-            </div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.cbMonthly">CB 月額</span>
-              <span class="result-value" id="calc-cb-local-result">-</span>
-              <span class="result-default" id="calc-cb-local-result-default"></span>
-              <span class="result-diff" id="calc-cb-local-result-diff"></span>
-            </div>
-            <div class="result-item">
-              <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定</span>
-              <span class="result-value" id="calc-cb-days-local-result">-</span>
-              <span class="result-default" id="calc-cb-days-local-result-default"></span>
-              <span class="result-diff" id="calc-cb-days-local-result-diff"></span>
-            </div>
-          </div>
+
+        <div id="compare-table"></div>
+
+        <div class="notes">
+          <h3 data-i18n="notes.title">Notes</h3>
+          <ul>
+            <li><strong>価格:</strong> <span data-i18n="notes.priceNote">us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。価格基準: %PRICING_AS_OF%。</span></li>
+            <li><strong>G7e (NEW):</strong> <span data-i18n="notes.g7eNote">G7e は NVIDIA RTX PRO 6000 Blackwell Server Edition、G7 は RTX PRO 4500 Blackwell Server Edition を搭載。</span></li>
+            <li><strong>P5en vs P5e vs P5:</strong> <span data-i18n="notes.p5CompNote">P5en: H200 + EFAv3 + PCIe Gen5...</span></li>
+            <li><strong>EFA:</strong> <span data-i18n="notes.efaNote">Elastic Fabric Adapter。マルチノード分散学習に必須。</span></li>
+            <li><strong>PCIe:</strong> <span data-i18n="notes.pcieNote">Gen5はGen4の約2倍の帯域幅。</span></li>
+            <li><strong>FP16/FP8/FP4:</strong> <span data-i18n="notes.fpNote">TFLOPS値。</span></li>
+          </ul>
+
+          <h3 data-i18n="notes.refTitle">公式リファレンス</h3>
+          <h4 data-i18n="notes.refAwsTitle">AWS</h4>
+          <ul>
+            <li><a href="https://aws.amazon.com/ec2/instance-types/#Accelerated_Computing" target="_blank" rel="noopener" data-i18n="notes.refAccelerated">EC2 Accelerated Computing インスタンス一覧</a></li>
+            <li><a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener" data-i18n="notes.refOnDemand">EC2 On-Demand 料金</a></li>
+            <li><a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" rel="noopener" data-i18n="notes.refCb">Capacity Blocks for ML</a></li>
+            <li><a href="https://aws.amazon.com/hpc/efa/" target="_blank" rel="noopener" data-i18n="notes.refEfa">Elastic Fabric Adapter (EFA)</a></li>
+            <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/accelerated-computing-instances.html" target="_blank" rel="noopener" data-i18n="notes.refUserGuide">EC2 ユーザーガイド</a></li>
+            <li><a href="https://aws.amazon.com/blogs/aws/category/compute/amazon-ec2/" target="_blank" rel="noopener" data-i18n="notes.refBlog">AWS Blog - EC2 カテゴリ</a></li>
+          </ul>
+          <h4 data-i18n="notes.refNvidiaTitle">NVIDIA GPU データソース</h4>
+          <ul>
+            <li><a href="https://www.nvidia.com/en-us/data-center/" target="_blank" rel="noopener" data-i18n="notes.refNvidiaDataCenter">NVIDIA Data Center GPUs</a></li>
+            <li><a href="https://www.nvidia.com/en-us/data-center/dgx-b200/" target="_blank" rel="noopener" data-i18n="notes.refDgxB200">DGX B200</a></li>
+            <li><a href="https://www.nvidia.com/en-us/data-center/dgx-b300/" target="_blank" rel="noopener" data-i18n="notes.refDgxB300">DGX B300</a></li>
+          </ul>
+          <p class="note" data-i18n="notes.refGpuSpecNote">GPU演算性能値はNVIDIA公式データシート・製品ページに基づいています。</p>
+
+          <h3 data-i18n="notes.disclaimerTitle">免責事項</h3>
+          <p class="note">
+            <span data-i18n="notes.disclaimerBefore">本ページの情報は参考用であり、正確性を保証するものではありません。</span><a href="https://aws.amazon.com/ec2/instance-types/" target="_blank" rel="noopener" data-i18n="notes.disclaimerLink">AWS公式ドキュメント</a><span data-i18n="notes.disclaimerAfter">をご確認ください。</span>
+          </p>
+          <p class="note mono"><span data-i18n="header.updated">更新日</span>: %BUILD_DATE%</p>
         </div>
-        <p class="calculator-monthly-note" data-i18n="calculator.monthlyNote">※ 月額は720h/月で計算</p>
-        <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">
-          概算値です。RI/Savings Plans等の割引は含まれません。正確な料金はAWS公式をご確認ください。
+      </section>
+
+      <section class="panel" id="panel-regions" role="tabpanel" hidden>
+        <p class="placeholder" data-i18n="placeholders.regionsMissing">
+          リージョン提供状況のデータはまだ生成されていません。
         </p>
       </section>
 
-      <div class="notes">
-        <h3 data-i18n="notes.title">📝 Notes</h3>
-        <ul>
-          <li><strong>価格:</strong> <span data-i18n="notes.priceNote">us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。価格基準: %PRICING_AS_OF%。</span></li>
-          <li><strong>G7e (NEW):</strong> <span data-i18n="notes.g7eNote">G7e は NVIDIA RTX PRO 6000 Blackwell Server Edition、G7 は RTX PRO 4500 Blackwell Server Edition を搭載。G7e の FP16/FP8/FP4 は公式データシートが丸めた PFLOPS 表記（スパース値で FP16 1 / FP8 2 / FP4 4 PFLOPS）しか示さないため、その値と Dense = その半分を採用した概算値（*付き）。G7 も同様に公式公表値（スパース値で FP16 406 / FP8 811 TFLOPS・FP4 1.6 PFLOPS）を採り、Dense をその半分とした概算値。48xlargeのみEFA対応。</span></li>
-          <li><strong>P5en vs P5e vs P5:</strong> <span data-i18n="notes.p5CompNote">P5en: H200 + EFAv3 + PCIe Gen5...</span></li>
-          <li><strong>EFA:</strong> <span data-i18n="notes.efaNote">Elastic Fabric Adapter。マルチノード分散学習に必須。</span></li>
-          <li><strong>PCIe:</strong> <span data-i18n="notes.pcieNote">Gen5はGen4の約2倍の帯域幅。</span></li>
-          <li><strong>FP16/FP8/FP4:</strong> <span data-i18n="notes.fpNote">TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。*付きは予想値。</span></li>
-        </ul>
-
-        <h3 style="margin-top: 15px" data-i18n="notes.refTitle">🔗 公式リファレンス</h3>
-        <h4 style="margin-top: 10px; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8" data-i18n="notes.refAwsTitle">AWS</h4>
-        <ul>
-          <li><a href="https://aws.amazon.com/ec2/instance-types/#Accelerated_Computing" target="_blank" data-i18n="notes.refAccelerated">EC2 Accelerated Computing インスタンス一覧</a></li>
-          <li><a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" data-i18n="notes.refOnDemand">EC2 On-Demand 料金</a></li>
-          <li><a href="https://aws.amazon.com/ec2/capacityblocks/" target="_blank" data-i18n="notes.refCb">Capacity Blocks for ML</a></li>
-          <li><a href="https://aws.amazon.com/hpc/efa/" target="_blank" data-i18n="notes.refEfa">Elastic Fabric Adapter (EFA)</a></li>
-          <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/accelerated-computing-instances.html" target="_blank" data-i18n="notes.refUserGuide">EC2 ユーザーガイド - アクセラレーテッドコンピューティング</a></li>
-          <li><a href="https://aws.amazon.com/blogs/aws/category/compute/amazon-ec2/" target="_blank" data-i18n="notes.refBlog">AWS Blog - EC2 カテゴリ（最新情報）</a></li>
-        </ul>
-        <h4 style="margin-top: 10px; margin-bottom: 5px; font-size: 0.9em; opacity: 0.8" data-i18n="notes.refNvidiaTitle">NVIDIA GPU データソース</h4>
-        <ul>
-          <li><a href="https://www.nvidia.com/en-us/data-center/" target="_blank" data-i18n="notes.refNvidiaDataCenter">NVIDIA Data Center GPUs（製品ページ・データシート）</a></li>
-          <li><a href="https://www.nvidia.com/en-us/data-center/dgx-b200/" target="_blank" data-i18n="notes.refDgxB200">DGX B200（B200 スペック）</a></li>
-          <li><a href="https://www.nvidia.com/en-us/data-center/dgx-b300/" target="_blank" data-i18n="notes.refDgxB300">DGX B300（B300 スペック）</a></li>
-        </ul>
-        <p style="font-size: 0.85em; opacity: 0.7; margin-top: 5px" data-i18n="notes.refGpuSpecNote">GPU演算性能値はNVIDIA公式データシート・製品ページに基づいています。テーブル内のGPU名をクリックすると各GPUの公式ページに遷移します。</p>
-
-        <h3 style="margin-top: 15px" data-i18n="notes.disclaimerTitle">⚠️ 免責事項</h3>
-        <p class="disclaimer-text">
-          <span data-i18n="notes.disclaimerBefore">本ページの情報は参考用であり、正確性を保証するものではありません。価格・仕様・リージョン対応状況は予告なく変更される場合があります。最新かつ正確な情報については、必ず</span><a href="https://aws.amazon.com/ec2/instance-types/" target="_blank" data-i18n="notes.disclaimerLink">AWS公式ドキュメント</a><span data-i18n="notes.disclaimerAfter">をご確認ください。本ページの情報に基づく判断・行動によって生じた損害について、作成者は一切の責任を負いません。</span>
+      <section class="panel" id="panel-features" role="tabpanel" hidden>
+        <p class="placeholder" data-i18n="placeholders.featuresMissing">
+          GPU 機能マトリクスのデータはまだ生成されていません。
         </p>
-      </div>
+      </section>
+
+      <section class="panel" id="panel-calculator" role="tabpanel" hidden>
+        <section id="cost-calculator" class="calculator-section">
+          <h2 data-i18n="calculator.title">簡易コスト計算</h2>
+          <div class="calculator-form">
+            <div class="calculator-input">
+              <label for="calc-instance" data-i18n="calculator.instanceLabel">インスタンスタイプ</label>
+              <select id="calc-instance"></select>
+            </div>
+            <div class="calculator-input">
+              <label for="calc-count" data-i18n="calculator.countLabel">台数</label>
+              <input type="number" id="calc-count" value="1" min="1" max="100" />
+            </div>
+            <div class="calculator-input">
+              <label for="calc-days" data-i18n="calculator.daysLabel">日数</label>
+              <input type="number" id="calc-days" value="30" min="1" max="3650" />
+            </div>
+            <div class="calculator-input" id="calc-exchange-rate-field">
+              <label for="calc-exchange-rate" data-i18n="calculator.exchangeRateLabel">為替レート (USD→JPY)</label>
+              <input type="number" id="calc-exchange-rate" value="150" min="1" step="0.01" />
+            </div>
+            <div class="calculator-input unit-price-field">
+              <label for="calc-od-unit-price" data-i18n="calculator.odUnitPriceLabel">On-Demand 単価 ($/GPU/h)</label>
+              <div class="unit-price-input-wrapper">
+                <span class="unit-price-prefix">$</span>
+                <input type="number" id="calc-od-unit-price" step="0.01" min="0" placeholder="-" />
+                <button type="button" id="calc-od-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice"></button>
+              </div>
+              <span class="unit-price-default" id="calc-od-default-price"></span>
+            </div>
+            <div class="calculator-input unit-price-field">
+              <label for="calc-cb-unit-price" data-i18n="calculator.cbUnitPriceLabel">CB 単価 ($/GPU/h)</label>
+              <div class="unit-price-input-wrapper">
+                <span class="unit-price-prefix">$</span>
+                <input type="number" id="calc-cb-unit-price" step="0.01" min="0" placeholder="-" />
+                <button type="button" id="calc-cb-reset" class="unit-price-reset" title="Reset" data-i18n-title="calculator.resetPrice"></button>
+              </div>
+              <span class="unit-price-default" id="calc-cb-default-price"></span>
+            </div>
+          </div>
+          <div class="calculator-results-grid">
+            <div class="result-currency-column">
+              <div class="result-currency-header">USD</div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+                <span class="result-value" id="calc-od-result">-</span>
+                <span class="result-default" id="calc-od-result-default"></span>
+                <span class="result-diff" id="calc-od-result-diff"></span>
+              </div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定</span>
+                <span class="result-value" id="calc-od-days-result">-</span>
+                <span class="result-default" id="calc-od-days-result-default"></span>
+                <span class="result-diff" id="calc-od-days-result-diff"></span>
+              </div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.cbMonthly">CB 月額</span>
+                <span class="result-value" id="calc-cb-result">-</span>
+                <span class="result-default" id="calc-cb-result-default"></span>
+                <span class="result-diff" id="calc-cb-result-diff"></span>
+              </div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定</span>
+                <span class="result-value" id="calc-cb-days-result">-</span>
+                <span class="result-default" id="calc-cb-days-result-default"></span>
+                <span class="result-diff" id="calc-cb-days-result-diff"></span>
+              </div>
+            </div>
+            <div class="result-currency-column" id="local-currency-column">
+              <div class="result-currency-header" id="local-currency-header" data-i18n="calculator.localCurrency">JPY</div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.onDemandMonthly">On-Demand 月額</span>
+                <span class="result-value" id="calc-od-local-result">-</span>
+                <span class="result-default" id="calc-od-local-result-default"></span>
+                <span class="result-diff" id="calc-od-local-result-diff"></span>
+              </div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.onDemandDays">On-Demand 日数指定</span>
+                <span class="result-value" id="calc-od-days-local-result">-</span>
+                <span class="result-default" id="calc-od-days-local-result-default"></span>
+                <span class="result-diff" id="calc-od-days-local-result-diff"></span>
+              </div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.cbMonthly">CB 月額</span>
+                <span class="result-value" id="calc-cb-local-result">-</span>
+                <span class="result-default" id="calc-cb-local-result-default"></span>
+                <span class="result-diff" id="calc-cb-local-result-diff"></span>
+              </div>
+              <div class="result-item">
+                <span class="result-label" data-i18n="calculator.cbDays">CB 日数指定</span>
+                <span class="result-value" id="calc-cb-days-local-result">-</span>
+                <span class="result-default" id="calc-cb-days-local-result-default"></span>
+                <span class="result-diff" id="calc-cb-days-local-result-diff"></span>
+              </div>
+            </div>
+          </div>
+          <p class="calculator-monthly-note" data-i18n="calculator.monthlyNote">※ 月額は720h/月で計算</p>
+          <p class="calculator-disclaimer" data-i18n="calculator.disclaimer">
+            概算値です。RI/Savings Plans等の割引は含まれません。正確な料金はAWS公式をご確認ください。
+          </p>
+        </section>
+      </section>
     </div>
 
     <script type="module" src="./scripts/main.js"></script>

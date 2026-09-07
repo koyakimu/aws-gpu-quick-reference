@@ -108,7 +108,15 @@ export const COMPARE_COLUMNS = [
     format: countCell,
     sortValue: (row) => parseCount(row.count),
   },
-  { key: "vramPerGpu", group: "gpu", labelKey: "table.vram", type: "number", format: vramCell },
+  {
+    key: "vramPerGpu",
+    group: "gpu",
+    labelKey: "table.vram",
+    type: "number",
+    format: vramCell,
+    // 分数 GPU の行は表示値 (実効 VRAM) で並べる。vramCell と同じ計算にする。
+    sortValue: (row) => row.vramPerGpu * Math.min(1, parseCount(row.count)),
+  },
   ...PERF_COLUMNS,
   { key: "efa", group: "connect", labelKey: "table.efa", type: "text", mono: true },
   { key: "pcie", group: "connect", labelKey: "table.pcie", type: "text", mono: true },
