@@ -70,6 +70,7 @@ export const ja = {
   regions: {
     generatedAt: "データ生成: {date}",
     localZoneNote: "Local Zone でのみ提供される CB は親リージョンの列に含めています。",
+    legend: "{od} = On-Demand で提供 / {cb} = Capacity Blocks で提供 / — = 提供なし",
   },
   specs: {
     title: "GPU スペック",

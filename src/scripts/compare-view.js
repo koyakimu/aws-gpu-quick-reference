@@ -6,6 +6,15 @@ import { parseCount, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
 import { REGIONS_FILE } from "./regions-data.js";
 import { GPU_SPECS } from "./gpu-specs-data.js";
+import {
+  buildFamilyCheckboxes,
+  buildGenerationButtons,
+  bindFamilyToggle,
+  bindGenerationToggle,
+  syncFamilyCheckboxes,
+  syncGenerationButtons,
+  toggleInArray,
+} from "./filter-bar.js";
 
 export const STORAGE_KEY = "gpu-ref-compare";
 
@@ -207,24 +216,6 @@ export function formatRowCount(shown, total) {
   return t("filters.rowCount").replace("{shown}", String(shown)).replace("{total}", String(total));
 }
 
-// データに出てくる順で重複を除く。フィルタの並びをデータ順に合わせるため。
-function uniqueInOrder(rows, key) {
-  const seen = new Set();
-  const out = [];
-  for (const row of rows) {
-    if (seen.has(row[key])) continue;
-    seen.add(row[key]);
-    out.push(row[key]);
-  }
-  return out;
-}
-
-function toggleInArray(list, value) {
-  const index = list.indexOf(value);
-  if (index === -1) list.push(value);
-  else list.splice(index, 1);
-}
-
 // 呼び出し側が渡す余分なオプション (旧 now など) は無視する。
 export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } = {}) {
   const mount = document.getElementById("compare-table");
@@ -264,7 +255,7 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
   mount.replaceChildren(table.el, empty);
 
   function notifyStateChanged() {
-    document.dispatchEvent(new CustomEvent(COMPARE_STATE_EVENT, { detail: { state } }));
+    document.dispatchEvent(new CustomEvent(COMPARE_STATE_EVENT, { detail: { state, source: "compare" } }));
   }
 
   function update() {
@@ -276,37 +267,11 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
   }
 
   function buildGenerationFilters() {
-    if (!genBox) return;
-    const fragment = document.createDocumentFragment();
-    for (const gen of uniqueInOrder(rows, "gen")) {
-      const on = state.generations.includes(gen);
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "ctl";
-      btn.dataset.gen = gen;
-      btn.textContent = t(`generations.${gen}`);
-      btn.setAttribute("aria-pressed", String(on));
-      btn.classList.toggle("on", on);
-      fragment.appendChild(btn);
-    }
-    genBox.replaceChildren(fragment);
+    buildGenerationButtons(genBox, rows, state, t);
   }
 
   function buildFamilyFilters() {
-    if (!familyBox) return;
-    const fragment = document.createDocumentFragment();
-    for (const family of uniqueInOrder(rows, "ec2")) {
-      const label = document.createElement("label");
-      label.className = "menu-item";
-      const input = document.createElement("input");
-      input.type = "checkbox";
-      input.dataset.family = family;
-      input.checked = state.families.includes(family);
-      label.appendChild(input);
-      label.appendChild(document.createTextNode(family));
-      fragment.appendChild(label);
-    }
-    familyBox.replaceChildren(fragment);
+    buildFamilyCheckboxes(familyBox, rows, state);
   }
 
   function buildColumnToggles() {
@@ -364,29 +329,17 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     box.hidden = false;
   }
 
-  if (genBox) {
-    genBox.addEventListener("click", (event) => {
-      const btn = event.target.closest("[data-gen]");
-      if (!btn) return;
-      toggleInArray(state.generations, btn.dataset.gen);
-      const on = state.generations.includes(btn.dataset.gen);
-      btn.classList.toggle("on", on);
-      btn.setAttribute("aria-pressed", String(on));
-      saveState(state);
-      notifyStateChanged();
-      update();
-    });
-  }
+  bindGenerationToggle(genBox, state, () => {
+    saveState(state);
+    notifyStateChanged();
+    update();
+  });
 
-  if (familyBox) {
-    familyBox.addEventListener("change", (event) => {
-      const input = event.target.closest("[data-family]");
-      if (!input) return;
-      toggleInArray(state.families, input.dataset.family);
-      notifyStateChanged();
-      update(); // ファミリは保存しない (仕様 5.2)
-    });
-  }
+  // ファミリは保存しない (仕様 5.2)
+  bindFamilyToggle(familyBox, state, () => {
+    notifyStateChanged();
+    update();
+  });
 
   if (columnBox) {
     columnBox.addEventListener("change", (event) => {
@@ -404,6 +357,19 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
   buildColumnToggles();
   buildRegionFilter();
   update();
+
+  // Regions タブのフィルタバーは同じ state を映す 2 つ目の UI なので、
+  // 向こうで世代・ファミリが変わったらこちらのボタンも合わせる (仕様 5.3)。
+  document.addEventListener(COMPARE_STATE_EVENT, (event) => {
+    if (event.detail?.source === "compare") return;
+    const next = event.detail?.state;
+    if (!next) return;
+    state.generations = next.generations;
+    state.families = next.families;
+    syncGenerationButtons(genBox, state);
+    syncFamilyCheckboxes(familyBox, state);
+    update();
+  });
 
   // 言語切替のたびに見出しとフィルタのラベルを引き直す。
   // ファミリ名は製品名なので訳さない = 作り直す必要がない。

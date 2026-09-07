@@ -234,10 +234,23 @@
 
       <section class="panel" id="panel-regions" role="tabpanel" hidden>
         <div class="bar">
+          <div class="filter-group" id="regions-gen-filters"></div>
+
+          <details class="menu" id="regions-family-menu">
+            <summary class="ctl" data-i18n="filters.families">ファミリ</summary>
+            <div class="menu-body" id="regions-family-filters"></div>
+          </details>
+
+          <span class="row-count mono" id="regions-row-count"></span>
+        </div>
+
+        <div class="bar">
           <div class="filter-group" id="region-groups"></div>
         </div>
 
         <div id="regions-table"></div>
+
+        <p class="note legend" id="regions-legend"></p>
 
         <p class="placeholder" id="regions-missing" data-i18n="placeholders.regionsMissing" hidden>
           リージョン提供状況のデータはまだ生成されていません。
