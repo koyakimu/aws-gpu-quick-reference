@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { pickRate, applyCbPricing } from "../scripts/lib/cb-pricing.mjs";
+import { pickRate, applyCbPricing, unmatchedFeedKeys } from "../scripts/lib/cb-pricing.mjs";
 
 describe("pickRate", () => {
   it("prefers Tokyo", () => {
@@ -35,6 +35,16 @@ describe("pickRate", () => {
 
   it("returns null for an empty list", () => {
     expect(pickRate([])).toBeNull();
+  });
+
+  it("ignores non-numeric rates such as \"N/A\"", () => {
+    expect(
+      pickRate([
+        { region: "Asia Pacific (Tokyo)", accelerator_hourly_rate_usd: "N/A" },
+        { region: "US East (N. Virginia)", accelerator_hourly_rate_usd: 4.72 },
+      ]),
+    ).toBe(4.72);
+    expect(pickRate([{ region: "Asia Pacific (Tokyo)", accelerator_hourly_rate_usd: "N/A" }])).toBeNull();
   });
 });
 
@@ -105,11 +115,57 @@ describe("applyCbPricing", () => {
     expect(changes).toEqual(["p5e.48xlarge tokyo: false -> true"]);
   });
 
+  it("leaves priceCb untouched and records no change for a non-numeric rate", () => {
+    const { instances, changes } = applyCbPricing(base, {
+      "p5.48xlarge": { pricing: [{ region: "Asia Pacific (Tokyo)", accelerator_hourly_rate_usd: "N/A" }] },
+    });
+    expect(instances[0].priceCb).toBe(4.72);
+    expect(changes).toEqual([]);
+  });
+
+  // 東京にレートが無くても提供自体はされているので tokyo は true に倒す。
+  it("sets tokyo true for a Tokyo entry that carries no rate", () => {
+    const { instances, changes } = applyCbPricing(base, {
+      "p5e.48xlarge": {
+        pricing: [{ region: "Asia Pacific (Tokyo)", region_code: "ap-northeast-1", accelerator_hourly_rate_usd: "N/A" }],
+      },
+    });
+    expect(instances[1].priceCb).toBe(5.97);
+    expect(instances[1].tokyo).toBe(true);
+    expect(changes).toEqual(["p5e.48xlarge tokyo: false -> true"]);
+  });
+
+  it("tolerates a feed entry with no pricing array", () => {
+    const { instances, changes } = applyCbPricing(base, { "g6.xlarge": {} });
+    expect(instances[2].priceCb).toBeNull();
+    expect(changes).toEqual([]);
+  });
+
   it("never clears tokyo when the CB feed has no Tokyo entry", () => {
     const { instances, changes } = applyCbPricing(base, {
       "p5.48xlarge": { pricing: [{ region: "US East (Ohio)", region_code: "us-east-2", accelerator_hourly_rate_usd: 4.72 }] },
     });
     expect(instances[0].tokyo).toBe(true);
     expect(changes).toEqual([]);
+  });
+});
+
+describe("unmatchedFeedKeys", () => {
+  const instances = [{ size: "p5.48xlarge" }, { size: "g6.xlarge" }];
+
+  it("lists feed keys that have no row", () => {
+    expect(unmatchedFeedKeys(instances, { "p5.48xlarge": {}, "p6-b200.48xlarge": {} })).toEqual([
+      "p6-b200.48xlarge",
+    ]);
+  });
+
+  it("skips Trainium and Inferentia keys", () => {
+    expect(
+      unmatchedFeedKeys(instances, { "trn2.48xlarge": {}, "trn1.32xlarge": {}, "inf2.48xlarge": {} }),
+    ).toEqual([]);
+  });
+
+  it("returns an empty list when every feed key has a row", () => {
+    expect(unmatchedFeedKeys(instances, { "p5.48xlarge": {}, "g6.xlarge": {} })).toEqual([]);
   });
 });

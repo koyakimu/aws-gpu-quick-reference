@@ -21,8 +21,9 @@ function isRegion(entry, region) {
   return entry.region_code === region.code || entry.region === region.name;
 }
 
+// 上流が "N/A" や "" を入れてくることがあるので、数値であることまで確かめる。
 function hasRate(entry) {
-  return entry?.accelerator_hourly_rate_usd != null;
+  return Number.isFinite(entry?.accelerator_hourly_rate_usd);
 }
 
 // 採用したエントリ自体を返す。どのリージョンを使ったかを変更ログに書くため。
@@ -81,4 +82,16 @@ export function applyCbPricing(instances, instanceTypes) {
   });
 
   return { instances: updated, changes };
+}
+
+// Trainium / Inferentia は本サイトの対象外 (spec §1) なので警告から除く。
+const OUT_OF_SCOPE_PREFIXES = ["trn", "inf"];
+
+// CB フィードにあって instances.json に無いサイズ。新しい GPU インスタンスの
+// 取りこぼしに気づくための警告用で、更新結果そのものには影響しない。
+export function unmatchedFeedKeys(instances, instanceTypes) {
+  const known = new Set(instances.map((row) => row.size));
+  return Object.keys(instanceTypes)
+    .filter((key) => !known.has(key))
+    .filter((key) => !OUT_OF_SCOPE_PREFIXES.some((prefix) => key.startsWith(prefix)));
 }
