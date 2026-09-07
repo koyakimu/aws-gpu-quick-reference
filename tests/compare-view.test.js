@@ -135,17 +135,19 @@ describe("column formats", () => {
     expect(count.sortValue({ count: 8 })).toBe(8);
   });
 
+  // 価格 3 列は行の値ではなく price-region.js 経由で引く。既定リージョン
+  // (us-east-1) では regions.json に値が無ければ行の price / priceCb に落ちる。
   it("labels a CB-only instance in the On-Demand column", () => {
     const price = column("price");
-    expect(price.format(55.04, {})).toBe("55.04");
-    expect(price.format(null, { priceCb: 3.93 })).toBe("CB専用");
-    expect(price.format(null, { priceCb: null })).toBe(EMPTY);
+    expect(price.format(null, { size: "x", count: 8, price: 55.04 })).toBe("55.04");
+    expect(price.format(null, { size: "x", count: 8, price: null, priceCb: 3.93 })).toBe("CB専用");
+    expect(price.format(null, { size: "x", count: 8, price: null, priceCb: null })).toBe(EMPTY);
   });
 
   it("leaves the CB column empty when there is no CB price", () => {
     const cb = column("priceCb");
-    expect(cb.format(3.93, {})).toBe("3.93");
-    expect(cb.format(null, {})).toBe(EMPTY);
+    expect(cb.format(null, { size: "x", priceCb: 3.93 })).toBe("3.93");
+    expect(cb.format(null, { size: "x" })).toBe(EMPTY);
   });
 
   it("scales VRAM down for a fractional GPU count", () => {

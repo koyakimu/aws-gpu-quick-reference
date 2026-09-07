@@ -145,7 +145,9 @@ export const ja = {
   notes: {
     title: "Notes",
     priceNote:
-      "us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。価格基準: %PRICING_AS_OF%。",
+      "%PRICE_REGION% の On-Demand 価格 (USD)。CB = Capacity Blocks の GPU 1 枚あたり単価。価格基準: %PRICING_AS_OF%。",
+    priceRegionNote:
+      "ヘッダのリージョン選択で、価格列 ($/h・$/GPU・$/GPU CB) と計算ツールの単価が切り替わります。比較タブのリージョン絞り込みは行の絞り込みで、別の設定です。",
     g7eNote:
       "G7e は NVIDIA RTX PRO 6000 Blackwell Server Edition、G7 は RTX PRO 4500 Blackwell Server Edition を搭載。G7e の FP16/FP8/FP4 は公式データシートが丸めた PFLOPS 表記（スパース値で FP16 1 / FP8 2 / FP4 4 PFLOPS）しか示さないため、その値と Dense = その半分を採用した概算値（*付き）。G7 も同様に公式公表値（スパース値で FP16 406 / FP8 811 TFLOPS・FP4 1.6 PFLOPS）を採り、Dense をその半分とした概算値。48xlargeのみEFA対応。",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 最新・最高性能、On-Demand利用可 / P5e: H200 + EFAv2 + PCIe Gen4 → CB専用、P5enより低コスト / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB、最もコスパ良好",

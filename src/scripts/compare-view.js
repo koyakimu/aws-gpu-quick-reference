@@ -5,6 +5,7 @@ import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
 import { parseCount, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
 import { REGIONS_FILE } from "./regions-data.js";
+import { getPrice, PRICE_REGION_EVENT } from "./price-region.js";
 import { GPU_SPECS } from "./gpu-specs-data.js";
 import {
   buildFamilyCheckboxes,
@@ -70,14 +71,28 @@ function perfCell(value, row) {
   return formatNumber(value) + (row.est ? "*" : "");
 }
 
-// On-Demand が無く CB だけあるインスタンスは「CB専用」と書く。両方無ければ空欄。
-function onDemandCell(value, row) {
-  if (value == null) return row.priceCb == null ? EMPTY : t("table.cbOnly");
-  return Number(value).toFixed(2);
+// 価格 3 列はヘッダで選んだリージョンの値を出す (price-region.js)。
+// 行が持つ price / priceCb は既定リージョンのフォールバックとしてのみ使われる。
+function amount(value) {
+  return value == null ? EMPTY : value.toFixed(2);
 }
 
-function priceCell(value) {
-  return value == null ? EMPTY : Number(value).toFixed(2);
+// On-Demand が無く CB だけあるインスタンスは「CB専用」と書く。両方無ければ空欄。
+function onDemandCell(_value, row) {
+  const { od, cb } = getPrice(row);
+  if (od == null) return cb == null ? EMPTY : t("table.cbOnly");
+  return od.toFixed(2);
+}
+
+function priceColumn(key, labelKey, pick) {
+  return {
+    key,
+    group: "price",
+    labelKey,
+    type: "price",
+    format: (_value, row) => amount(pick(getPrice(row))),
+    sortValue: (row) => pick(getPrice(row)),
+  };
 }
 
 // GPU 単体のスペック (gpu-specs.json) から引く列。行ではなく gpuKey に紐づく値なので、
@@ -150,9 +165,16 @@ export const COMPARE_COLUMNS = [
   { key: "vcpu", group: "system", labelKey: "table.vcpu", type: "number" },
   { key: "mem", group: "system", labelKey: "table.memory", type: "text", mono: true, align: "right" },
   { key: "nvme", group: "system", labelKey: "table.nvme", type: "text", mono: true, align: "right" },
-  { key: "price", group: "price", labelKey: "table.onDemand", type: "price", format: onDemandCell },
-  { key: "priceGpu", group: "price", labelKey: "table.perGpu", type: "price", format: priceCell },
-  { key: "priceCb", group: "price", labelKey: "table.cb", type: "price", format: priceCell },
+  {
+    key: "price",
+    group: "price",
+    labelKey: "table.onDemand",
+    type: "price",
+    format: onDemandCell,
+    sortValue: (row) => getPrice(row).od,
+  },
+  priceColumn("priceGpu", "table.perGpu", (price) => price.gpu),
+  priceColumn("priceCb", "table.cb", (price) => price.cb),
   { key: "tokyo", group: "price", labelKey: "table.tokyo", type: "flag" },
 ];
 
@@ -370,6 +392,9 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     syncFamilyCheckboxes(familyBox, state);
     update();
   });
+
+  // ヘッダで価格のリージョンが変わったら金額を引き直す (行の絞り込みは変えない)。
+  document.addEventListener(PRICE_REGION_EVENT, update);
 
   // 言語切替のたびに見出しとフィルタのラベルを引き直す。
   // ファミリ名は製品名なので訳さない = 作り直す必要がない。

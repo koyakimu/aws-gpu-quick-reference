@@ -2,6 +2,7 @@ import { ja } from "../i18n/ja.js";
 import { en } from "../i18n/en.js";
 import { ko } from "../i18n/ko.js";
 import { PRICING_META } from "./gpu-data.js";
+import { getPriceRegion, PRICE_REGION_EVENT } from "./price-region.js";
 
 const STORAGE_KEY = "gpu-ref-lang";
 const dictionaries = { ja, en, ko };
@@ -38,9 +39,12 @@ export function t(key) {
     value = value[k];
   }
   if (value == null) return key;
-  // 価格の基準月はデータ (data/instances.json) が持つので、辞書側は置換子だけ持つ
+  // 価格の基準月はデータ (data/instances.json) が、リージョンはヘッダの選択が持つ。
+  // 辞書側は置換子だけ持つ。
   return typeof value === "string"
-    ? value.replaceAll("%PRICING_AS_OF%", PRICING_META.pricingAsOf)
+    ? value
+        .replaceAll("%PRICING_AS_OF%", PRICING_META.pricingAsOf)
+        .replaceAll("%PRICE_REGION%", getPriceRegion())
     : value;
 }
 
@@ -59,6 +63,8 @@ export function initI18n() {
   currentLang = detectLanguage();
   document.documentElement.lang = currentLang;
   applyTranslations();
+  // %PRICE_REGION% を含む文 (notes.priceNote) を選択に追従させる
+  document.addEventListener(PRICE_REGION_EVENT, applyTranslations);
 }
 
 export function setupLangToggle() {

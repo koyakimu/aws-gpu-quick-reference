@@ -145,7 +145,9 @@ export const en = {
   notes: {
     title: "Notes",
     priceNote:
-      "On-Demand pricing (USD) for us-east-1 (N. Virginia). CB = Capacity Blocks (Tokyo region when available, otherwise US regions). Pricing as of %PRICING_AS_OF%.",
+      "On-Demand pricing (USD) for %PRICE_REGION%. CB = Capacity Blocks, per GPU per hour. Pricing as of %PRICING_AS_OF%.",
+    priceRegionNote:
+      "The region selector in the header switches the price columns ($/h, $/GPU, $/GPU CB) and the calculator's unit prices. The region filter on the Compare tab is separate: it filters rows by availability.",
     g7eNote:
       "G7e is powered by the NVIDIA RTX PRO 6000 Blackwell Server Edition and G7 by the RTX PRO 4500 Blackwell Server Edition. G7e FP16/FP8/FP4 values (*) are approximations: the official datasheet only gives rounded PFLOPS figures (with sparsity: FP16 1 / FP8 2 / FP4 4 PFLOPS), and Dense is taken as half of those. G7 values (*) come the same way from NVIDIA's published figures (with sparsity: FP16 406 / FP8 811 TFLOPS, FP4 1.6 PFLOPS), with Dense as half. Only 48xlarge supports EFA.",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → Latest & highest performance, On-Demand available / P5e: H200 + EFAv2 + PCIe Gen4 → CB only, lower cost than P5en / P5: H100 + EFAv2 + PCIe Gen4 → 640GB VRAM, best cost-performance",

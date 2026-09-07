@@ -195,3 +195,20 @@ select.ctl {
   margin-left: auto;
   color: var(--fg-muted);
 }
+
+/* ヘッダの価格リージョン選択。キャプションの一部に見えるよう小さく詰める */
+#price-region {
+  padding: 1px var(--sp-1);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  background: none;
+  border-color: transparent;
+}
+#price-region:hover,
+#price-region:focus {
+  color: var(--fg);
+  border-color: var(--line);
+}
+#price-region[hidden] {
+  display: none;
+}
