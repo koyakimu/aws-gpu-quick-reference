@@ -13,6 +13,7 @@ import {
 } from "../src/scripts/compare-view.js";
 import { EMPTY } from "../src/scripts/table-engine.js";
 import { GPU_DATA } from "../src/scripts/gpu-data.js";
+import { setRegionsFile, setPriceRegion, DEFAULT_PRICE_REGION } from "../src/scripts/price-region.js";
 
 // フィルタのテストは実データに依存しない小さな行で行う。
 const ROWS = [
@@ -31,7 +32,7 @@ function mountPanel() {
         <div class="filter-group" id="gen-filters"></div>
         <details class="menu" id="family-menu"><summary class="ctl">F</summary><div class="menu-body" id="family-filters"></div></details>
         <details class="menu" id="column-menu"><summary class="ctl">C</summary><div class="menu-body" id="column-toggles"></div></details>
-        <div class="filter-group" id="region-filter" hidden></div>
+        <label class="ctl" id="only-in-region-ctl" hidden><input type="checkbox" id="only-in-region"> <span></span></label>
         <span class="row-count mono" id="compare-row-count"></span>
       </div>
       <div id="compare-table"></div>
@@ -166,7 +167,7 @@ describe("defaultState", () => {
       hiddenGroups: [],
       generations: [],
       families: [],
-      region: null,
+      onlyInRegion: false,
     });
   });
 });
@@ -195,7 +196,7 @@ describe("saveState / loadState", () => {
       hiddenGroups: ["connect"],
       generations: ["ada"],
       families: [],
-      region: null,
+      onlyInRegion: false,
     });
   });
 
@@ -508,18 +509,31 @@ describe("region filter", () => {
     ]);
   });
 
-  it("builds the select from regions.json and hides the filter without it", () => {
+  it("filters rows by the header price region when the checkbox is ticked", () => {
+    setRegionsFile(FILE);
+    setPriceRegion("ap-northeast-1");
     initCompareView({ rows: ROWS, regionsFile: FILE });
-    const select = document.getElementById("region-select");
-    expect(document.getElementById("region-filter").hidden).toBe(false);
-    expect([...select.options].map((o) => o.value)).toEqual(["", "us-east-1", "ap-northeast-1"]);
 
-    select.value = "ap-northeast-1";
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+    const checkbox = document.getElementById("only-in-region");
+    expect(document.getElementById("only-in-region-ctl").hidden).toBe(false);
+    expect(checkbox.checked).toBe(false);
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(ROWS.length);
+
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event("change", { bubbles: true }));
     expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(2);
+
+    // ヘッダのリージョンを変えたら絞り込みも追従する
+    setPriceRegion("us-east-1");
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(2);
+
+    checkbox.checked = false;
+    checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(document.querySelectorAll("#compare-table tbody tr:not(.band)")).toHaveLength(ROWS.length);
 
     mountPanel();
     initCompareView({ rows: ROWS, regionsFile: null });
-    expect(document.getElementById("region-filter").hidden).toBe(true);
+    expect(document.getElementById("only-in-region-ctl").hidden).toBe(true);
+    setPriceRegion(DEFAULT_PRICE_REGION);
   });
 });

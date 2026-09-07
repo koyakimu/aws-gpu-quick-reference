@@ -45,15 +45,17 @@ const ROWS = [
 function mount() {
   document.body.innerHTML = `
     <div class="brand">
-      <small id="pricing-caption">pricing 2026-09 ·</small>
+      <label class="price-region-label" for="price-region">Price region:</label>
       <select id="price-region" class="ctl" hidden></select>
+      <small class="mono" id="price-region-static" hidden></small>
+      <small class="mono" id="pricing-caption">(prices as of 2026-09)</small>
     </div>
     <section id="panel-compare" class="panel">
       <div class="bar">
         <div class="filter-group" id="gen-filters"></div>
         <div class="menu-body" id="family-filters"></div>
         <div class="menu-body" id="column-toggles"></div>
-        <div class="filter-group" id="region-filter" hidden></div>
+        <label class="ctl" id="only-in-region-ctl" hidden><input type="checkbox" id="only-in-region"> <span></span></label>
         <span id="compare-row-count"></span>
       </div>
       <div id="compare-table"></div>

@@ -73,7 +73,7 @@ describe("keys the renewed UI needs", () => {
   // tabs.calculator は compare タブ内の計算ツール開閉ボタンのラベル。
   // Task 6 のマークアップ: tabs.*, filters.families, filters.columns, placeholders.regions/features
   // Task 5 の compare-view.js: filters.rowCount, groups.*, table.fp*, placeholders.noRows
-  // filters.region は PR 4 で出すリージョン絞り込み (今は hidden) が使う。
+  // filters.onlyInRegion は比較タブの「選択リージョンで提供のみ」チェックが使う。
   const REQUIRED = [
     "tabs.compare",
     "tabs.regions",
@@ -81,7 +81,7 @@ describe("keys the renewed UI needs", () => {
     "tabs.calculator",
     "filters.families",
     "filters.columns",
-    "filters.region",
+    "filters.onlyInRegion",
     "filters.rowCount",
     "groups.instance",
     "groups.gpu",

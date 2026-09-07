@@ -21,6 +21,21 @@
   white-space: nowrap;
 }
 
+.brand-link {
+  color: inherit;
+  text-decoration: none;
+}
+.brand-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.price-region-label {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+
 .brand small {
   font-size: var(--fs-xs);
   color: var(--fg-muted);
@@ -99,6 +114,9 @@
   flex: 0 0 auto; /* 横スクロールするフィルタ列で潰れないように */
   transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
   list-style: none; /* <summary> のマーカーを消す */
+}
+.ctl[hidden] {
+  display: none;
 }
 .ctl::-webkit-details-marker {
   display: none;
@@ -210,5 +228,8 @@ select.ctl {
   border-color: var(--line);
 }
 #price-region[hidden] {
+  display: none;
+}
+#price-region-static[hidden] {
   display: none;
 }
