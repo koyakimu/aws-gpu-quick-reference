@@ -142,7 +142,12 @@ export const ja = {
     dark: "ダーク",
     light: "ライト",
   },
+  gpu: {
+    announced: "発表済み",
+  },
   notes: {
+    gb300Note:
+      "P6e-GB300 UltraServer（GB300 NVL72、GPU 72 基）は AWS が発表済みですが、インスタンス型名と価格が未公開のため表には載せていません。",
     title: "Notes",
     priceNote:
       "us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。価格基準: %PRICING_AS_OF%。",

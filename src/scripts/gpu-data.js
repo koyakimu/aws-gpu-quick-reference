@@ -29,6 +29,8 @@ export const GPU_DATASHEET_LINKS = {
     "B300": "https://www.nvidia.com/en-us/data-center/dgx-b300/",
     "B200": "https://www.nvidia.com/en-us/data-center/dgx-b200/",
     "GB200": "https://www.nvidia.com/en-us/data-center/gb200-nvl72/",
+    // GB300 は AWS のインスタンス型が未公開だが、GPU タブには行として出す。
+    "GB300": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
     "RTX PRO": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/",
     "RTX PRO 4500": "https://www.nvidia.com/en-us/data-center/rtx-pro-4500-blackwell-server-edition/",
     "H200": "https://www.nvidia.com/en-us/data-center/h200/",

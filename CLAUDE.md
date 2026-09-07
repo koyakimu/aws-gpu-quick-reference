@@ -74,6 +74,24 @@ GPU タブ上段の「GPU スペック」表と、比較表の FP32 / TF32 Dense
 
 `tests/gpu-specs.test.js` が守っている: instances.json の全 gpuKey にエントリがあること、`source` が URL であること、数値フィールドがすべて正数か `null` であること、GPU タブが 15 行描かれること、比較表に FP32 列があること。
 
+### インスタンスがまだ無い GPU (data/gpu-specs.json の extraGpus)
+
+AWS が採用を発表済みでインスタンス型名・価格が未公開の GPU は、`instances.json` には
+何も足さず、`data/gpu-specs.json` のトップレベル `extraGpus` に並び順のヒントを書く。
+
+```json
+"extraGpus": [
+  { "gpuKey": "gb300", "gpu": "GB300", "gen": "blackwell", "after": "gb200", "announced": true }
+]
+```
+
+- `after` … この gpuKey の直後に行を差し込む (見つからなければ末尾)
+- `announced: true` … GPU タブの行に「発表済み」の印 (i18n `gpu.announced`) を付ける
+- `data/gpu-features.json` 側にも同じ gpuKey のエントリと `sources` を足す
+- 表示名 (`gpu`) は `src/scripts/gpu-data.js` の `GPU_DATASHEET_LINKS` のキーと一致させる
+- インスタンスが出たら `instances.json` に足してこの項目を消す
+  (同じ gpuKey が instances.json にあれば extraGpus 側は無視される)
+
 ### 価格更新
 
 #### On-Demand 価格

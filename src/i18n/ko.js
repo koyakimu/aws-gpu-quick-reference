@@ -142,7 +142,12 @@ export const ko = {
     dark: "다크",
     light: "라이트",
   },
+  gpu: {
+    announced: "발표됨",
+  },
   notes: {
+    gb300Note:
+      "AWS는 P6e-GB300 UltraServer(GB300 NVL72, GPU 72기)를 발표했지만 인스턴스 유형 이름과 가격이 공개되지 않아 표에는 넣지 않았습니다.",
     title: "Notes",
     priceNote:
       "us-east-1 (버지니아 북부)의 On-Demand 가격 (USD). CB = Capacity Blocks (도쿄 리전 우선, 미제공 시 미국 리전). 가격 기준: %PRICING_AS_OF%.",
