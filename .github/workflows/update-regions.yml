@@ -1,24 +1,25 @@
-name: Update CB Pricing
+name: Update Region Availability
 
 on:
   schedule:
-    # 毎日 18:00 JST (09:00 UTC)。pricing.json 側の更新後に実行される想定
-    - cron: "0 9 * * *"
+    # 毎週月曜 18:00 JST (09:00 UTC)
+    - cron: "0 9 * * 1"
   workflow_dispatch:
-  repository_dispatch:
-    types: [cb-pricing-updated]
 
 permissions:
   contents: write
   actions: write
 
 concurrency:
-  group: update-cb-pricing
+  group: update-regions
   cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    # 34 リージョン x 約 100MB (products セクションのみ) を並列 3 で読む。
+    # 実測ベースの見込みは転送量 3〜4GB / 3〜8 分。詰まったときのために余裕を持たせる。
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -27,23 +28,23 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Update CB pricing from pricing.json
-        run: node scripts/update-cb-pricing.mjs
+      - name: Update region availability from the AWS Price List
+        run: node scripts/update-regions.mjs
 
       - name: Commit and deploy if changed
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           if git diff --quiet; then
-            echo "No pricing changes."
+            echo "No availability changes."
             exit 0
           fi
           npm ci
           npm test
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/instances.json
-          git commit -m "chore: CB価格を自動更新"
+          git add data/regions.json
+          git commit -m "chore: リージョン提供状況を自動更新"
           # 他のデータ更新ワークフローが先に push していても non-fast-forward で落ちないようにする
           git pull --rebase origin main
           git push

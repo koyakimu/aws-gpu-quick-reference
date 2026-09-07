@@ -8,6 +8,7 @@ import { initTheme, setupThemeToggle } from "./theme.js";
 import { initI18n, setupLangToggle } from "./i18n.js";
 import { initTabs } from "./tabs.js";
 import { initCompareView } from "./compare-view.js";
+import { initRegionsView } from "./regions-view.js";
 import { initCalculator } from "./calculator.js";
 import { PRICING_META } from "./gpu-data.js";
 
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setPricingCaption();
   initTabs();
   initCompareView();
+  initRegionsView();
   initCalculator();
   openCalculatorFromHash();
   window.addEventListener("hashchange", openCalculatorFromHash);

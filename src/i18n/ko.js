@@ -44,6 +44,7 @@ export const ko = {
     families: "패밀리",
     columns: "열",
     region: "리전",
+    allRegions: "전체 리전",
     rowCount: "{shown} / {total} 행",
   },
   groups: {
@@ -53,6 +54,17 @@ export const ko = {
     connect: "연결",
     system: "시스템",
     price: "가격",
+  },
+  regionGroups: {
+    na: "북미",
+    sa: "남미",
+    eu: "유럽",
+    meaf: "중동·아프리카",
+    ap: "아시아 태평양",
+  },
+  regions: {
+    generatedAt: "데이터 생성: {date}",
+    localZoneNote: "Local Zone 에서만 제공되는 CB 는 상위 리전 열에 포함했습니다.",
   },
   placeholders: {
     regionsMissing: "리전 제공 현황 데이터가 아직 생성되지 않았습니다.",

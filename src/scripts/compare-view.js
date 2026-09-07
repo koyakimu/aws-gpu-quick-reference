@@ -4,8 +4,12 @@ import { createTable, EMPTY } from "./table-engine.js";
 import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
 import { parseCount, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
+import { REGIONS_FILE } from "./regions-data.js";
 
 export const STORAGE_KEY = "gpu-ref-compare";
+
+// Regions タブが世代・ファミリのフィルタを共有するためのイベント (仕様 5.3)。
+export const COMPARE_STATE_EVENT = "compare-state-changed";
 
 // 仕様 5.2 の 6 グループ。表示順もこの順。
 export const COLUMN_GROUPS = ["instance", "gpu", "performance", "connect", "system", "price"];
@@ -154,13 +158,14 @@ export function saveState(state) {
   );
 }
 
-// PR 4 で regions.json を読んで実装する。今は素通し。
-export function regionFilter(rows, region) {
-  void region;
-  return rows;
+// 選んだリージョンで提供のある行だけ残す (仕様 5.2)。
+// region が null、または regions.json が無ければ素通し。
+export function regionFilter(rows, region, file = REGIONS_FILE) {
+  if (!region || !file) return rows;
+  return rows.filter((row) => file.availability?.[row.size]?.[region] != null);
 }
 
-export function filterRows(rows, state) {
+export function filterRows(rows, state, file = REGIONS_FILE) {
   const gens = new Set(state.generations);
   const families = new Set(state.families);
   const filtered = rows.filter((row) => {
@@ -168,7 +173,7 @@ export function filterRows(rows, state) {
     if (families.size > 0 && !families.has(row.ec2)) return false;
     return true;
   });
-  return regionFilter(filtered, state.region);
+  return regionFilter(filtered, state.region, file);
 }
 
 export function formatRowCount(shown, total) {
@@ -194,7 +199,7 @@ function toggleInArray(list, value) {
 }
 
 // 呼び出し側が渡す余分なオプション (旧 now など) は無視する。
-export function initCompareView({ rows = GPU_DATA } = {}) {
+export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } = {}) {
   const mount = document.getElementById("compare-table");
   if (!mount) return { update() {} };
 
@@ -207,7 +212,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
 
   const table = createTable({
     columns: COMPARE_COLUMNS,
-    rows: filterRows(rows, state),
+    rows: filterRows(rows, state, regionsFile),
     state,
     onStateChange(next) {
       // ソートだけがここから来る。保存はしない (仕様 5.2)。
@@ -224,8 +229,12 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
 
   mount.replaceChildren(table.el, empty);
 
+  function notifyStateChanged() {
+    document.dispatchEvent(new CustomEvent(COMPARE_STATE_EVENT, { detail: { state } }));
+  }
+
   function update() {
-    const shown = filterRows(rows, state);
+    const shown = filterRows(rows, state, regionsFile);
     table.update(shown, state);
     empty.textContent = t("placeholders.noRows");
     empty.hidden = shown.length > 0;
@@ -283,6 +292,44 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
     columnBox.replaceChildren(fragment);
   }
 
+  // リージョン選択は regions.json があるときだけ出す (仕様 5.2 / 10)。
+  // 単一選択で、保存はしない。
+  function buildRegionFilter() {
+    const box = document.getElementById("region-filter");
+    if (!box) return;
+    if (!regionsFile) {
+      box.hidden = true;
+      box.replaceChildren();
+      return;
+    }
+    const select = document.createElement("select");
+    select.id = "region-select";
+    select.className = "ctl";
+
+    const all = document.createElement("option");
+    all.value = "";
+    all.textContent = t("filters.allRegions");
+    select.appendChild(all);
+
+    for (const region of regionsFile.regions) {
+      const option = document.createElement("option");
+      option.value = region.code;
+      option.textContent = region.code;
+      option.title = region.name;
+      select.appendChild(option);
+    }
+    select.value = state.region || "";
+
+    select.addEventListener("change", () => {
+      state.region = select.value || null;
+      notifyStateChanged();
+      update();
+    });
+
+    box.replaceChildren(select);
+    box.hidden = false;
+  }
+
   if (genBox) {
     genBox.addEventListener("click", (event) => {
       const btn = event.target.closest("[data-gen]");
@@ -292,6 +339,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
       btn.classList.toggle("on", on);
       btn.setAttribute("aria-pressed", String(on));
       saveState(state);
+      notifyStateChanged();
       update();
     });
   }
@@ -301,6 +349,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
       const input = event.target.closest("[data-family]");
       if (!input) return;
       toggleInArray(state.families, input.dataset.family);
+      notifyStateChanged();
       update(); // ファミリは保存しない (仕様 5.2)
     });
   }
@@ -311,6 +360,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
       if (!input) return;
       toggleInArray(state.hiddenGroups, input.dataset.group);
       saveState(state);
+      notifyStateChanged();
       update();
     });
   }
@@ -318,6 +368,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
   buildGenerationFilters();
   buildFamilyFilters();
   buildColumnToggles();
+  buildRegionFilter();
   update();
 
   // 言語切替のたびに見出しとフィルタのラベルを引き直す。
@@ -325,6 +376,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
   document.addEventListener("lang-changed", () => {
     buildGenerationFilters();
     buildColumnToggles();
+    buildRegionFilter();
     update();
   });
 

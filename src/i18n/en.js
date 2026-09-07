@@ -44,6 +44,7 @@ export const en = {
     families: "Family",
     columns: "Columns",
     region: "Region",
+    allRegions: "All regions",
     rowCount: "{shown} / {total} rows",
   },
   groups: {
@@ -53,6 +54,17 @@ export const en = {
     connect: "Connect",
     system: "System",
     price: "Price",
+  },
+  regionGroups: {
+    na: "North America",
+    sa: "South America",
+    eu: "Europe",
+    meaf: "Middle East & Africa",
+    ap: "Asia Pacific",
+  },
+  regions: {
+    generatedAt: "Generated: {date}",
+    localZoneNote: "CB offerings available only in a Local Zone are counted in their parent region's column.",
   },
   placeholders: {
     regionsMissing: "Region availability data has not been generated yet.",

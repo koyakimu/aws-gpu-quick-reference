@@ -44,6 +44,7 @@ export const ja = {
     families: "ファミリ",
     columns: "列",
     region: "リージョン",
+    allRegions: "全リージョン",
     rowCount: "{shown} / {total} 行",
   },
   groups: {
@@ -53,6 +54,17 @@ export const ja = {
     connect: "接続",
     system: "システム",
     price: "価格",
+  },
+  regionGroups: {
+    na: "北米",
+    sa: "南米",
+    eu: "欧州",
+    meaf: "中東・アフリカ",
+    ap: "アジア太平洋",
+  },
+  regions: {
+    generatedAt: "データ生成: {date}",
+    localZoneNote: "Local Zone でのみ提供される CB は親リージョンの列に含めています。",
   },
   placeholders: {
     regionsMissing: "リージョン提供状況のデータはまだ生成されていません。",
