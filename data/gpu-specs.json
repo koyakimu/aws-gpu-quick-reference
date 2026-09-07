@@ -315,7 +315,7 @@
       "memoryBandwidthGbs": 600,
       "tdpW": 150,
       "source": "https://www.nvidia.com/en-us/data-center/products/a10-gpu/",
-      "notes": "A10G は AWS 専用モデルで NVIDIA 単独のデータシートが無いため、A10 の製品ページ (Dense | Sparse 両掲載) の値を採った。instances.json は FP16 125 TFLOPS をスパース値として扱い Dense 62.5 としているが、A10 ページでは 125 が Dense・250 が Sparse なので 2 倍の差がある。"
+      "notes": "A10G は AWS 専用モデルで NVIDIA 単独のデータシートが無いため、A10 の製品ページ (Dense | Sparse 両掲載) の値を採った。AWS の G5 ページは FP16 TFLOPS を公表していない (250 TOPS のみ) ため、instances.json も A10 ページに合わせて FP16 Dense 125 / Sparse 250 に揃えた。"
     },
     "t4": {
       "fp64": null,

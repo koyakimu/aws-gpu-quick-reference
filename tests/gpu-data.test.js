@@ -183,14 +183,15 @@ describe("instances.json agrees with aws-ec2-nvidia-gpu-specs.json", () => {
     // 1979 / 2 = 989.5 を表では 989 と丸めているため 0.5 の誤差を許す
     const TOLERANCE = 0.5;
     const pairs = [
-      ["fp16Dense", "fp16_tflops", "fp16_with_sparsity"],
-      ["fp8Dense", "fp8_tflops", "fp8_with_sparsity"],
-      ["fp4Dense", "fp4_tflops", "fp4_with_sparsity"],
+      ["fp16Dense", "fp16_tflops", "fp16_with_sparsity", "fp16_dense_tflops"],
+      ["fp8Dense", "fp8_tflops", "fp8_with_sparsity", "fp8_dense_tflops"],
+      ["fp4Dense", "fp4_tflops", "fp4_with_sparsity", "fp4_dense_tflops"],
     ];
     GPU_DATA.forEach((row) => {
       const spec = byName.get(SPEC_NAMES[row.gpu]);
-      pairs.forEach(([dataField, specField, sparsityField]) => {
-        const expected = denseOf(spec[specField], spec[sparsityField] === true);
+      pairs.forEach(([dataField, specField, sparsityField, denseField]) => {
+        // スパース値がちょうど 2 倍でない GPU (L40S 362.05 | 733) は Dense を明示できる
+        const expected = spec[denseField] ?? denseOf(spec[specField], spec[sparsityField] === true);
         const actual = row[dataField];
         if (expected == null) {
           expect(actual, `${row.size} (${row.gpu}): ${dataField} should be null`).toBeNull();
