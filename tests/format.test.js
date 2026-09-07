@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatPrice, parseCount, computeSpans, isNew } from "../src/scripts/format.js";
+import { formatPrice, parseCount, computeSpans, isNew, formatNumber } from "../src/scripts/format.js";
 
 describe("formatPrice", () => {
   it("prefixes a dollar sign and forces two decimals", () => {
@@ -114,5 +114,22 @@ describe("isNew", () => {
 
   it("defaults now to the current date", () => {
     expect(isNew("1999-01")).toBe(false);
+  });
+});
+
+describe("formatNumber", () => {
+  it("inserts thousands separators", () => {
+    expect(formatNumber(4500)).toBe("4,500");
+    expect(formatNumber(18000)).toBe("18,000");
+    expect(formatNumber(1979)).toBe("1,979");
+  });
+
+  it("leaves values under a thousand alone", () => {
+    expect(formatNumber(8)).toBe("8");
+    expect(formatNumber(242)).toBe("242");
+  });
+
+  it("does not group the fractional part", () => {
+    expect(formatNumber(0.125)).toBe("0.125");
   });
 });

@@ -50,3 +50,8 @@ export function isNew(addedAt, now = new Date()) {
   const months = (now.getUTCFullYear() - year) * 12 + (now.getUTCMonth() + 1 - month);
   return months >= 0 && months <= 3;
 }
+
+// 数値に 3 桁区切りを入れる。小数部には入れない。
+export function formatNumber(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

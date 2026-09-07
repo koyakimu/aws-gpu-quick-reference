@@ -1,10 +1,6 @@
 import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
-import { formatPrice, parseCount, computeSpans, isNew } from "./format.js";
+import { formatPrice, parseCount, computeSpans, isNew, formatNumber } from "./format.js";
 import { t } from "./i18n.js";
-
-function formatNumber(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
 
 function createVramContent(vramPerGpu, count) {
   const span = document.createElement("span");
