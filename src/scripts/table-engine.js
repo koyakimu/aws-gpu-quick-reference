@@ -160,6 +160,7 @@ function buildBody(columns, rows, state) {
       if (column.sticky) td.classList.add("sticky");
       if (isNumericColumn(column)) td.classList.add("num");
       if (isMonoColumn(column)) td.classList.add("mono");
+      if (column.type === "price") td.classList.add("price");
       if (state.sortKey === column.key && state.sortDir) td.classList.add("sorted");
 
       const content = column.format ? column.format(value, row) : defaultCellText(column.type, value);

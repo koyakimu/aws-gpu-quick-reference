@@ -245,6 +245,14 @@ describe("createTable rendering", () => {
     expect(columnTexts(3)).toEqual([EMPTY, "✓", "✓"]);
   });
 
+  it("marks price cells with the price class", () => {
+    mount();
+    const priceCells = [...document.querySelectorAll("tbody tr")].map((tr) => tr.children[2]);
+    expect(priceCells.every((td) => td.classList.contains("price"))).toBe(true);
+    const nameCells = [...document.querySelectorAll("tbody tr")].map((tr) => tr.children[0]);
+    expect(nameCells.some((td) => td.classList.contains("price"))).toBe(false);
+  });
+
   it("marks empty cells dim", () => {
     mount();
     const priceCells = [...document.querySelectorAll("tbody tr")].map((tr) => tr.children[2]);

@@ -100,7 +100,11 @@
 .table-frame td.sticky.sorted {
   background: var(--sorted-cell-bg);
 }
-.table-frame td.dim {
+.table-frame td.price {
+  color: var(--accent);
+}
+.table-frame td.dim,
+.table-frame td.price.dim {
   color: var(--fg-dim);
 }
 
