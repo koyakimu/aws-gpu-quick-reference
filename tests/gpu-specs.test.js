@@ -5,6 +5,8 @@ import { initGpuSpecsView, SPEC_FIELDS } from "../src/scripts/gpu-specs-view.js"
 import { initCompareView } from "../src/scripts/compare-view.js";
 
 // 仕様: instances.json のすべての gpuKey が gpu-specs.json に載っていること。
+// 逆向き (specs ⊆ instances) は成り立たない。インスタンスがまだ無い GPU を
+// extraGpus で表に出せるようにしてあるため (例: gb300)。
 describe("gpu-specs.json covers every gpuKey", () => {
   it("has an entry for every distinct gpuKey and a source URL", () => {
     const keys = [...new Set(GPU_DATA.map((row) => row.gpuKey))];
@@ -45,7 +47,7 @@ describe("GPU tab rendering", () => {
     initGpuSpecsView();
 
     const bodyRows = [...document.querySelectorAll("#gpu-specs-table tbody tr")];
-    expect(bodyRows).toHaveLength(15);
+    expect(bodyRows).toHaveLength(16);
 
     const groupHead = document.querySelector("#gpu-specs-table thead tr.group-head");
     expect(groupHead).not.toBeNull();
@@ -54,6 +56,25 @@ describe("GPU tab rendering", () => {
 
     // 先頭列は世代チップつきのデータシートリンク。
     expect(bodyRows[0].querySelector("td.sticky a.chip")?.textContent).toBe("B300");
+  });
+
+  // インスタンスがまだ無い GB300 も extraGpus の指定で GB200 の直後に出す。
+  it("renders GB300 right after GB200 with the announced marker", () => {
+    initGpuSpecsView();
+
+    const names = [...document.querySelectorAll("#gpu-specs-table tbody td.sticky .chip")].map(
+      (chip) => chip.textContent,
+    );
+    expect(names[names.indexOf("GB200") + 1]).toBe("GB300");
+
+    const gb300 = [...document.querySelectorAll("#gpu-specs-table tbody tr")].find(
+      (tr) => tr.querySelector("td.sticky .chip")?.textContent === "GB300",
+    );
+    expect(gb300).toBeDefined();
+    expect(gb300.querySelector("td.sticky .chip-announced")?.textContent).toBe("発表済み");
+    expect(gb300.querySelector("td.sticky a.chip")?.href).toBe(
+      "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+    );
   });
 
   it("adds FP32 and TF32 Dense to the compare table", () => {

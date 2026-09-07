@@ -4,15 +4,18 @@
 import { createTable } from "./table-engine.js";
 import { GPU_DATA, GPU_DATASHEET_LINKS } from "./gpu-data.js";
 import { FEATURES_FILE } from "./features-data.js";
+import { EXTRA_GPUS, withExtraGpus } from "./gpu-specs-data.js";
 import { t } from "./i18n.js";
 
-// gpuKey → 表示名。instances.json の gpu をそのまま使う (同じ gpuKey なら同じ名前)。
-export function gpuNames(rows) {
+// gpuKey → { gpu, announced }。instances.json の gpu をそのまま使い
+// (同じ gpuKey なら同じ名前)、インスタンスがまだ無い GPU は
+// gpu-specs.json の extraGpus から after の直後に差し込む (gpu-specs-view と同じ並び)。
+export function gpuNames(rows, extras = EXTRA_GPUS) {
   const names = new Map();
   for (const row of rows) {
-    if (row.gpuKey && !names.has(row.gpuKey)) names.set(row.gpuKey, row.gpu);
+    if (row.gpuKey && !names.has(row.gpuKey)) names.set(row.gpuKey, { gpu: row.gpu });
   }
-  return names;
+  return withExtraGpus(names, extras);
 }
 
 // 表に渡す行を作る。並びは instances.json の登場順 (= 世代の新しい順)。
@@ -22,11 +25,17 @@ export function buildFeatureRows(file, rows = GPU_DATA) {
   const notes = [];
   const out = [];
 
-  for (const [gpuKey, name] of names) {
+  for (const [gpuKey, { gpu: name, announced }] of names) {
     const entry = file.gpus?.[gpuKey];
     if (!entry) continue;
 
-    const row = { gpuKey, gpu: name, link: GPU_DATASHEET_LINKS[name] || null, noteRefs: {} };
+    const row = {
+      gpuKey,
+      gpu: name,
+      announced: announced === true,
+      link: GPU_DATASHEET_LINKS[name] || null,
+      noteRefs: {},
+    };
     for (const feature of file.features) {
       row[feature.key] = entry[feature.key] ?? false;
       const note = entry.notes?.[feature.key];
@@ -43,13 +52,25 @@ export function buildFeatureRows(file, rows = GPU_DATA) {
 
 // 先頭列: GPU 名をデータシートへのリンクにする。リンクが無ければ素のテキスト。
 function gpuCell(_value, row) {
-  if (!row.link) return row.gpu;
-  const a = document.createElement("a");
-  a.href = row.link;
-  a.target = "_blank";
-  a.rel = "noopener";
-  a.textContent = row.gpu;
-  return a;
+  let name = row.gpu;
+  if (row.link) {
+    const a = document.createElement("a");
+    a.href = row.link;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = row.gpu;
+    name = a;
+  }
+  if (!row.announced) return name;
+
+  // インスタンスがまだ無い GPU は「発表済み」の印を添える (gpu-specs-view と同じ)。
+  const fragment = document.createDocumentFragment();
+  fragment.append(name);
+  const mark = document.createElement("span");
+  mark.className = "chip-announced";
+  mark.textContent = t("gpu.announced");
+  fragment.appendChild(mark);
+  return fragment;
 }
 
 // feature 型の既定表示 (✓ / △ / 空欄) に、partial のときだけ注記番号を足す。

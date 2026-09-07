@@ -361,3 +361,17 @@ a.chip:hover {
   align-items: center;
   gap: 2px;
 }
+
+/* インスタンスがまだ無い GPU の行に添える「発表済み」の印。 */
+.chip-announced {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px dashed var(--chip-line);
+  border-radius: 999px;
+  color: var(--chip-fg);
+  font-size: 10px;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+}

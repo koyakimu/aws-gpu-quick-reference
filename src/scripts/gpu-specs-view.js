@@ -1,10 +1,11 @@
 // GPU タブの上段に置く GPU スペック比較表。
-// 行 = gpuKey ごとに 1 行 (instances.json の登場順)、列 = データシートの各数値。
+// 行 = gpuKey ごとに 1 行 (instances.json の登場順 + gpu-specs.json の extraGpus)、
+// 列 = データシートの各数値。
 // 列は Compute / Memory / Power の 3 グループに分け、compare-view と同じ要領で
 // グループ単位の表示切替を持つ。
 import { createTable } from "./table-engine.js";
 import { GPU_DATA, GPU_DATASHEET_LINKS } from "./gpu-data.js";
-import { SPECS_FILE } from "./gpu-specs-data.js";
+import { EXTRA_GPUS, SPECS_FILE, withExtraGpus } from "./gpu-specs-data.js";
 import { t } from "./i18n.js";
 
 // 先頭の gpu 列を除いた列グループ。表示切替のチェックボックスもこの順で出す。
@@ -36,22 +37,30 @@ const POWER_FIELDS = ["tdpW"];
 
 export const SPEC_FIELDS = [...COMPUTE_FIELDS, ...MEMORY_FIELDS, ...POWER_FIELDS];
 
-// gpuKey → { gpu, gen }。instances.json の登場順を保つ。
-export function gpuOrder(rows = GPU_DATA) {
+// gpuKey → { gpu, gen, announced? }。instances.json の登場順を保ち、
+// インスタンスがまだ無い GPU (gpu-specs.json の extraGpus) を after の直後に差し込む。
+export function gpuOrder(rows = GPU_DATA, extras = EXTRA_GPUS) {
   const order = new Map();
   for (const row of rows) {
     if (row.gpuKey && !order.has(row.gpuKey)) order.set(row.gpuKey, { gpu: row.gpu, gen: row.gen });
   }
-  return order;
+  return withExtraGpus(order, extras ?? EXTRA_GPUS);
 }
 
 // 表に渡す行。gpu-specs.json に無い gpuKey は行を作らない。
 export function buildSpecRows(file, rows = GPU_DATA) {
   const out = [];
-  for (const [gpuKey, { gpu, gen }] of gpuOrder(rows)) {
+  for (const [gpuKey, { gpu, gen, announced }] of gpuOrder(rows, file?.extraGpus ?? EXTRA_GPUS)) {
     const spec = file?.gpus?.[gpuKey];
     if (!spec) continue;
-    const row = { gpuKey, gpu, gen, link: GPU_DATASHEET_LINKS[gpu] || null, notes: spec.notes || "" };
+    const row = {
+      gpuKey,
+      gpu,
+      gen,
+      announced: announced === true,
+      link: GPU_DATASHEET_LINKS[gpu] || null,
+      notes: spec.notes || "",
+    };
     for (const field of SPEC_FIELDS) row[field] = spec[field] ?? null;
     out.push(row);
   }
@@ -69,7 +78,16 @@ function gpuCell(_value, row) {
     chip.rel = "noopener";
     chip.title = `${row.gpu} datasheet`;
   }
-  return chip;
+  if (!row.announced) return chip;
+
+  // インスタンスがまだ無い GPU は「発表済み」の印を添えて、表に価格行が無い理由を示す。
+  const fragment = document.createDocumentFragment();
+  fragment.appendChild(chip);
+  const mark = document.createElement("span");
+  mark.className = "chip-announced";
+  mark.textContent = t("gpu.announced");
+  fragment.appendChild(mark);
+  return fragment;
 }
 
 function numberColumn(key, group) {

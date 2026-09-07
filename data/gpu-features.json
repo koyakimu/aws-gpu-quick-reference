@@ -11,6 +11,18 @@
     { "key": "ecc" }
   ],
   "gpus": {
+    "gb300": {
+      "fp8": true,
+      "fp4": true,
+      "nvlink": true,
+      "mig": true,
+      "transformerEngine": true,
+      "confidentialCompute": true,
+      "nvenc": "partial",
+      "rtCores": false,
+      "ecc": true,
+      "notes": { "nvenc": "NVDEC / NVJPEG デコーダのみ。エンコーダは非搭載" }
+    },
     "b300": {
       "fp8": true,
       "fp4": true,
@@ -189,6 +201,7 @@
     }
   },
   "sources": {
+    "gb300": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
     "b300": "https://www.nvidia.com/en-us/data-center/dgx-b300/",
     "b200": "https://www.nvidia.com/en-us/data-center/dgx-b200/",
     "gb200": "https://www.nvidia.com/en-us/data-center/gb200-nvl72/",

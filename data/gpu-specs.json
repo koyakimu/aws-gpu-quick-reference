@@ -1,6 +1,34 @@
 {
   "unitNote": "TFLOPS (int8Dense / int8Sparse のみ TOPS)。memoryGb = GB、memoryBandwidthGbs = GB/s、tdpW = W。値は NVIDIA 公式データシート/製品ページの記載のみ。載っていない項目は null (表では — 表示)。",
+  "extraGpusNote": "instances.json にまだ載らない (= AWS のインスタンス型が未発表/未公開の) GPU を、表の並びのどこに差し込むかの指定。after のキーの直後に挿入し、announced: true の行には「発表済み」の印を付ける。",
+  "extraGpus": [
+    { "gpuKey": "gb300", "gpu": "GB300", "gen": "blackwell", "after": "gb200", "announced": true }
+  ],
   "gpus": {
+    "gb300": {
+      "fp64": 1.39,
+      "fp64Tc": 1.39,
+      "fp32": 83.33,
+      "tf32Dense": 1250,
+      "tf32Sparse": 2500,
+      "bf16Dense": 2500,
+      "bf16Sparse": 5000,
+      "fp16Dense": 2500,
+      "fp16Sparse": 5000,
+      "fp8Dense": 5000,
+      "fp8Sparse": 10000,
+      "fp6Dense": 5000,
+      "fp6Sparse": 10000,
+      "fp4Dense": 15002.8,
+      "fp4Sparse": 20000,
+      "int8Dense": 166.67,
+      "int8Sparse": 333.33,
+      "memoryGb": 288,
+      "memoryBandwidthGbs": 8000,
+      "tdpW": null,
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+      "notes": "GB300 NVL72 (Blackwell Ultra 72 GPU) の表を 72 で割った 1 GPU あたりの値 (gb200 と同じ扱い)。ページの脚注は「特記なき限り Tensor Core の値はスパース性あり」なので Dense はその半分。FP4 だけ 1,440 | 1,080.2 PFLOPS の 2 値が載り、後者が「スパース性なし」なので Dense = 1,080.2 PFLOPS ÷ 72 = 15,002.8。FP8/FP6 は 1 行にまとまっている。FP32 6 PFLOPS・FP64 100 TFLOPS・INT8 24 POPS も 72 で割った。メモリは Blackwell Ultra の公称 288GB HBM3e (ページの GPU Memory 20TB ÷ 72 は端数を切った値)。帯域は 576 TB/s ÷ 72。TDP は非公表。AWS: P6e-GB300 UltraServer は発表済み、インスタンス型名・価格は未公開 (2026-09)。"
+    },
     "b300": {
       "fp64": 1.25,
       "fp64Tc": 1.25,

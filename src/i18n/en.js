@@ -142,7 +142,12 @@ export const en = {
     dark: "Dark",
     light: "Light",
   },
+  gpu: {
+    announced: "Announced",
+  },
   notes: {
+    gb300Note:
+      "AWS has announced the P6e-GB300 UltraServer (GB300 NVL72, 72 GPUs), but the instance type name and pricing are not published yet, so it is not in the table.",
     title: "Notes",
     priceNote:
       "On-Demand pricing (USD) for us-east-1 (N. Virginia). CB = Capacity Blocks (Tokyo region when available, otherwise US regions). Pricing as of %PRICING_AS_OF%.",
