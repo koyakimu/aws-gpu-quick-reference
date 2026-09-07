@@ -133,6 +133,11 @@ a:hover {
     width: 100%;
     overflow-x: auto;
   }
+  /* 375px では価格注記が収まらないので、ロゴの下に折り返す */
+  .brand {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
 
   .bar {
     flex-wrap: wrap;
