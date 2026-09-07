@@ -87,11 +87,11 @@ CB価格データソース:
 https://raw.githubusercontent.com/koyakimu/ec2-capacity-blocks-for-ml-pricing-json/refs/heads/main/data/pricing.json
 
 JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerator_hourly_rate_usd` を参照し、`data/instances.json` の `priceCb` フィールドを更新する。
-- 東京リージョン（ap-northeast-1）がある場合はその値を使用
-- ない場合は us-east-1、それも無ければ先頭に載っているリージョンを使用（東京以外を使った場合は変更ログにリージョン名を出す）
+- リージョンの優先順位は 東京 (ap-northeast-1) → us-east-1 → us-east-2 → us-west-2 → レートを持つ先頭のエントリ（東京以外を使った場合は変更ログにリージョン名を出す）
+- `accelerator_hourly_rate_usd` が数値でないエントリ（`"N/A"` など）はレート無しとして飛ばす
 - 価格は数値のまま小数点第2位に四捨五入して保存する（表示側で `formatPrice` が整形する）
 - CB フィードに東京が載っている行は `tokyo` を `true` にする。`tokyo` は「On-Demand か CB のどちらかで東京から使えるか」なので、CB 側からは `false` に倒さない
 
-判定ロジックは `scripts/lib/cb-pricing.mjs` の純関数（`pickRate` / `applyCbPricing`）にあり、`tests/update-cb-pricing.test.js` でテストする。ファイルの読み書きは `scripts/lib/instances-file.mjs` の `readInstances` / `writeInstances` を使う（1 レコード 1 行の書式を保つため、別のシリアライザを書かないこと）。`scripts/update-cb-pricing.mjs` は fetch と入出力だけの薄い CLI。
+判定ロジックは `scripts/lib/cb-pricing.mjs` の純関数（`pickRate` / `applyCbPricing` / `unmatchedFeedKeys`）にあり、`tests/update-cb-pricing.test.js` でテストする。ファイルの読み書きは `scripts/lib/instances-file.mjs` の `readInstances` / `writeInstances` を使う（1 レコード 1 行の書式を保つため、別のシリアライザを書かないこと）。`scripts/update-cb-pricing.mjs` は fetch と入出力だけの薄い CLI で、フィードにあって `instances.json` に無いサイズを `warning: no row for <key>` として stderr に出す（trn / inf 系は対象外なので除く）。
 
 **この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば `data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
