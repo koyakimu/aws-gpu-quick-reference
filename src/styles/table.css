@@ -320,3 +320,44 @@ a.chip:hover {
 .panel-heading:first-of-type {
   margin-top: 4px;
 }
+
+/* --- リージョン表の提供状況ピル (regions-view.js の availabilityCell) --- */
+.avail {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+.avail + .avail {
+  margin-left: 4px;
+}
+.avail-od {
+  color: var(--avail-od-fg);
+  background: var(--avail-od-bg);
+  border-color: var(--avail-od-line);
+}
+.avail-cb {
+  color: var(--avail-cb-fg);
+  background: var(--avail-cb-bg);
+  border-color: var(--avail-cb-line);
+}
+
+/* ピル 2 つが折り返さないよう、リージョン列だけ左右の余白を足す。
+   固定列 (サイズ) は表エンジンの既定のままにする */
+#regions-table th:not(.sticky),
+#regions-table td:not(.sticky) {
+  padding-left: calc(var(--cell-pad-x) + 4px);
+  padding-right: calc(var(--cell-pad-x) + 4px);
+  white-space: nowrap;
+}
+
+/* 凡例。ピルと文字を同じ行のベースラインに並べる */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}

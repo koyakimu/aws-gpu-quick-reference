@@ -70,6 +70,7 @@ export const en = {
   regions: {
     generatedAt: "Generated: {date}",
     localZoneNote: "CB offerings available only in a Local Zone are counted in their parent region's column.",
+    legend: "{od} = available On-Demand / {cb} = available as Capacity Blocks / — = not offered",
   },
   specs: {
     title: "GPU specifications",

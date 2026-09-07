@@ -70,6 +70,7 @@ export const ko = {
   regions: {
     generatedAt: "데이터 생성: {date}",
     localZoneNote: "Local Zone 에서만 제공되는 CB 는 상위 리전 열에 포함했습니다.",
+    legend: "{od} = On-Demand 으로 제공 / {cb} = Capacity Blocks 로 제공 / — = 제공 안 함",
   },
   specs: {
     title: "GPU 사양",

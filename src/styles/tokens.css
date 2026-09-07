@@ -57,6 +57,14 @@
   --chip-volta-bg: var(--chip-bg);
   --chip-volta-line: var(--chip-line);
 
+  /* リージョン表の提供状況ピル。OD は Hopper チップの青系、CB はアクセントの琥珀 */
+  --avail-od-fg: #9db8ff;
+  --avail-od-bg: #1b2233;
+  --avail-od-line: #2c3a5f;
+  --avail-cb-fg: #f5b95a;
+  --avail-cb-bg: #231f14;
+  --avail-cb-line: #3d3a2e;
+
   /* 余白スケール */
   --sp-1: 4px;
   --sp-2: 8px;
@@ -127,4 +135,11 @@
   --chip-ampere-fg: #5b7a10;
   --chip-ampere-bg: #f3f8e6;
   --chip-ampere-line: #d9e6b8;
+
+  --avail-od-fg: #2f5bd9;
+  --avail-od-bg: #eef3fe;
+  --avail-od-line: #cfdafa;
+  --avail-cb-fg: #a35f00;
+  --avail-cb-bg: #fff6e6;
+  --avail-cb-line: #e8c58a;
 }
