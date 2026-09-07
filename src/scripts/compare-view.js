@@ -88,10 +88,10 @@ const PERF_COLUMNS = [
 }));
 
 export const COMPARE_COLUMNS = [
-  { key: "size", group: "instance", labelKey: "table.instanceSize", type: "text", sticky: true, mono: true },
-  // 読み手は NVIDIA 側 (アーキテクチャ → GPU → ファミリ) から見るので、GPU を EC2 より先に置く。
-  { key: "gpu", group: "gpu", labelKey: "table.gpuModel", type: "text", format: gpuChip },
+  // 読み手は NVIDIA 側 (GPU → ファミリ → サイズ) から見るので、GPU を先頭の固定列にする。
+  { key: "gpu", group: "gpu", labelKey: "table.gpuModel", type: "text", sticky: true, format: gpuChip },
   { key: "ec2", group: "instance", labelKey: "table.ec2Type", type: "text", format: familyLink },
+  { key: "size", group: "instance", labelKey: "table.instanceSize", type: "text", mono: true },
   {
     key: "count",
     group: "gpu",

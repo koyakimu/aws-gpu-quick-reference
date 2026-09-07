@@ -262,14 +262,15 @@ a.chip:hover {
   color: var(--fg-muted);
 }
 
-/* 先頭列の GPU 名リンクは、通常のリンク色ではなく本文色で控えめに出す */
-.table-frame td.sticky a {
+/* 先頭列のリンクは通常のリンク色ではなく本文色で控えめに出す。
+   ただし GPU チップは世代色を持つので対象外にする */
+.table-frame td.sticky a:not(.chip) {
   color: var(--fg);
   text-decoration: none;
   border-bottom: 1px dotted var(--line);
 }
 
-.table-frame td.sticky a:hover {
+.table-frame td.sticky a:not(.chip):hover {
   color: var(--accent);
   border-bottom-color: currentColor;
 }
