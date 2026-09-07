@@ -111,19 +111,26 @@ function buildHead(columns, state, i18n) {
     const th = document.createElement("th");
     th.dataset.key = column.key;
     th.setAttribute("scope", "col");
-    th.textContent = i18n(column.labelKey);
     if (column.sticky) th.classList.add("sticky");
     if (isNumericColumn(column)) th.classList.add("num");
     if (column.width) th.style.width = column.width;
 
     const sortable = column.sortable !== false;
+    const label = i18n(column.labelKey);
+
+    // 並べ替えできる列だけ、中身をネイティブの button にする。
+    // フォーカスと Enter / Space はブラウザが面倒を見てくれるので、
+    // エンジン側はクリックの委譲だけを持てばよい。
+    let content = th;
     if (sortable) {
-      // クリックできるヘッダはキーボードでも押せるようにする。
       th.classList.add("sortable");
       th.setAttribute("aria-sort", "none");
-      th.setAttribute("tabindex", "0");
-      th.setAttribute("role", "button");
+      content = document.createElement("button");
+      content.type = "button";
+      content.className = "sort-btn";
+      th.appendChild(content);
     }
+    content.textContent = label;
 
     if (state.sortKey === column.key && state.sortDir) {
       th.classList.add("sorted");
@@ -131,7 +138,7 @@ function buildHead(columns, state, i18n) {
       const arrow = document.createElement("span");
       arrow.className = "sortarrow";
       arrow.textContent = state.sortDir === "asc" ? "▲" : "▼";
-      th.appendChild(arrow);
+      content.appendChild(arrow);
     }
 
     tr.appendChild(th);
@@ -190,23 +197,12 @@ export function createTable({ columns, rows, state, onStateChange, i18n }) {
   const currentColumns = columns;
 
   // ヘッダは描き直されるので、th ではなく thead に 1 度だけ委譲で張る。
-  function requestSort(target) {
-    const th = target.closest("th");
-    if (!th || !th.classList.contains("sortable")) return false;
-    if (typeof onStateChange !== "function") return false;
-    onStateChange({ ...currentState, ...nextSortState(currentState, th.dataset.key) });
-    return true;
-  }
-
+  // button のクリックも th まで上がってくるので、拾うのはここ 1 箇所でよい。
   thead.addEventListener("click", (event) => {
-    requestSort(event.target);
-  });
-
-  // マウスと同じ操作をキーボードからも。role="button" に合わせ Enter と Space を受ける。
-  thead.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    if (!requestSort(event.target)) return;
-    if (event.key === " ") event.preventDefault(); // Space によるスクロールを止める
+    const th = event.target.closest("th.sortable");
+    if (!th) return;
+    if (typeof onStateChange !== "function") return;
+    onStateChange({ ...currentState, ...nextSortState(currentState, th.dataset.key) });
   });
 
   function render(nextRows, nextState) {

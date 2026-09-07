@@ -356,40 +356,46 @@ describe("createTable interaction", () => {
     expect(avail.hasAttribute("aria-sort")).toBe(false);
   });
 
-  it("sorts from the keyboard on Enter and Space", () => {
+  // ソート操作はネイティブの button が担う。Enter / Space とフォーカスはブラウザ任せ。
+  it("puts a focusable button inside a sortable header, and a click on it sorts", () => {
     const { onStateChange } = mount();
-    const th = document.querySelectorAll("thead th")[2];
-    th.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    const button = document.querySelectorAll("thead th")[2].querySelector("button.sort-btn");
+    expect(button).not.toBeNull();
+    expect(button.getAttribute("type")).toBe("button");
+
+    button.focus();
+    expect(document.activeElement).toBe(button);
+
+    button.dispatchEvent(new Event("click", { bubbles: true }));
     expect(onStateChange).toHaveBeenCalledWith({
       sortKey: "price",
       sortDir: "desc",
       hiddenGroups: [],
     });
-
-    const space = new KeyboardEvent("keydown", { key: " ", bubbles: true, cancelable: true });
-    th.dispatchEvent(space);
-    expect(onStateChange).toHaveBeenCalledTimes(2);
-    expect(space.defaultPrevented).toBe(true); // Space でのページスクロールを止める
   });
 
-  it("ignores other keys and keys on a non-sortable header", () => {
-    const { onStateChange } = mount();
-    const [, , price, , avail] = document.querySelectorAll("thead th");
-    price.dispatchEvent(new KeyboardEvent("keydown", { key: "a", bubbles: true }));
-    avail.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
-    expect(onStateChange).not.toHaveBeenCalled();
-  });
-
-  it("makes sortable headers reachable by keyboard and names every header a column", () => {
+  it("leaves the sort button out of a non-sortable header", () => {
     mount();
-    const [name, , , , avail] = document.querySelectorAll("thead th");
-    expect(name.getAttribute("tabindex")).toBe("0");
-    expect(name.getAttribute("role")).toBe("button");
-    expect(avail.hasAttribute("tabindex")).toBe(false);
-    expect(avail.hasAttribute("role")).toBe(false);
-    [...document.querySelectorAll("thead th")].forEach((th) =>
-      expect(th.getAttribute("scope")).toBe("col"),
-    );
+    const avail = document.querySelectorAll("thead th")[4];
+    expect(avail.querySelector("button")).toBeNull();
+    expect(avail.textContent).toBe("col.avail");
+  });
+
+  it("puts the label and the sort arrow inside the button", () => {
+    mount({ state: { sortKey: "price", sortDir: "asc", hiddenGroups: [] } });
+    const button = document.querySelectorAll("thead th")[2].querySelector("button.sort-btn");
+    expect(button.textContent).toContain("col.price");
+    expect(button.querySelector(".sortarrow").textContent).toBe("▲");
+  });
+
+  it("leaves the header itself a plain column header", () => {
+    mount();
+    const headers = [...document.querySelectorAll("thead th")];
+    headers.forEach((th) => {
+      expect(th.getAttribute("scope")).toBe("col");
+      expect(th.hasAttribute("role")).toBe(false);
+      expect(th.hasAttribute("tabindex")).toBe(false);
+    });
   });
 
   it("keeps the same element across update()", () => {
