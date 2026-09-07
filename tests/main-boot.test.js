@@ -19,7 +19,7 @@ beforeAll(async () => {
 
 describe("main.js boot", () => {
   it("renders every instance into the compare table", () => {
-    const rows = document.querySelectorAll("#compare-table table tbody tr");
+    const rows = document.querySelectorAll("#compare-table table tbody tr:not(.band)");
     expect(rows.length).toBe(GPU_DATA.length);
   });
 
