@@ -450,7 +450,8 @@ describe("bands and collapsed repeats", () => {
 
     const names = [...document.querySelectorAll("tbody tr:not(.band)")].map((tr) => tr.children[0]);
     expect(names.map((td) => td.textContent)).toEqual(["beta", "", "delta"]);
-    expect(names[1].classList.contains("collapsed")).toBe(true);
+    // 省略したセルにだけ collapsed が付く (GPU 列の罫線を消す目印)
+    expect(names.map((td) => td.classList.contains("collapsed"))).toEqual([false, true, false]);
   });
 
   it("drops the bands and shows every cell once sorted", () => {
