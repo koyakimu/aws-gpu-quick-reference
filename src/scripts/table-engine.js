@@ -180,7 +180,12 @@ function buildBandRow(columns, key, label) {
   const td = document.createElement("td");
   td.className = "band-cell";
   td.colSpan = columns.length;
-  td.textContent = label;
+  // ラベルは内側の span に入れる。全列にまたがる td は viewport より広くなりうるので、
+  // td ではなく span を sticky にしないと横スクロールで文字が見えなくなる。
+  const span = document.createElement("span");
+  span.className = "band-label";
+  span.textContent = label;
+  td.appendChild(span);
   tr.appendChild(td);
   return tr;
 }
