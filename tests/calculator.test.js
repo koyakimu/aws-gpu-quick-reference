@@ -2,14 +2,19 @@ import { describe, it, expect } from "vitest";
 import { parsePrice, calculateMonthlyCost, calculateYearlyCost, calculateDaysCost, convertToJpy, isCbOnly } from "../src/scripts/calculator.js";
 
 describe("parsePrice", () => {
-  it("parses dollar string to number", () => {
-    expect(parsePrice("$3.78")).toBe(3.78);
-    expect(parsePrice("$30.27")).toBe(30.27);
-    expect(parsePrice("$0.80")).toBe(0.8);
+  it("passes numbers through", () => {
+    expect(parsePrice(3.78)).toBe(3.78);
+    expect(parsePrice(30.27)).toBe(30.27);
+    expect(parsePrice(0.8)).toBe(0.8);
   });
 
-  it("returns null for null/empty/dash/TBD", () => {
+  it("returns null for null and undefined", () => {
     expect(parsePrice(null)).toBeNull();
+    expect(parsePrice(undefined)).toBeNull();
+  });
+
+  it("still normalises the legacy string forms", () => {
+    expect(parsePrice("$3.78")).toBe(3.78);
     expect(parsePrice("")).toBeNull();
     expect(parsePrice("-")).toBeNull();
     expect(parsePrice("TBD")).toBeNull();
@@ -84,11 +89,8 @@ describe("isCbOnly", () => {
     expect(isCbOnly({ price: null })).toBe(true);
   });
 
-  it("returns true when price is TBD", () => {
-    expect(isCbOnly({ price: "TBD" })).toBe(true);
-  });
-
-  it("returns false when price exists", () => {
-    expect(isCbOnly({ price: "$3.78" })).toBe(false);
+  it("returns false when a numeric price exists", () => {
+    expect(isCbOnly({ price: 3.78 })).toBe(false);
+    expect(isCbOnly({ price: 0.2 })).toBe(false);
   });
 });

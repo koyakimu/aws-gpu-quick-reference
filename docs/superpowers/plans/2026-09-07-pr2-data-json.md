@@ -232,8 +232,8 @@ export function parseCount(count) {
 export function computeSpans(rows) {
   const keys = {
     gen: (row) => row.gen,
-    gpu: (row) => `${row.gen} ${row.gpu}`,
-    ec2: (row) => `${row.gen} ${row.ec2}`,
+    gpu: (row) => `${row.gen}\u0000${row.gpu}`,
+    ec2: (row) => `${row.gen}\u0000${row.ec2}`,
   };
   const spans = rows.map(() => ({ gen: 0, gpu: 0, ec2: 0 }));
 

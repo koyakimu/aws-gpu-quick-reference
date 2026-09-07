@@ -1,17 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseFraction, formatNumber } from "../src/scripts/table.js";
-
-describe("parseFraction", () => {
-  it("parses simple fractions", () => {
-    expect(parseFraction("1/8")).toBeCloseTo(0.125);
-    expect(parseFraction("1/2")).toBeCloseTo(0.5);
-  });
-
-  it("parses whole numbers as strings", () => {
-    expect(parseFraction("8")).toBe(8);
-    expect(parseFraction("1")).toBe(1);
-  });
-});
+import { formatNumber } from "../src/scripts/table.js";
 
 describe("formatNumber", () => {
   it("adds comma separators", () => {

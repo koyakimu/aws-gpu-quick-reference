@@ -84,8 +84,8 @@ PR 3 は PR 2 のデータ構造に依存する。PR 4 と PR 5 は PR 3 の表�
 
 フィールドの変更点:
 
-- `gpuKey`: `gpu-features.json` と結合するキー。小文字英数字（`b300`, `b200`, `rtx-pro-6000`, `h200`, `h100`, `l40s`, `l4`, `a100-40`, `a100-80`, `a10g`, `t4`, `t4g`, `v100`）
-- `unit`: `"instance"` または `"ultraserver"`。UltraServer（`u-p6e-gb200x72` など）は `count` が GPU 総数、`size` が UltraServer 種別名。価格は UltraServer 全体の時間単価
+- `gpuKey`: `gpu-features.json` と結合するキー。小文字英数字（`b300`, `b200`, `gb200`, `rtx-pro-6000`, `rtx-pro-4500`, `h200`, `h100`, `l40s`, `l4`, `a100-40`, `a100-80`, `a10g`, `t4`, `t4g`, `v100`）
+- `unit`: `"instance"` または `"ultraserver"`。UltraServer（`u-p6e-gb200x72` など）は `count` が GPU 総数、`size` が UltraServer 種別名。`priceCb` は他の行と同じくアクセラレータ 1 基あたりの時間単価で、UltraServer 全体の費用は計算側が `count` を掛けて求める
 - `price` / `priceGpu` / `priceCb`: **数値**に変える。`null` は「提供なし」。文字列 `"$113.93"` / `"-"` / `"TBD"` はやめる。表示時に整形する
 - `count`: 数値または分数文字列（`"1/8"`）。現状維持
 - `gpuNew`: 削除。「新しい」の判定は `gen` と追加日で足りる。代わりに `addedAt: "2026-09"` を持たせ、直近 3 か月以内なら NEW バッジを出す
@@ -277,4 +277,23 @@ UltraServer（`unit: "ultraserver"`）は Price List に載らないため、CB 
 
 ## 11. 未決事項
 
-なし。実装中に判断が必要になった場合はこの文書に追記する。
+実装中に判断が必要になった場合はこの文書に追記する。
+
+- 2026-09: §4.1 の `gpuKey` 一覧に `gb200` を追加した（p6e-gb200 UltraServer の追加に伴う）。
+- 2026-09: §4.1 の `gpuKey` 一覧に `rtx-pro-4500` を追加した。`ac.html` に G7 ファミリ
+  （NVIDIA RTX PRO 4500 Blackwell Server Edition）があり、計画の対象一覧に無かったため追加した。
+  同じ理由で Gr6 / Gr6f（どちらも L4 なので `gpuKey` は `l4` のまま）も追加している。
+- 2026-09: UltraServer 行（`u-p6e-gb200x36` / `u-p6e-gb200x72`）の `vcpu` / `mem` / `nvme` は
+  UltraServer 全体の合計値とした（出典: https://aws.amazon.com/ec2/instance-types/p6/ の
+  「UltraServer types」表）。`size` は CB フィードの `instance_types` のキーと同じ名前にしてある。
+- 2026-09 (解決済み): G7e の FP16 / FP8 は NVIDIA 公式の公表値に合わせた。FP4 の
+  スパース値 4 PFLOPS から精度ごとに半分にしていく Blackwell の連鎖（FP4 4 / FP8 2 /
+  FP16 1 PFLOPS、いずれもスパース値）と、既存の `fp4Dense` 2000 / `fp4Sparse` 4000 が
+  そのまま整合するため、`instances.json` の G7e 6 行を fp16Dense 500 / fp16Sparse 1000 /
+  fp8Dense 1000 / fp8Sparse 2000 に更新し、`aws-ec2-nvidia-gpu-specs.json` の
+  「RTX PRO 6000 Blackwell SE」も fp16_tflops 1000 / fp8_tflops 2000（ともに
+  `with_sparsity: true`）にした。データシートの表記が丸めた PFLOPS 単位で厳密な
+  TFLOPS ではないため `est: true` は残す。
+- 2026-09 (未解決): `ac.html` では g4dn / g5 / g6 / g6e / g7 / g7e の 8xlarge 以上が EFA 対応
+  だが、`instances.json` の G 系の行はすべて `efa: "-"` になっている。既存行の表記に
+  合わせて新規行も `"-"` としたが、EFA 列の意味を決め直す必要がある。

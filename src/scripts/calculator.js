@@ -1,4 +1,5 @@
 import { GPU_DATA } from "./gpu-data.js";
+import { parseCount } from "./format.js";
 import { t, getLang } from "./i18n.js";
 
 const HOURS_PER_MONTH = 720;
@@ -13,14 +14,14 @@ const CURRENCY_CONFIG = {
 let odUserEdited = false;
 let cbUserEdited = false;
 
-function parseFraction(str) {
-  const parts = str.split("/");
-  return parts.length === 2 ? Number(parts[0]) / Number(parts[1]) : Number(str);
-}
-
-export function parsePrice(priceStr) {
-  if (!priceStr || priceStr === "-" || priceStr === "TBD") return null;
-  return parseFloat(priceStr.replace("$", ""));
+// price / priceGpu / priceCb は data/instances.json では数値または null。
+// 旧データの文字列 ("$3.78" / "-" / "TBD") も受けて null か数値に正規化する。
+export function parsePrice(value) {
+  if (value == null) return null;
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (value === "" || value === "-" || value === "TBD") return null;
+  const n = parseFloat(String(value).replace("$", ""));
+  return Number.isFinite(n) ? n : null;
 }
 
 export function calculateMonthlyCost(hourlyPrice, count) {
@@ -44,7 +45,7 @@ export function convertToJpy(usdAmount, exchangeRate) {
 }
 
 export function isCbOnly(row) {
-  return row.price === null || row.price === "TBD";
+  return row.price == null;
 }
 
 function formatCurrency(amount) {
@@ -66,18 +67,16 @@ function formatDiff(diff, formatter) {
 }
 
 function getUniqueInstances() {
-  return GPU_DATA.map((row) => {
-    const gpuName = row.gpu || GPU_DATA.find((r) => r.gen === row.gen && r.gpu)?.gpu || "";
-    return {
-      size: row.size,
-      label: `${row.size} (${gpuName} x${row.count})`,
-      price: row.price,
-      priceGpu: row.priceGpu,
-      priceCb: row.priceCb,
-      count: row.count,
-      cbOnly: isCbOnly(row),
-    };
-  });
+  // 仕様 §10: On-Demand と CB の両方が無い行だけ選択肢から除く（CB 専用は残す）
+  return GPU_DATA.filter((row) => row.price != null || row.priceCb != null).map((row) => ({
+    size: row.size,
+    label: `${row.size} (${row.gpu} x${row.count})`,
+    price: row.price,
+    priceGpu: row.priceGpu,
+    priceCb: row.priceCb,
+    count: row.count,
+    cbOnly: isCbOnly(row),
+  }));
 }
 
 function updateDefaultPriceDisplay(row) {
@@ -185,7 +184,7 @@ function updateResult() {
   const row = GPU_DATA.find((r) => r.size === instanceSize);
   if (!row) return;
 
-  const gpuCount = typeof row.count === "string" ? parseFraction(row.count) : row.count;
+  const gpuCount = parseCount(row.count);
 
   // --- On-Demand ---
   const odDefaultGpuPrice = parsePrice(row.priceGpu);

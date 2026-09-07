@@ -59,3 +59,27 @@ describe("localStorage persistence", () => {
     expect(localStorage.getItem("gpu-ref-lang")).toBe("ko");
   });
 });
+
+describe("pricingAsOf substitution", () => {
+  it("replaces %PRICING_AS_OF% in translated strings", async () => {
+    const { t, setLang } = await import("../src/scripts/i18n.js");
+    const { PRICING_META } = await import("../src/scripts/gpu-data.js");
+    ["ja", "en", "ko"].forEach((lang) => {
+      setLang(lang);
+      const note = t("notes.priceNote");
+      expect(note, `${lang}: placeholder left unsubstituted`).not.toContain("%PRICING_AS_OF%");
+      expect(note, `${lang}: pricingAsOf missing`).toContain(PRICING_META.pricingAsOf);
+    });
+  });
+
+  it("leaves strings without the placeholder alone", async () => {
+    const { t, setLang } = await import("../src/scripts/i18n.js");
+    setLang("en");
+    expect(t("notes.efaNote")).not.toContain("%");
+  });
+
+  it("returns the key unchanged for a missing key", async () => {
+    const { t } = await import("../src/scripts/i18n.js");
+    expect(t("nope.not.a.key")).toBe("nope.not.a.key");
+  });
+});

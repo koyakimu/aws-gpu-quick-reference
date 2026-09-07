@@ -8,6 +8,7 @@ Thumbs.db
 __pycache__/
 .env
 .playwright-cli/
+.playwright-mcp/
 node_modules/
 dist/
 .serena/
