@@ -2,14 +2,16 @@
   "metadata": {
     "title": "AWS EC2 NVIDIA GPU Specifications",
     "description": "AWS EC2で提供されているNVIDIA GPUの演算性能一覧",
-    "last_updated": "2026-02-02",
+    "last_updated": "2026-09-07",
     "notes": {
       "sparsity": "with_sparsity=trueの値はスパース性あり。Dense（密）は半分の値",
       "tensor_core": "FP16 TFLOPSはTensor Core使用時の値",
       "form_factor": "P系インスタンスはSXM版、G系インスタンスはPCIe版を採用",
       "fp8_support": "FP8はHopper (H100/H200)以降で対応",
       "fp4_support": "FP4はBlackwell (B200/B300)以降で対応",
-      "unit": "TFLOPSはTeraFLOPS (10^12 floating-point operations per second)"
+      "unit": "TFLOPSはTeraFLOPS (10^12 floating-point operations per second)",
+      "rtx_pro_estimates": "RTX PRO 6000 Blackwell SE の FP16/FP8 は NVIDIA 公式データシートが Dense/Sparse を明示しないため、公式 FP32 (120 TFLOPS) と Blackwell のスループット比から算出した推定値。instances.json 側も同じ推定値を持ち (est: true)、両者の食い違いをテストで検出する",
+      "rtx_pro_4500_source": "RTX PRO 4500 Blackwell SE の FP4/FP8/FP16 は NVIDIA 公式ページの公表値 (1.6 PFLOPS / 811 TFLOPS / 406 TFLOPS) をスパース値として扱い、Dense はその半分とした (est: true)"
     },
     "sources": [
       "https://www.nvidia.com/en-us/data-center/",
@@ -156,6 +158,64 @@
       "memory_gb": 288,
       "is_aws_custom": false,
       "datasheet_url": "https://www.nvidia.com/en-us/data-center/dgx-b300/"
+    },
+    {
+      "gpu_name": "GB200",
+      "ec2_instance": ["P6e-GB200"],
+      "architecture": "Blackwell",
+      "form_factor": "Superchip",
+      "fp16_tflops": 2500,
+      "fp16_with_sparsity": false,
+      "fp8_tflops": 5000,
+      "fp8_with_sparsity": false,
+      "fp4_tflops": 10000,
+      "fp4_with_sparsity": false,
+      "memory_gb": 186,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/gb200-nvl72/"
+    },
+    {
+      "gpu_name": "RTX PRO 6000 Blackwell SE",
+      "ec2_instance": ["G7e"],
+      "architecture": "Blackwell",
+      "form_factor": "PCIe",
+      "fp16_tflops": 480,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": 960,
+      "fp8_with_sparsity": true,
+      "fp4_tflops": 4000,
+      "fp4_with_sparsity": true,
+      "memory_gb": 96,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+    },
+    {
+      "gpu_name": "RTX PRO 4500 Blackwell SE",
+      "ec2_instance": ["G7"],
+      "architecture": "Blackwell",
+      "form_factor": "PCIe",
+      "fp16_tflops": 406,
+      "fp16_with_sparsity": true,
+      "fp8_tflops": 811,
+      "fp8_with_sparsity": true,
+      "fp4_tflops": 1600,
+      "fp4_with_sparsity": true,
+      "memory_gb": 32,
+      "is_aws_custom": false,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/rtx-pro-4500-blackwell-server-edition/"
+    },
+    {
+      "gpu_name": "T4G",
+      "ec2_instance": ["G5g"],
+      "architecture": "Turing",
+      "form_factor": "PCIe",
+      "fp16_tflops": 65,
+      "fp16_with_sparsity": false,
+      "fp8_tflops": null,
+      "fp4_tflops": null,
+      "memory_gb": 16,
+      "is_aws_custom": true,
+      "datasheet_url": "https://www.nvidia.com/en-us/data-center/tesla-t4/"
     }
   ]
 }
