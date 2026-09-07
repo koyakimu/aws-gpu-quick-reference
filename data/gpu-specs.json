@@ -19,11 +19,11 @@
       "fp4Sparse": 18000,
       "int8Dense": 187.5,
       "int8Sparse": 375,
-      "memoryGb": 262.5,
+      "memoryGb": 288,
       "memoryBandwidthGbs": 8000,
       "tdpW": null,
       "source": "https://www.nvidia.com/en-us/data-center/hgx/",
-      "notes": "HGX B300 (8x Blackwell Ultra SXM) の表を 8 で割った 1 GPU あたりの値。FP4 以外はスパース値だけが載るため Dense はその半分。FP8/FP6 は 1 行にまとまっている。INT8 は Blackwell Ultra で大きく削られており、HGX B300 の 3 POPS/8GPU をそのまま採った (GB300 NVL72 の 24 POPS/72GPU ともほぼ一致)。メモリは HGX B300 の総容量 2.1TB ÷ 8。AWS は p6-b300 の GPU あたり 288GB を公表しており一致しない。帯域は GB300 NVL72 の 576 TB/s ÷ 72 から。TDP は非公表。"
+      "notes": "HGX B300 (8x Blackwell Ultra SXM) の表を 8 で割った 1 GPU あたりの値。FP4 以外はスパース値だけが載るため Dense はその半分。FP8/FP6 は 1 行にまとまっている。INT8 は Blackwell Ultra で大きく削られており、HGX B300 の 3 POPS/8GPU をそのまま採った (GB300 NVL72 の 24 POPS/72GPU ともほぼ一致)。メモリは Blackwell Ultra の公称 288GB HBM3e (NVIDIA GTC 2025 発表、AWS p6-b300 の公表値とも一致)。帯域は GB300 NVL72 の 576 TB/s ÷ 72 から。TDP は非公表。"
     },
     "b200": {
       "fp64": 37,
