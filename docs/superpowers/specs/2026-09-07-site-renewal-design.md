@@ -273,7 +273,7 @@ UltraServer（`unit: "ultraserver"`）は Price List に載らないため、CB 
 
 - `regions.json` が無い、または読めないビルドでも Compare / Features / Calculator は動く。Regions タブは「データ未生成」の表示にし、リージョンフィルタは出さない
 - `gpu-features.json` に無い `gpuKey` があればテストで落とす（実行時には空行にしない）
-- 価格が `null` の行は Calculator の選択肢から除外する（現状の `isCbOnly` 相当の判定を数値 null に合わせて書き直す）
+- Calculator は `price` と `priceCb` の両方が `null` の行だけを選択肢から除外する。片方だけ `null` の行は残し、その側の結果を「—」で表示する（CB 専用インスタンスの CB 月額を試算できるようにする）。`isCbOnly` は数値 `null` に合わせて書き直す
 
 ## 11. 未決事項
 
