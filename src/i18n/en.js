@@ -54,6 +54,16 @@ export const en = {
     system: "System",
     price: "Price",
   },
+  regionGroups: {
+    na: "North America",
+    sa: "South America",
+    eu: "Europe",
+    meaf: "Middle East & Africa",
+    ap: "Asia Pacific",
+  },
+  regions: {
+    generatedAt: "Generated: {date}",
+  },
   placeholders: {
     regionsMissing: "Region availability data has not been generated yet.",
     featuresMissing: "The GPU feature matrix data has not been generated yet.",

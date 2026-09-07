@@ -54,6 +54,16 @@ export const ko = {
     system: "시스템",
     price: "가격",
   },
+  regionGroups: {
+    na: "북미",
+    sa: "남미",
+    eu: "유럽",
+    meaf: "중동·아프리카",
+    ap: "아시아 태평양",
+  },
+  regions: {
+    generatedAt: "데이터 생성: {date}",
+  },
   placeholders: {
     regionsMissing: "리전 제공 현황 데이터가 아직 생성되지 않았습니다.",
     featuresMissing: "GPU 기능 매트릭스 데이터가 아직 생성되지 않았습니다.",

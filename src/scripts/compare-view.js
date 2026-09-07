@@ -7,6 +7,9 @@ import { t } from "./i18n.js";
 
 export const STORAGE_KEY = "gpu-ref-compare";
 
+// Regions タブが世代・ファミリのフィルタを共有するためのイベント (仕様 5.3)。
+export const COMPARE_STATE_EVENT = "compare-state-changed";
+
 // 仕様 5.2 の 6 グループ。表示順もこの順。
 export const COLUMN_GROUPS = ["instance", "gpu", "performance", "connect", "system", "price"];
 
@@ -224,6 +227,10 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
 
   mount.replaceChildren(table.el, empty);
 
+  function notifyStateChanged() {
+    document.dispatchEvent(new CustomEvent(COMPARE_STATE_EVENT, { detail: { state } }));
+  }
+
   function update() {
     const shown = filterRows(rows, state);
     table.update(shown, state);
@@ -292,6 +299,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
       btn.classList.toggle("on", on);
       btn.setAttribute("aria-pressed", String(on));
       saveState(state);
+      notifyStateChanged();
       update();
     });
   }
@@ -301,6 +309,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
       const input = event.target.closest("[data-family]");
       if (!input) return;
       toggleInArray(state.families, input.dataset.family);
+      notifyStateChanged();
       update(); // ファミリは保存しない (仕様 5.2)
     });
   }
@@ -311,6 +320,7 @@ export function initCompareView({ rows = GPU_DATA } = {}) {
       if (!input) return;
       toggleInArray(state.hiddenGroups, input.dataset.group);
       saveState(state);
+      notifyStateChanged();
       update();
     });
   }

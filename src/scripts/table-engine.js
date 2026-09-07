@@ -114,6 +114,8 @@ function buildHead(columns, state, i18n) {
     if (column.sticky) th.classList.add("sticky");
     if (isNumericColumn(column)) th.classList.add("num");
     if (column.width) th.style.width = column.width;
+    // リージョン列のようにラベルが略記の列は、正式名をツールチップに出す。
+    if (column.title) th.title = column.title;
 
     const sortable = column.sortable !== false;
     const label = i18n(column.labelKey);
