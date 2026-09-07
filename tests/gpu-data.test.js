@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "../src/scripts/gpu-data.js";
+import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS, PRICING_META } from "../src/scripts/gpu-data.js";
 
 describe("GPU_DATA integrity", () => {
   it("has entries", () => {
@@ -26,29 +26,67 @@ describe("GPU_DATA integrity", () => {
     });
   });
 
-  it("price fields are valid format", () => {
-    const pricePattern = /^\$\d+(\.\d{1,2})?$/;
+  it("every record carries gen / gpu / gpuKey / ec2", () => {
     GPU_DATA.forEach((row, i) => {
-      if (row.price !== null && row.price !== "TBD") {
-        expect(row.price, `row ${i}: price`).toMatch(pricePattern);
-      }
-      if (row.priceCb !== "-") {
-        expect(row.priceCb, `row ${i}: priceCb`).toMatch(pricePattern);
-      }
+      expect(row.gen, `row ${i} (${row.size}): gen`).toBeTruthy();
+      expect(row.gpu, `row ${i} (${row.size}): gpu`).toBeTruthy();
+      expect(row.gpuKey, `row ${i} (${row.size}): gpuKey`).toBeTruthy();
+      expect(row.ec2, `row ${i} (${row.size}): ec2`).toBeTruthy();
     });
   });
 
-  it("genRows sum matches total rows per generation", () => {
-    const genCounts = {};
-    GPU_DATA.forEach((row) => {
-      genCounts[row.gen] = (genCounts[row.gen] || 0) + 1;
+  it("gpuKey is lowercase alphanumeric with hyphens", () => {
+    GPU_DATA.forEach((row, i) => {
+      expect(row.gpuKey, `row ${i} (${row.size}): gpuKey="${row.gpuKey}"`).toMatch(/^[a-z0-9-]+$/);
     });
+  });
 
-    GPU_DATA.forEach((row) => {
-      if (row.genRows) {
-        expect(row.genRows, `${row.gen} genRows`).toBe(genCounts[row.gen]);
-      }
+  it("unit is instance or ultraserver", () => {
+    GPU_DATA.forEach((row, i) => {
+      expect(["instance", "ultraserver"], `row ${i} (${row.size})`).toContain(row.unit);
     });
+  });
+
+  it("prices are numeric or null", () => {
+    GPU_DATA.forEach((row, i) => {
+      ["price", "priceGpu", "priceCb"].forEach((field) => {
+        const value = row[field];
+        expect(
+          value === null || (typeof value === "number" && Number.isFinite(value) && value > 0),
+          `row ${i} (${row.size}): ${field}=${JSON.stringify(value)} must be a positive number or null`,
+        ).toBe(true);
+      });
+    });
+  });
+
+  it("dropped fields are gone", () => {
+    GPU_DATA.forEach((row, i) => {
+      ["genRows", "gpuRows", "ec2Rows", "gpuNew"].forEach((field) => {
+        expect(field in row, `row ${i} (${row.size}): ${field} must be removed`).toBe(false);
+      });
+    });
+  });
+
+  it("addedAt is a YYYY-MM string or null", () => {
+    GPU_DATA.forEach((row, i) => {
+      const value = row.addedAt;
+      expect(
+        value === null || /^\d{4}-\d{2}$/.test(value),
+        `row ${i} (${row.size}): addedAt=${JSON.stringify(value)}`,
+      ).toBe(true);
+    });
+  });
+
+  it("sizes are unique", () => {
+    const sizes = GPU_DATA.map((r) => r.size);
+    expect(new Set(sizes).size, `duplicate size in instances.json`).toBe(sizes.length);
+  });
+});
+
+describe("PRICING_META", () => {
+  it("carries a YYYY-MM pricingAsOf and a region code", () => {
+    expect(PRICING_META.pricingAsOf).toMatch(/^\d{4}-\d{2}$/);
+    expect(PRICING_META.pricingRegion).toMatch(/^[a-z]{2}-[a-z]+-\d$/);
   });
 });
 

@@ -1,10 +1,6 @@
 import { GPU_DATA, EC2_LINKS, GPU_DATASHEET_LINKS } from "./gpu-data.js";
+import { formatPrice, parseCount, computeSpans, isNew } from "./format.js";
 import { t } from "./i18n.js";
-
-function parseFraction(str) {
-  const parts = str.split("/");
-  return parts.length === 2 ? Number(parts[0]) / Number(parts[1]) : Number(str);
-}
 
 function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -14,7 +10,7 @@ function createVramContent(vramPerGpu, count) {
   const span = document.createElement("span");
 
   if (typeof count === "string" && count.includes("/")) {
-    const fraction = parseFraction(count);
+    const fraction = parseCount(count);
     const totalVram = vramPerGpu * fraction;
     span.textContent = `${totalVram}GB`;
     return span;
@@ -56,7 +52,7 @@ function createPerfContent(perfPerGpu, count, est = false) {
   }
 
   if (typeof count === "string" && count.includes("/")) {
-    const fraction = parseFraction(count);
+    const fraction = parseCount(count);
     const totalPerf = Math.round(perfPerGpu * fraction);
     span.textContent = est ? totalPerf + "*" : String(totalPerf);
     return span;
@@ -108,21 +104,29 @@ function createCell(tag, text, className, attrs) {
   return el;
 }
 
-export function renderTable() {
+// rowspan="1" は付けない。setupHover が td[rowspan] を結合セルの集合として拾うため、
+// 単独セルに付けるとホバー時の挙動が変わってしまう。
+function rowspanAttr(n) {
+  return n > 1 ? { rowspan: n } : null;
+}
+
+// now は注入可能。NEW バッジの判定が実行日時に依存しないよう、テストから固定値を渡せるようにしている。
+export function renderTable({ now = new Date() } = {}) {
   const tbody = document.getElementById("gpu-table-body");
   const fragment = document.createDocumentFragment();
+  const spans = computeSpans(GPU_DATA);
 
-  GPU_DATA.forEach((row) => {
+  GPU_DATA.forEach((row, i) => {
+    const span = spans[i];
     const tr = document.createElement("tr");
     tr.className = `row-${row.gen}`;
 
-    if (row.genRows) {
-      tr.appendChild(createCell("td", GEN_LABELS[row.gen], "arch", { rowspan: row.genRows }));
+    if (span.gen > 0) {
+      tr.appendChild(createCell("td", GEN_LABELS[row.gen], "arch", rowspanAttr(span.gen)));
     }
 
-    if (row.gpu) {
-      const attrs = row.gpuRows ? { rowspan: row.gpuRows } : {};
-      const gpuCell = createCell("td", null, "gpu", attrs);
+    if (span.gpu > 0) {
+      const gpuCell = createCell("td", null, "gpu", rowspanAttr(span.gpu));
       const datasheetUrl = GPU_DATASHEET_LINKS[row.gpu];
       if (datasheetUrl) {
         const link = document.createElement("a");
@@ -135,7 +139,7 @@ export function renderTable() {
       } else {
         gpuCell.appendChild(document.createTextNode(row.gpu));
       }
-      if (row.gpuNew) {
+      if (isNew(row.addedAt, now)) {
         const badge = document.createElement("span");
         badge.className = "badge";
         badge.textContent = "NEW";
@@ -144,9 +148,8 @@ export function renderTable() {
       tr.appendChild(gpuCell);
     }
 
-    if (row.ec2) {
-      const attrs = row.ec2Rows ? { rowspan: row.ec2Rows } : {};
-      const ec2Cell = createCell("td", null, null, attrs);
+    if (span.ec2 > 0) {
+      const ec2Cell = createCell("td", null, null, rowspanAttr(span.ec2));
       const link = document.createElement("a");
       link.href = EC2_LINKS[row.ec2] || "#";
       link.target = "_blank";
@@ -165,41 +168,13 @@ export function renderTable() {
     tr.appendChild(vramCell);
 
     const estClass = row.est ? "est" : null;
-
-    const fp16CudaCell = document.createElement("td");
-    if (estClass) fp16CudaCell.className = estClass;
-    fp16CudaCell.appendChild(createPerfContent(row.fp16NonTc, row.count, row.est));
-    tr.appendChild(fp16CudaCell);
-
-    const fp16DenseCell = document.createElement("td");
-    if (estClass) fp16DenseCell.className = estClass;
-    fp16DenseCell.appendChild(createPerfContent(row.fp16Dense, row.count, row.est));
-    tr.appendChild(fp16DenseCell);
-
-    const fp16SparseCell = document.createElement("td");
-    if (estClass) fp16SparseCell.className = estClass;
-    fp16SparseCell.appendChild(createPerfContent(row.fp16Sparse, row.count, row.est));
-    tr.appendChild(fp16SparseCell);
-
-    const fp8DenseCell = document.createElement("td");
-    if (estClass) fp8DenseCell.className = estClass;
-    fp8DenseCell.appendChild(createPerfContent(row.fp8Dense, row.count, row.est));
-    tr.appendChild(fp8DenseCell);
-
-    const fp8SparseCell = document.createElement("td");
-    if (estClass) fp8SparseCell.className = estClass;
-    fp8SparseCell.appendChild(createPerfContent(row.fp8Sparse, row.count, row.est));
-    tr.appendChild(fp8SparseCell);
-
-    const fp4DenseCell = document.createElement("td");
-    if (estClass) fp4DenseCell.className = estClass;
-    fp4DenseCell.appendChild(createPerfContent(row.fp4Dense, row.count, row.est));
-    tr.appendChild(fp4DenseCell);
-
-    const fp4SparseCell = document.createElement("td");
-    if (estClass) fp4SparseCell.className = estClass;
-    fp4SparseCell.appendChild(createPerfContent(row.fp4Sparse, row.count, row.est));
-    tr.appendChild(fp4SparseCell);
+    const perfFields = ["fp16NonTc", "fp16Dense", "fp16Sparse", "fp8Dense", "fp8Sparse", "fp4Dense", "fp4Sparse"];
+    perfFields.forEach((field) => {
+      const cell = document.createElement("td");
+      if (estClass) cell.className = estClass;
+      cell.appendChild(createPerfContent(row[field], row.count, row.est));
+      tr.appendChild(cell);
+    });
 
     tr.appendChild(createCell("td", row.efa, "efa"));
     tr.appendChild(createCell("td", row.pcie, "pcie"));
@@ -207,13 +182,13 @@ export function renderTable() {
     tr.appendChild(createCell("td", row.mem));
     tr.appendChild(createCell("td", row.nvme));
 
-    const priceClass = row.price && row.price !== "TBD" ? "price" : "cbo";
-    tr.appendChild(createCell("td", row.price || t("table.cbOnly"), priceClass));
-    tr.appendChild(createCell("td", row.priceGpu || "-", priceClass));
-    tr.appendChild(createCell("td", row.priceCb, "cb"));
+    // price が null の行は On-Demand 提供なし = CB 専用
+    const priceClass = row.price != null ? "price" : "cbo";
+    tr.appendChild(createCell("td", row.price != null ? formatPrice(row.price) : t("table.cbOnly"), priceClass));
+    tr.appendChild(createCell("td", formatPrice(row.priceGpu), priceClass));
+    tr.appendChild(createCell("td", formatPrice(row.priceCb), "cb"));
     tr.appendChild(createCell("td", row.tokyo ? "◯" : "✕", row.tokyo ? "ok" : "no"));
 
-    tr.appendChild(document.createTextNode(""));
     fragment.appendChild(tr);
   });
 
@@ -253,4 +228,4 @@ export function setupHover() {
   });
 }
 
-export { parseFraction, formatNumber };
+export { formatNumber };
