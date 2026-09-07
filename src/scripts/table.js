@@ -182,9 +182,11 @@ export function renderTable({ now = new Date() } = {}) {
     tr.appendChild(createCell("td", row.mem));
     tr.appendChild(createCell("td", row.nvme));
 
-    // price が null の行は On-Demand 提供なし = CB 専用
-    const priceClass = row.price != null ? "price" : "cbo";
-    tr.appendChild(createCell("td", row.price != null ? formatPrice(row.price) : t("table.cbOnly"), priceClass));
+    // price が null で CB 価格がある行は On-Demand 提供なし = CB 専用。
+    // どちらも null なら値が未取得なだけなので、通常の価格セルとして "-" を出す。
+    const cbOnly = row.price == null && row.priceCb != null;
+    const priceClass = cbOnly ? "cbo" : "price";
+    tr.appendChild(createCell("td", cbOnly ? t("table.cbOnly") : formatPrice(row.price), priceClass));
     tr.appendChild(createCell("td", formatPrice(row.priceGpu), priceClass));
     tr.appendChild(createCell("td", formatPrice(row.priceCb), "cb"));
     tr.appendChild(createCell("td", row.tokyo ? "◯" : "✕", row.tokyo ? "ok" : "no"));

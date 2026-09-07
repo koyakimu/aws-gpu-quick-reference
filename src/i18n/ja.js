@@ -75,9 +75,9 @@ export const ja = {
   notes: {
     title: "Notes",
     priceNote:
-      "us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。TBD = 価格未発表。価格基準: %PRICING_AS_OF%。",
+      "us-east-1 (バージニア北部) の On-Demand 価格 (USD)。CB = Capacity Blocks（東京リージョン優先、未提供時は米国リージョン）。価格基準: %PRICING_AS_OF%。",
     g7eNote:
-      "NVIDIA RTX PRO Server 6000 (Blackwell) GPU搭載。FP16/FP8値は公式データシートに記載なく、Blackwellアーキテクチャの精度別スループット比とFP32公称値から算出した推定値（*付き）。48xlargeのみEFA対応。現在 us-east-1/us-east-2 のみ。",
+      "G7e は NVIDIA RTX PRO 6000 Blackwell Server Edition、G7 は RTX PRO 4500 Blackwell Server Edition を搭載。G7e の FP16/FP8/FP4 は公式データシートが丸めた PFLOPS 表記（スパース値で FP16 1 / FP8 2 / FP4 4 PFLOPS）しか示さないため、その値と Dense = その半分を採用した概算値（*付き）。G7 も同様に公式公表値（スパース値で FP16 406 / FP8 811 TFLOPS・FP4 1.6 PFLOPS）を採り、Dense をその半分とした概算値。48xlargeのみEFA対応。",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 最新・最高性能、On-Demand利用可 / P5e: H200 + EFAv2 + PCIe Gen4 → CB専用、P5enより低コスト / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB、最もコスパ良好",
     efaNote:
       "Elastic Fabric Adapter。マルチノード分散学習に必須。v4 > v3 > v2 > v1 の順で高性能。",

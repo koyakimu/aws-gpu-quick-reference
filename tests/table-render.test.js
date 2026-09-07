@@ -133,6 +133,18 @@ describe("renderTable", () => {
     expect(firstGpuLink.href).toMatch(/^https:\/\/www\.nvidia\.com/);
   });
 
+  // price も priceCb も null の行は「CB 専用」ではなく単に価格未取得なので、
+  // 通常の価格セルとして "-" を出す (p6e-gb200.36xlarge)。
+  it("renders a row with neither On-Demand nor CB price as a plain dash", () => {
+    const i = GPU_DATA.findIndex((r) => r.size === "p6e-gb200.36xlarge");
+    expect(GPU_DATA[i].price).toBeNull();
+    expect(GPU_DATA[i].priceCb).toBeNull();
+
+    const tr = bodyRows()[i];
+    expect(tr.querySelector("td.cbo")).toBeNull();
+    expect([...tr.querySelectorAll("td.price")].map((td) => td.textContent)).toEqual(["-", "-"]);
+  });
+
   it("replaces previous content instead of appending on a re-render", () => {
     renderTable({ now: FIXED_NOW });
     renderTable({ now: FIXED_NOW });

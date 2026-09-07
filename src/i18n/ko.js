@@ -75,9 +75,9 @@ export const ko = {
   notes: {
     title: "Notes",
     priceNote:
-      "us-east-1 (버지니아 북부)의 On-Demand 가격 (USD). CB = Capacity Blocks (도쿄 리전 우선, 미제공 시 미국 리전). TBD = 가격 미발표. 가격 기준: %PRICING_AS_OF%.",
+      "us-east-1 (버지니아 북부)의 On-Demand 가격 (USD). CB = Capacity Blocks (도쿄 리전 우선, 미제공 시 미국 리전). 가격 기준: %PRICING_AS_OF%.",
     g7eNote:
-      "NVIDIA RTX PRO 6000 Blackwell Server Edition GPU 탑재. G6e 대비 2.3배 추론 성능, 2배 VRAM (96GB/GPU). 48xlarge만 EFA 지원. 현재 us-east-1/us-east-2만 가능.",
+      "G7e는 NVIDIA RTX PRO 6000 Blackwell Server Edition, G7은 RTX PRO 4500 Blackwell Server Edition 탑재. G7e의 FP16/FP8/FP4는 공식 데이터시트가 반올림한 PFLOPS 표기(스파스 기준 FP16 1 / FP8 2 / FP4 4 PFLOPS)만 제시하므로 그 값과 Dense = 절반을 채택한 근사값(*표시). G7도 동일하게 공식 공표값(스파스 기준 FP16 406 / FP8 811 TFLOPS, FP4 1.6 PFLOPS)을 쓰고 Dense는 그 절반으로 한 근사값. 48xlarge만 EFA 지원.",
     p5CompNote: "P5en: H200 + EFAv3 + PCIe Gen5 → 최신·최고 성능, On-Demand 이용 가능 / P5e: H200 + EFAv2 + PCIe Gen4 → CB 전용, P5en보다 저렴 / P5: H100 + EFAv2 + PCIe Gen4 → VRAM 640GB, 가성비 우수",
     efaNote:
       "Elastic Fabric Adapter. 멀티노드 분산 학습에 필수. v4 > v3 > v2 > v1 순으로 고성능.",

@@ -10,7 +10,7 @@
       "fp8_support": "FP8はHopper (H100/H200)以降で対応",
       "fp4_support": "FP4はBlackwell (B200/B300)以降で対応",
       "unit": "TFLOPSはTeraFLOPS (10^12 floating-point operations per second)",
-      "rtx_pro_estimates": "RTX PRO 6000 Blackwell SE の FP16/FP8 は NVIDIA 公式データシートが Dense/Sparse を明示しないため、公式 FP32 (120 TFLOPS) と Blackwell のスループット比から算出した推定値。instances.json 側も同じ推定値を持ち (est: true)、両者の食い違いをテストで検出する",
+      "rtx_pro_estimates": "RTX PRO 6000 Blackwell SE の FP16/FP8/FP4 は NVIDIA 公式データシートの丸めた PFLOPS 表記 (FP4 4 PFLOPS / FP8 2 PFLOPS / FP16 1 PFLOPS、いずれもスパース値) をそのまま採用した。Dense はその半分。丸めた公表値なので厳密な TFLOPS ではなく、instances.json 側は est: true を付けている",
       "rtx_pro_4500_source": "RTX PRO 4500 Blackwell SE の FP4/FP8/FP16 は NVIDIA 公式ページの公表値 (1.6 PFLOPS / 811 TFLOPS / 406 TFLOPS) をスパース値として扱い、Dense はその半分とした (est: true)"
     },
     "sources": [
@@ -179,9 +179,9 @@
       "ec2_instance": ["G7e"],
       "architecture": "Blackwell",
       "form_factor": "PCIe",
-      "fp16_tflops": 480,
+      "fp16_tflops": 1000,
       "fp16_with_sparsity": true,
-      "fp8_tflops": 960,
+      "fp8_tflops": 2000,
       "fp8_with_sparsity": true,
       "fp4_tflops": 4000,
       "fp4_with_sparsity": true,
