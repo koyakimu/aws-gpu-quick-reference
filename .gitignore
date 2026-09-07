@@ -11,3 +11,6 @@ __pycache__/
 node_modules/
 dist/
 .serena/
+
+# superpowers brainstorming mockups
+.superpowers/
