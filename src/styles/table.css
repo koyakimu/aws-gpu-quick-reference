@@ -291,3 +291,32 @@ a.chip:hover {
 .table-frame tbody tr.band + tr td.sticky {
   border-top: 0;
 }
+
+/* 列グループの見出し行 (GPU スペック表)。ヘッダが 2 段になるので、
+   2 段目の sticky 位置を 1 段目の高さ (--row-height) だけ下げる */
+.table-frame thead tr.group-head th {
+  top: 0;
+  height: var(--row-height);
+  text-align: center;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--line-soft);
+}
+.table-frame thead tr.group-head th + th {
+  border-left: 1px solid var(--line-soft);
+}
+.table-frame thead tr.group-head ~ tr th {
+  top: var(--row-height);
+}
+
+/* GPU タブの表の見出し */
+.panel-heading {
+  margin: 18px 0 8px;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+.panel-heading:first-of-type {
+  margin-top: 4px;
+}

@@ -58,7 +58,7 @@
         <nav class="tabs" id="tabs" role="tablist">
           <button class="tab" type="button" role="tab" data-tab="compare" data-i18n="tabs.compare">比較</button>
           <button class="tab" type="button" role="tab" data-tab="regions" data-i18n="tabs.regions">リージョン</button>
-          <button class="tab" type="button" role="tab" data-tab="features" data-i18n="tabs.features">機能</button>
+          <button class="tab" type="button" role="tab" data-tab="features" data-i18n="tabs.features">GPU</button>
         </nav>
 
         <div class="top-controls">
@@ -247,6 +247,22 @@
       </section>
 
       <section class="panel" id="panel-features" role="tabpanel" hidden>
+        <div class="bar">
+          <details class="menu" id="spec-column-menu">
+            <summary class="ctl" data-i18n="filters.columns">列</summary>
+            <div class="menu-body" id="spec-column-toggles"></div>
+          </details>
+        </div>
+
+        <h3 class="panel-heading" data-i18n="specs.title">GPU スペック</h3>
+        <div id="gpu-specs-table"></div>
+
+        <p class="placeholder" id="specs-missing" data-i18n="placeholders.specsMissing" hidden>
+          GPU スペックのデータはまだ生成されていません。
+        </p>
+        <p class="note" id="specs-unit-note"></p>
+
+        <h3 class="panel-heading" data-i18n="specs.featuresTitle">機能マトリクス</h3>
         <div id="features-table"></div>
 
         <p class="placeholder" id="features-missing" data-i18n="placeholders.featuresMissing" hidden>
