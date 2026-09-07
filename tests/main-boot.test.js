@@ -29,4 +29,18 @@ describe("main.js boot", () => {
       expect(document.getElementById(`panel-${id}`), id).not.toBeNull();
     }
   });
+
+  it("puts the calculator inside the compare panel, closed by default", () => {
+    const box = document.querySelector("#panel-compare > details#calculator-box");
+    expect(box).not.toBeNull();
+    expect(box.open).toBe(false);
+    for (const id of ["calc-instance", "calc-count", "calc-days", "calc-od-unit-price"]) {
+      expect(box.querySelector(`#${id}`), id).not.toBeNull();
+    }
+  });
+
+  it("has no calculator tab or panel any more", () => {
+    expect(document.querySelector('#tabs .tab[data-tab="calculator"]')).toBeNull();
+    expect(document.getElementById("panel-calculator")).toBeNull();
+  });
 });

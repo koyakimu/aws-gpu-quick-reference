@@ -181,19 +181,6 @@ a.chip:hover {
   border-color: var(--chip-volta-line);
 }
 
-.badge {
-  display: inline-block;
-  margin-left: var(--sp-1);
-  padding: 0 var(--sp-1);
-  border-radius: var(--radius);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-line);
-}
-
 .ec2-link {
   color: var(--fg-muted);
 }

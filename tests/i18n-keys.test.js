@@ -70,6 +70,7 @@ describe("i18n key parity", () => {
 
 describe("keys the renewed UI needs", () => {
   // 一覧に載せるのは、後続タスクが実際に読むキーだけ。
+  // tabs.calculator は compare タブ内の計算ツール開閉ボタンのラベル。
   // Task 6 のマークアップ: tabs.*, filters.families, filters.columns, placeholders.regions/features
   // Task 5 の compare-view.js: filters.rowCount, groups.*, table.fp*, placeholders.noRows
   // filters.region は PR 4 で出すリージョン絞り込み (今は hidden) が使う。
