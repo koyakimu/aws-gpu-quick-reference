@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T11:55:58.163Z",
+  "generatedAt": "2026-09-14T15:33:36.700Z",
   "regions": [
     {"code":"ca-central-1","name":"Canada (Central)"},
     {"code":"us-east-1","name":"US East (N. Virginia)"},
@@ -32,7 +32,7 @@
   ],
   "availability": {
     "p6-b300.48xlarge": {"ap-northeast-2":"both","ap-south-2":"both","ap-southeast-3":"both","sa-east-1":"od","us-east-1":"both","us-west-2":"both"},
-    "p6-b200.48xlarge": {"ap-south-1":"both","ap-south-2":"both","us-east-1":"both","us-east-2":"both","us-west-2":"both"},
+    "p6-b200.48xlarge": {"ap-south-1":"both","ap-south-2":"both","eu-north-1":"od","us-east-1":"both","us-east-2":"both","us-west-2":"both"},
     "p6e-gb200.36xlarge": {},
     "u-p6e-gb200x36": {"us-east-1":"cb"},
     "u-p6e-gb200x72": {"us-east-1":"cb"},
@@ -105,7 +105,7 @@
   },
   "prices": {
     "p6-b300.48xlarge": {"ap-northeast-2":{"od":209.17,"cb":14.04},"ap-south-2":{"od":200.81,"cb":14.04},"ap-southeast-3":{"od":230.93,"cb":14.04},"sa-east-1":{"od":281.13,"cb":null},"us-east-1":{"od":142.42,"cb":14.04},"us-west-2":{"od":142.42,"cb":14.04}},
-    "p6-b200.48xlarge": {"ap-south-1":{"od":160.65,"cb":12.36},"ap-south-2":{"od":null,"cb":12.36},"us-east-1":{"od":113.93,"cb":12.36},"us-east-2":{"od":113.93,"cb":12.36},"us-west-2":{"od":113.93,"cb":12.36}},
+    "p6-b200.48xlarge": {"ap-south-1":{"od":160.65,"cb":12.36},"ap-south-2":{"od":null,"cb":12.36},"eu-north-1":{"od":143.24,"cb":null},"us-east-1":{"od":113.93,"cb":12.36},"us-east-2":{"od":113.93,"cb":12.36},"us-west-2":{"od":113.93,"cb":12.36}},
     "p6e-gb200.36xlarge": {},
     "u-p6e-gb200x36": {"us-east-1":{"od":null,"cb":10.58}},
     "u-p6e-gb200x72": {"us-east-1":{"od":null,"cb":10.58}},
