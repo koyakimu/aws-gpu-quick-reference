@@ -25,7 +25,7 @@ export function parentRegion(code) {
   return match ? match[0] : null;
 }
 
-// 地理グループ順 (仕様 4.2): 北米 -> 南米 -> 欧州 -> 中東・アフリカ -> アジア太平洋
+// 地理グループ順 (REG-001): 北米 -> 南米 -> 欧州 -> 中東・アフリカ -> アジア太平洋
 export const REGION_GROUPS = ["na", "sa", "eu", "meaf", "ap"];
 
 const GROUP_PREFIXES = [
@@ -56,7 +56,7 @@ export function regionOrder(regions) {
 }
 
 // index.json の products セクションだけを読み、wantedSizes のうち
-// Linux / Shared で提供されているものを返す (仕様 7.1)。
+// Linux / Shared で提供されているものを返す (REG-001)。
 // products は terms より前にあるので、terms に着いたら打ち切る。
 // 呼び出し側がストリームを渡していれば、この break でダウンロードも止まる
 // (480MB のうち products は 200MB 程度で、残りを読まずに済む)。
@@ -129,7 +129,7 @@ export function cbAvailability(instanceTypes, wantedSizes) {
   return map;
 }
 
-// 仕様 4.2 の availability マップを作る。
+// REG-001 の availability マップを作る。
 // odByRegion / cbByRegion は Map<regionCode, Set<size>>。
 // 提供の無いリージョンはキー自体を書かない。
 export function mergeAvailability(sizes, odByRegion, cbByRegion) {
@@ -148,7 +148,7 @@ export function mergeAvailability(sizes, odByRegion, cbByRegion) {
   return availability;
 }
 
-// 取得に失敗したリージョンの値を前回ファイルから戻す (仕様 7.1)。
+// 取得に失敗したリージョンの値を前回ファイルから戻す (REG-001)。
 // 新しいオブジェクトを返す。前回に無かった size は素通し。
 export function carryOverRegions(availability, previous, regionCodes) {
   const failed = new Set(regionCodes);
@@ -224,7 +224,7 @@ export function carryOverPrices(prices, previous, regionCodes) {
   return result;
 }
 
-// generatedAt だけが違うなら「変化なし」。書き換えを避けるための判定 (仕様 7.1)。
+// generatedAt だけが違うなら「変化なし」。書き換えを避けるための判定 (REG-001)。
 export function sameExceptGeneratedAt(a, b) {
   if (!a || !b) return false;
   const strip = (file) =>

@@ -98,7 +98,7 @@
   cursor: pointer;
   transition: color 0.12s ease, border-color 0.12s ease;
 }
-/* 絵文字を使わずに「戻す」を示す (仕様 6.3) */
+/* 絵文字を使わずに「戻す」を示す (UI-001) */
 .unit-price-reset::before {
   content: "reset";
 }

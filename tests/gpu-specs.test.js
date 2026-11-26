@@ -5,7 +5,7 @@ import { initGpuSpecsView, SPEC_FIELDS } from "../src/scripts/gpu-specs-view.js"
 import { initCompareView, COMPARE_COLUMNS } from "../src/scripts/compare-view.js";
 import { EMPTY } from "../src/scripts/table-engine.js";
 
-// 仕様: instances.json のすべての gpuKey が gpu-specs.json に載っていること。
+// GPU-001: instances.json のすべての gpuKey が gpu-specs.json に載っていること。
 // 逆向き (specs ⊆ instances) は成り立たない。インスタンスがまだ無い GPU を
 // extraGpus で表に出せるようにしてあるため (例: gb300)。
 describe("gpu-specs.json covers every gpuKey", () => {

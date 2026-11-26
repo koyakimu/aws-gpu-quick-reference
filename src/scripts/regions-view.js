@@ -1,7 +1,7 @@
-// Regions タブ (仕様 5.3)。行 = インスタンス、列 = リージョン。
+// Regions タブ (REG-001)。行 = インスタンス、列 = リージョン。
 // 描画は table-engine.js に任せ、ここは列の組み立てと状態の受け取りだけを持つ。
 //
-// 仕様の 2 段見出し (地理グループを上段に) は table-engine が 1 段しか描けないため
+// 地理グループを上段に置く 2 段見出しは table-engine が 1 段しか描けないため
 // 見送った。代わりに列を地理グループ順に並べ、グループ単位の表示切替バーを表の上に
 // 置き、各列の <th> に正式名のツールチップを出している。
 import { createTable, EMPTY } from "./table-engine.js";
@@ -111,7 +111,7 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
   const counter = document.getElementById("regions-row-count");
   if (!mount) return { update() {} };
 
-  // 仕様 10: データが無ければ「未生成」の表示にして表は出さない。
+  // REG-001: データが無ければ「未生成」の表示にして表は出さない。
   if (!file) {
     mount.replaceChildren();
     if (groupBox) groupBox.replaceChildren();
@@ -131,7 +131,7 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
     ...availabilityColumns(file.regions),
   ];
 
-  // 行は Compare と同じ世代・ファミリのフィルタを共有する (仕様 5.3)。
+  // 行は Compare と同じ世代・ファミリのフィルタを共有する (REG-001)。
   // このタブにも同じフィルタバーを出すが、状態は 1 つ。片方を触るともう片方の
   // ボタンもイベント経由で追随する。
   const state = { ...loadState(), sortKey: null, sortDir: null, hiddenGroups: [] };
@@ -211,7 +211,7 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
     });
   }
 
-  // 世代は Compare 側と同じく保存する。ファミリは保存しない (仕様 5.2)。
+  // 世代は Compare 側と同じく保存する。ファミリは保存しない (REF-001)。
   bindGenerationToggle(genBox, state, () => {
     saveState(state);
     notifyStateChanged();
@@ -223,7 +223,7 @@ export function initRegionsView({ rows = GPU_DATA, file = REGIONS_FILE } = {}) {
     update();
   });
 
-  // Compare 側のフィルタ変更に追随する (仕様 5.3: state を共有)。
+  // Compare 側のフィルタ変更に追随する (REG-001: state を共有)。
   // 共有するのは世代・ファミリだけ。リージョン選択まで引き継ぐと、この表の列が
   // 1 リージョン分に絞られて「どこで使えるか」を見る目的が潰れる。
   document.addEventListener(COMPARE_STATE_EVENT, (event) => {

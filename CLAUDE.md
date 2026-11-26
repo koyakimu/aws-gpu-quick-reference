@@ -12,25 +12,34 @@ AWS EC2 GPUインスタンスの比較表を表示する静的Webサイト。
 ### ディレクトリ構成
 
 ```
+data/                     # データの正（JSON）。下の「データ更新」を参照
+docs/apd/                 # design.md / decisions.md / spec-*.md（機能の仕様）
+scripts/                  # データ更新の CLI（update-*.mjs）と純関数（lib/）
 src/
-├── index.html          # HTMLテンプレート
+├── index.html            # HTMLテンプレート
 ├── styles/
-│   ├── base.css        # リセット、タイポグラフィ、CSS変数
-│   ├── table.css       # テーブルスタイル（世代色分け、ホバー等）
-│   ├── header.css      # ヘッダー（言語/テーマ切替含む）
-│   ├── calculator.css  # コスト計算ツールのスタイル
-│   └── light-theme.css # ライトモード用オーバーライド
+│   ├── tokens.css        # 色・余白・文字・角丸のトークン（ダーク既定 + [data-theme="light"]）
+│   ├── base.css          # リセット、共通部品、唯一のブレークポイント（768px）
+│   ├── header.css        # ヘッダ、タブ、フィルタバー
+│   ├── table.css         # 表エンジンの共通スタイル、固定列、チップ
+│   └── calculator.css    # 計算ツール
 ├── scripts/
-│   ├── main.js         # エントリーポイント（初期化・イベント登録）
-│   ├── gpu-data.js     # GPU_DATA配列 + EC2_LINKS
-│   ├── table.js        # テーブル描画ロジック
-│   ├── calculator.js   # コスト計算ロジック
-│   ├── i18n.js         # 多言語切替ロジック
-│   └── theme.js        # ライト/ダークモード切替ロジック
-└── i18n/
-    ├── ja.js           # 日本語翻訳辞書
-    └── en.js           # 英語翻訳辞書
+│   ├── main.js           # エントリーポイント（初期化・イベント登録）
+│   ├── table-engine.js   # 汎用の表エンジン（並べ替え、列グループ、帯）
+│   ├── compare-view.js   # Compare タブ（列定義、フィルタ、状態の保存）
+│   ├── regions-view.js   # Regions タブ
+│   ├── gpu-specs-view.js # GPU タブ上段（GPU スペック）
+│   ├── features-view.js  # GPU タブ下段（機能マトリクス）
+│   ├── filter-bar.js     # 世代・ファミリのフィルタ部品（Compare / Regions で共有）
+│   ├── price-region.js   # ヘッダの価格リージョン選択と価格の引き当て
+│   ├── calculator.js     # コスト計算
+│   ├── tabs.js / theme.js / i18n.js / format.js
+│   └── gpu-data.js / regions-data.js / gpu-specs-data.js / features-data.js  # JSON を読む薄い層
+└── i18n/                 # ja.js / en.js / ko.js（キー集合は 3 つとも同じにする）
+tests/                    # Vitest（jsdom）
 ```
+
+コード中のコメントにある `REF-001` / `REG-001` / `GPU-001` / `PRC-001` / `CAL-001` / `I18N-001` / `UI-001` は `docs/apd/spec-*.md` の `spec_id`。
 
 ### 開発コマンド
 
@@ -43,8 +52,8 @@ src/
 
 ### GPUスペック
 
-- GPUの演算性能等は `data/aws-ec2-nvidia-gpu-specs.json` を参照
-- 新しいGPUを追加する場合はまずJSONを更新してから `data/instances.json` にレコードを追加
+- `data/aws-ec2-nvidia-gpu-specs.json` は `instances.json` の演算性能（`fp16*` / `fp8*` / `fp4*`）と VRAM を検証する照合用のファイル（`tests/gpu-data.test.js`）。表示には使わない
+- 新しい GPU を追加する場合は、まずこの JSON と `data/gpu-specs.json` / `data/gpu-features.json` を更新してから `data/instances.json` にレコードを追加
 
 ### instances.json
 
@@ -58,7 +67,7 @@ src/
   est, efa, pcie, vcpu, mem, nvme, price, priceGpu, priceCb, tokyo, addedAt }
 ```
 
-`price` / `priceGpu` / `priceCb` は数値または `null`（= 提供なし）。表示時に `formatPrice` で整形する。
+`price` / `priceGpu` / `priceCb` は数値または `null`（= 提供なし）。比較表は小数 2 桁で出し、`null` は「—」になる。
 
 ### GPU スペック (data/gpu-specs.json)
 
@@ -126,7 +135,7 @@ https://raw.githubusercontent.com/koyakimu/ec2-capacity-blocks-for-ml-pricing-js
 JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerator_hourly_rate_usd` を参照し、`data/instances.json` の `priceCb` フィールドを更新する。
 - リージョンの優先順位は 東京 (ap-northeast-1) → us-east-1 → us-east-2 → us-west-2 → レートを持つ先頭のエントリ（東京以外を使った場合は変更ログにリージョン名を出す）
 - `accelerator_hourly_rate_usd` が数値でないエントリ（`"N/A"` など）はレート無しとして飛ばす
-- 価格は数値のまま小数点第2位に四捨五入して保存する（表示側で `formatPrice` が整形する）
+- 価格は数値のまま小数点第2位に四捨五入して保存する
 - CB フィードに東京が載っている行は `tokyo` を `true` にする。`tokyo` は「On-Demand か CB のどちらかで東京から使えるか」なので、CB 側からは `false` に倒さない
 
 判定ロジックは `scripts/lib/cb-pricing.mjs` の純関数（`pickRate` / `applyCbPricing` / `unmatchedFeedKeys`）にあり、`tests/update-cb-pricing.test.js` でテストする。ファイルの読み書きは `scripts/lib/instances-file.mjs` の `readInstances` / `writeInstances` を使う（1 レコード 1 行の書式を保つため、別のシリアライザを書かないこと）。`scripts/update-cb-pricing.mjs` は fetch と入出力だけの薄い CLI で、フィードにあって `instances.json` に無いサイズを `warning: no row for <key>` として stderr に出す（trn / inf 系は対象外なので除く）。

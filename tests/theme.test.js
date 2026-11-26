@@ -151,7 +151,7 @@ describe("initTheme", () => {
     expect(document.documentElement.getAttribute("data-theme")).toBe("light");
   });
 
-  // 仕様 6.2 の肝。初回訪問で保存してしまうと、以後 OS 設定に追従しなくなる。
+  // UI-001 の肝。初回訪問で保存してしまうと、以後 OS 設定に追従しなくなる。
   it("does not persist anything on a first visit", () => {
     stubMatchMedia(true);
     initTheme();

@@ -1,4 +1,4 @@
-// Features タブ (仕様 5.4)。行 = GPU (gpuKey ごとに 1 行)、列 = 機能。
+// Features タブ (GPU-001)。行 = GPU (gpuKey ごとに 1 行)、列 = 機能。
 // セルの ✓ / △ / 空欄は table-engine の feature 型がそのまま描くので、
 // ここは列の組み立てと注記番号の割り当てだけを持つ。
 import { createTable } from "./table-engine.js";
@@ -129,7 +129,7 @@ export function initFeaturesView({ rows = GPU_DATA, file = FEATURES_FILE } = {})
   const legend = document.getElementById("features-legend");
   if (!mount) return { update() {} };
 
-  // 仕様 10: データが無ければ「未生成」の表示にして表は出さない。
+  // GPU-001: データが無ければ「未生成」の表示にして表は出さない。
   if (!file) {
     mount.replaceChildren();
     if (missing) missing.hidden = false;

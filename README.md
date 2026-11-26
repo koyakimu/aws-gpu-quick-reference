@@ -1,78 +1,46 @@
 # AWS EC2 GPU インスタンス リファレンスガイド
 
-AWS EC2 GPUアクセラレーテッドインスタンスの包括的でインタラクティブなリファレンスガイドです。
-
-## 特徴
-
-- 📊 すべてのNVIDIA GPU世代に対応: Blackwell, Hopper, Ada Lovelace, Ampere, Turing, Volta
-- 💰 On-Demand価格（us-east-1）とCapacity Blocks価格（東京リージョン優先）を掲載
-- 🎨 世代別カラーコーディングで視覚的に識別しやすい
-- 🔗 AWS公式ドキュメントへの直接リンク
-- ⚡ HPC/MLワークロード計画のためのEFAバージョンとPCIe世代情報
-
-## 使用例
-
-- ML/AIインフラストラクチャの計画
-- GPUワークロードのコスト最適化
-- インスタンス選択時のスペック比較
-
-## デプロイ
-
-このプロジェクトはGitHub Pagesでホストされています。
+NVIDIA GPU を載せた AWS EC2 インスタンスを、スペック・価格・提供リージョンで横断比較する静的サイトです。
 
 **URL**: https://koyakimu.github.io/aws-gpu-quick-reference/
 
-mainブランチへのプッシュで自動的にデプロイされます。
+## できること
+
+- **比較**: Blackwell から Volta まで全世代のインスタンスを 1 つの表で比較。演算性能（FP32 / TF32 / BF16 / FP16 / FP8 / FP4 / INT8）、VRAM、EFA、PCIe、vCPU、メモリ、NVMe、On-Demand と Capacity Blocks の価格
+- **リージョン**: インスタンスごとの提供リージョンを On-Demand / Capacity Blocks 別に表示
+- **GPU**: GPU 単体のデータシート値と、機能（FP8、FP4、NVLink、MIG など）への対応
+- **価格リージョンの切替**: ヘッダで選んだリージョンの価格で比較
+- **計算ツール**: 台数と日数から概算コストを算出（USD と JPY / KRW）
+- 日本語 / English / 한국어、ライト / ダークテーマ
+
+## データの更新
+
+データは `data/` の JSON が正です。
+
+| データ | ファイル | 更新 |
+|---|---|---|
+| インスタンスと On-Demand 価格 | `data/instances.json` | 週次（GitHub Actions、`scripts/update-od-pricing.mjs`） |
+| Capacity Blocks 価格 | `data/instances.json` の `priceCb` | 日次（`scripts/update-cb-pricing.mjs`） |
+| リージョン別の提供有無と価格 | `data/regions.json` | 週次（`scripts/update-regions.mjs`。生成物のため手で編集しない） |
+| GPU スペック、機能マトリクス | `data/gpu-specs.json`、`data/gpu-features.json` | 手作業（NVIDIA 公式データシートの値だけを入れる） |
+
+インスタンスや GPU の追加手順とフィールドの意味は [CLAUDE.md](CLAUDE.md)、機能の仕様は [docs/apd/](docs/apd/) にあります。
 
 ## ローカル開発
 
-Vite + vite-plugin-singlefile でビルドします。ソースは `src/` 配下にモジュール分割されています。
+Vite + vite-plugin-singlefile で、単一の HTML にビルドします。
 
 ```bash
-# リポジトリをクローン
 git clone https://github.com/koyakimu/aws-gpu-quick-reference.git
 cd aws-gpu-quick-reference
-
-# 依存関係をインストール
 npm install
 
-# 開発サーバー起動（HMR対応）
-npm run dev
-
-# 単体テスト
-npm test
-
-# ビルド（dist/index.html に単一HTMLを出力）
-npm run build
+npm run dev      # 開発サーバー（HMR）
+npm test         # 単体テスト（Vitest）
+npm run build    # dist/index.html に単一 HTML を出力
 ```
 
-## データ更新方法
-
-`src/scripts/gpu-data.js` の `GPU_DATA` 配列を編集してください。各エントリはオブジェクト形式です：
-
-```javascript
-{
-  gen: 'GPU世代',
-  gpu: 'GPUモデル名',
-  ec2: 'EC2インスタンスタイプ',
-  size: 'インスタンスサイズ',
-  count: 'GPU搭載数',
-  vramPerGpu: 'GPU1基あたりVRAM容量（GB）',
-  fp16Dense: 'FP16性能 Dense（TFLOPS）',
-  fp8Dense: 'FP8性能 Dense（TFLOPS）',
-  efa: 'EFAバージョン',
-  pcie: 'PCIe世代',
-  vcpu: 'vCPU数',
-  mem: 'メモリ容量',
-  nvme: 'NVMeストレージ',
-  price: 'On-Demand時間単価',
-  priceGpu: 'GPU単価',
-  priceCb: 'Capacity Blocks価格',
-  tokyo: '東京リージョン対応（true/false）'
-}
-```
-
-GPUスペックの参照元は `data/aws-ec2-nvidia-gpu-specs.json` です。
+main ブランチへの push で GitHub Pages にデプロイされます。
 
 ## 公式リファレンス
 
@@ -81,7 +49,6 @@ GPUスペックの参照元は `data/aws-ec2-nvidia-gpu-specs.json` です。
 - [Capacity Blocks for ML](https://aws.amazon.com/ec2/capacityblocks/)
 - [Elastic Fabric Adapter (EFA)](https://aws.amazon.com/hpc/efa/)
 - [EC2 ユーザーガイド - アクセラレーテッドコンピューティング](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/accelerated-computing-instances.html)
-- [AWS Blog - EC2 カテゴリ（最新情報）](https://aws.amazon.com/blogs/aws/category/compute/amazon-ec2/)
 
 ## 免責事項
 

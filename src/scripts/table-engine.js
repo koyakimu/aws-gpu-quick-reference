@@ -51,7 +51,7 @@ export function compareValues(type, a, b) {
 }
 
 // 並べ替えた新しい配列を返す。入力は変更しない。
-// 値なしの行は方向によらず末尾に固定する (仕様 5.1)。
+// 値なしの行は方向によらず末尾に固定する (UI-001)。
 export function sortRows(rows, column, dir) {
   const copy = rows.slice();
   if (!column || !dir) return copy;
@@ -69,7 +69,7 @@ export function sortRows(rows, column, dir) {
   return [...filled, ...blank].map(({ row }) => row);
 }
 
-// クリックごとに desc → asc → 解除 と巡回する。解除するとデータ順に戻る (仕様 5.2)。
+// クリックごとに desc → asc → 解除 と巡回する。解除するとデータ順に戻る (UI-001)。
 export function nextSortState(state, key) {
   if (state.sortKey !== key) return { sortKey: key, sortDir: "desc" };
   if (state.sortDir === "desc") return { sortKey: key, sortDir: "asc" };

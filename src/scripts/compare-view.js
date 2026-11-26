@@ -19,10 +19,10 @@ import {
 
 export const STORAGE_KEY = "gpu-ref-compare";
 
-// Regions タブが世代・ファミリのフィルタを共有するためのイベント (仕様 5.3)。
+// Regions タブが世代・ファミリのフィルタを共有するためのイベント (REG-001)。
 export const COMPARE_STATE_EVENT = "compare-state-changed";
 
-// 仕様 5.2 の 6 グループ。表示順もこの順。
+// REF-001 の 6 グループ。表示順もこの順。
 export const COLUMN_GROUPS = ["instance", "gpu", "performance", "connect", "system", "price"];
 
 // GPU 名のチップ。世代で色が変わり、データシートがあればリンクにする。
@@ -220,7 +220,7 @@ export function loadState() {
   return state;
 }
 
-// 仕様 5.2: 保存するのは hiddenGroups と世代フィルタだけ。ソートとリージョンは保存しない。
+// REF-001: 保存するのは hiddenGroups と世代フィルタだけ。ソートとリージョンは保存しない。
 export function saveState(state) {
   localStorage.setItem(
     STORAGE_KEY,
@@ -228,7 +228,7 @@ export function saveState(state) {
   );
 }
 
-// 選んだリージョンで提供のある行だけ残す (仕様 5.2)。
+// 選んだリージョンで提供のある行だけ残す (REF-001)。
 // region が null、または regions.json が無ければ素通し。
 export function regionFilter(rows, region, file = REGIONS_FILE) {
   if (!region || !file) return rows;
@@ -275,7 +275,7 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
       ec2: (row, prev) => prev.gen === row.gen && prev.gpu === row.gpu && prev.ec2 === row.ec2,
     },
     onStateChange(next) {
-      // ソートだけがここから来る。保存はしない (仕様 5.2)。
+      // ソートだけがここから来る。保存はしない (REF-001)。
       state.sortKey = next.sortKey;
       state.sortDir = next.sortDir;
       update();
@@ -326,7 +326,7 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     columnBox.replaceChildren(fragment);
   }
 
-  // 提供リージョンの絞り込みは regions.json があるときだけ出す (仕様 5.2 / 10)。
+  // 提供リージョンの絞り込みは regions.json があるときだけ出す (REF-001)。
   // 基準はヘッダの価格リージョンで、保存はしない。
   function initOnlyInRegion() {
     const checkbox = document.getElementById("only-in-region");
@@ -348,7 +348,7 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
     update();
   });
 
-  // ファミリは保存しない (仕様 5.2)
+  // ファミリは保存しない (REF-001)
   bindFamilyToggle(familyBox, state, () => {
     notifyStateChanged();
     update();
@@ -372,7 +372,7 @@ export function initCompareView({ rows = GPU_DATA, regionsFile = REGIONS_FILE } 
   update();
 
   // Regions タブのフィルタバーは同じ state を映す 2 つ目の UI なので、
-  // 向こうで世代・ファミリが変わったらこちらのボタンも合わせる (仕様 5.3)。
+  // 向こうで世代・ファミリが変わったらこちらのボタンも合わせる (REG-001)。
   document.addEventListener(COMPARE_STATE_EVENT, (event) => {
     if (event.detail?.source === "compare") return;
     const next = event.detail?.state;

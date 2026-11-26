@@ -116,7 +116,7 @@ export function initGpuSpecsView({ rows = GPU_DATA, file = SPECS_FILE } = {}) {
   const columnBox = document.getElementById("spec-column-toggles");
   if (!mount) return { update() {} };
 
-  // 仕様 10: データが無ければ「未生成」の表示にして表は出さない。
+  // GPU-001: データが無ければ「未生成」の表示にして表は出さない。
   if (!file) {
     mount.replaceChildren();
     if (missing) missing.hidden = false;

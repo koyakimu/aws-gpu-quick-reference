@@ -1,7 +1,7 @@
 /*
- * デザイントークン。色・余白・文字・角丸はすべてここに置く (仕様 6.1)。
+ * デザイントークン。色・余白・文字・角丸はすべてここに置く (UI-001)。
  * ダークが既定で、ライトは [data-theme="light"] でトークンだけ再定義する。
- * コンポーネント CSS にテーマ分岐を書かないこと (仕様 6.2)。
+ * コンポーネント CSS にテーマ分岐を書かないこと (UI-001)。
  */
 :root {
   color-scheme: dark;
@@ -84,11 +84,11 @@
   --font-sans: -apple-system, "Inter", "Hiragino Sans", "Segoe UI", sans-serif;
   --font-mono: "SF Mono", Menlo, "JetBrains Mono", ui-monospace, monospace;
 
-  /* 形。影は使わない (仕様 6.1) */
+  /* 形。影は使わない (UI-001) */
   --radius: 5px;
   --radius-lg: 7px;
 
-  /* 表の密度 (仕様 6.3): 行高 28px、セル余白 6px × 10px */
+  /* 表の密度 (UI-001): 行高 28px、セル余白 6px × 10px */
   --cell-pad-y: 6px;
   --cell-pad-x: 10px;
   --row-height: 28px;
