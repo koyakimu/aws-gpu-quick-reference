@@ -2,8 +2,7 @@
 Thumbs.db
 .idea/
 .vscode/
-.claude/*
-!.claude/rules/
+.claude/
 *.swp
 *~
 __pycache__/
