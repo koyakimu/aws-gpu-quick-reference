@@ -111,7 +111,10 @@ https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/index.
 - AWS CLI: `aws pricing get-products --service-code AmazonEC2 --filters ...`
 - AWS SDKを使用したプログラマティックアクセス
 
-On-Demand 価格の更新は `node scripts/update-od-pricing.mjs`（手動実行のみ、自動化なし）。
+On-Demand 価格の更新は `node scripts/update-od-pricing.mjs`（`--dry-run` で書き込みなし）。us-east-1 の価格で `price` / `priceGpu` を、東京の有無で `tokyo` を更新する。
+
+- `pricingAsOf` は「最後に Price List と突き合わせた日」（`YYYY-MM-DD`、UTC）。取得と検証が通れば、価格に変更が無くても実行日に書き換える。表示は `formatDate` が言語ごとの日付表記にする
+- **自動化済み**: `.github/workflows/update-od-pricing.yml` が毎週月曜 17:00 JST の cron と `workflow_dispatch` で実行し、`data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-od-pricing.yml`
 
 #### CB (Capacity Blocks) 価格更新
 

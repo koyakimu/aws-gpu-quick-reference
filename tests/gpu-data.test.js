@@ -89,8 +89,8 @@ describe("GPU_DATA integrity", () => {
 });
 
 describe("PRICING_META", () => {
-  it("carries a YYYY-MM pricingAsOf and a region code", () => {
-    expect(PRICING_META.pricingAsOf).toMatch(/^\d{4}-\d{2}$/);
+  it("carries a YYYY-MM-DD pricingAsOf and a region code", () => {
+    expect(PRICING_META.pricingAsOf).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(PRICING_META.pricingRegion).toMatch(/^[a-z]{2}-[a-z]+-\d$/);
   });
 });

@@ -1,7 +1,10 @@
 // AWS Price List から On-Demand 価格を取得し、data/instances.json を更新する。
-// 自動化はしない（仕様 §8）。手動実行のみ:
+// .github/workflows/update-od-pricing.yml が週次で実行する。手動実行:
 //   node scripts/update-od-pricing.mjs
 //   node scripts/update-od-pricing.mjs --dry-run
+//
+// 価格に変更が無くても、取得と検証が通れば pricingAsOf (最後に確認した日) を
+// 実行日に書き換える。「価格基準」が古いのか変わっていないだけなのかを区別するため。
 //
 // index.json は 1 リージョンあたり 480MB 程度ある。JSON.parse を避けて
 // 行単位で読むため、追加のヒープ指定 (--max-old-space-size) は不要。
@@ -60,13 +63,17 @@ if (missing.length) {
 
 const { instances, changes } = applyOdPricing(file.instances, usEast1Prices, tokyoSizes);
 
+// ここまで来た = us-east-1 と東京の両方を取得して検証できた、なので確認日を今日 (UTC) にする。
+const pricingAsOf = new Date().toISOString().slice(0, 10);
+if (file.pricingAsOf !== pricingAsOf) changes.push(`pricingAsOf: ${file.pricingAsOf} -> ${pricingAsOf}`);
+
 if (changes.length === 0) {
   console.log("On-Demand pricing is up to date.");
 } else if (dryRun) {
   console.log("Would update On-Demand pricing:");
   for (const change of changes) console.log(`  ${change}`);
 } else {
-  writeInstances({ ...file, instances });
+  writeInstances({ ...file, pricingAsOf, instances });
   console.log("Updated On-Demand pricing:");
   for (const change of changes) console.log(`  ${change}`);
 }

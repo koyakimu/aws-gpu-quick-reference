@@ -24,7 +24,7 @@ function openCalculatorFromHash() {
 
 // 価格リージョンの表示。select が出ているときはそれが値を持ち、
 // regions.json が無くて select を出せないときだけ既定リージョンを素の文字で見せる。
-// 「（価格基準 YYYY-MM）」は data-i18n="header.pricingAsOf" 側で入る。
+// 「（価格確認日 YYYY-MM-DD）」は data-i18n="header.pricingAsOf" 側で入る。
 function setPricingCaption() {
   const fallback = document.getElementById("price-region-static");
   if (!fallback) return;

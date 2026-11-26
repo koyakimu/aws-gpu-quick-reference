@@ -2,7 +2,7 @@ export const ko = {
   header: {
     priceRegion: "가격 리전:",
     priceRegionTitle: "가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 기본 단가가 이 리전의 값으로 바뀝니다.",
-    pricingAsOf: "(가격 기준 %PRICING_AS_OF%)",
+    pricingAsOf: "(가격 확인일 %PRICING_AS_OF%)",
     updated: "업데이트",
   },
   table: {
@@ -152,7 +152,7 @@ export const ko = {
       "AWS는 P6e-GB300 UltraServer(GB300 NVL72, GPU 72기)를 발표했지만 인스턴스 유형 이름과 가격이 공개되지 않아 표에는 넣지 않았습니다.",
     title: "Notes",
     priceNote:
-      "%PRICE_REGION%의 On-Demand 가격 (USD). CB = Capacity Blocks의 GPU 1장당 단가. 가격 기준: %PRICING_AS_OF%.",
+      "%PRICE_REGION%의 On-Demand 가격 (USD). CB = Capacity Blocks의 GPU 1장당 단가. 가격 최종 확인일: %PRICING_AS_OF%.",
     priceRegionNote:
       "헤더의 리전 선택으로 가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 단가가 바뀝니다. 비교 탭의 \"선택한 리전에서 제공되는 것만\"을 체크하면 해당 리전에서 제공되는 행만 남습니다.",
     g7eNote:

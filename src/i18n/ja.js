@@ -2,7 +2,7 @@ export const ja = {
   header: {
     priceRegion: "価格リージョン:",
     priceRegionTitle: "価格列 ($/h・$/GPU・$/GPU CB) と計算ツールの初期単価が、このリージョンの値に切り替わります。",
-    pricingAsOf: "（価格基準 %PRICING_AS_OF%）",
+    pricingAsOf: "（価格確認日 %PRICING_AS_OF%）",
     updated: "更新日",
   },
   table: {
@@ -152,7 +152,7 @@ export const ja = {
       "P6e-GB300 UltraServer（GB300 NVL72、GPU 72 基）は AWS が発表済みですが、インスタンス型名と価格が未公開のため表には載せていません。",
     title: "Notes",
     priceNote:
-      "%PRICE_REGION% の On-Demand 価格 (USD)。CB = Capacity Blocks の GPU 1 枚あたり単価。価格基準: %PRICING_AS_OF%。",
+      "%PRICE_REGION% の On-Demand 価格 (USD)。CB = Capacity Blocks の GPU 1 枚あたり単価。価格の最終確認日: %PRICING_AS_OF%。",
     priceRegionNote:
       "ヘッダのリージョン選択で、価格列 ($/h・$/GPU・$/GPU CB) と計算ツールの単価が切り替わります。比較タブの「選択リージョンで提供のみ」にチェックを入れると、そのリージョンで提供のある行だけに絞り込めます。",
     g7eNote:

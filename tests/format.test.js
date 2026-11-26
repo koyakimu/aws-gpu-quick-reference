@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatPrice, parseCount, computeSpans, isNew, formatNumber, formatMonth } from "../src/scripts/format.js";
+import { formatPrice, parseCount, computeSpans, isNew, formatNumber, formatDate } from "../src/scripts/format.js";
 
 describe("formatPrice", () => {
   it("prefixes a dollar sign and forces two decimals", () => {
@@ -136,15 +136,21 @@ describe("formatNumber", () => {
   });
 });
 
-describe("formatMonth", () => {
+describe("formatDate", () => {
   it("renders YYYY-MM in each language", () => {
-    expect(formatMonth("2026-09", "ja")).toBe("2026年9月");
-    expect(formatMonth("2026-09", "en")).toBe("September 2026");
-    expect(formatMonth("2026-09", "ko")).toBe("2026년 9월");
+    expect(formatDate("2026-09", "ja")).toBe("2026年9月");
+    expect(formatDate("2026-09", "en")).toBe("September 2026");
+    expect(formatDate("2026-09", "ko")).toBe("2026년 9월");
+  });
+
+  it("renders YYYY-MM-DD with the day in each language", () => {
+    expect(formatDate("2026-11-26", "ja")).toBe("2026年11月26日");
+    expect(formatDate("2026-11-26", "en")).toBe("November 26, 2026");
+    expect(formatDate("2026-11-26", "ko")).toBe("2026년 11월 26일");
   });
 
   it("returns non YYYY-MM input unchanged", () => {
-    expect(formatMonth("2026", "en")).toBe("2026");
-    expect(formatMonth(null, "en")).toBe("");
+    expect(formatDate("2026", "en")).toBe("2026");
+    expect(formatDate(null, "en")).toBe("");
   });
 });

@@ -2,7 +2,7 @@ export const en = {
   header: {
     priceRegion: "Price region:",
     priceRegionTitle: "Switches the price columns ($/h, $/GPU, $/GPU CB) and the calculator's default unit prices to this region.",
-    pricingAsOf: "(prices as of %PRICING_AS_OF%)",
+    pricingAsOf: "(prices checked %PRICING_AS_OF%)",
     updated: "Last updated",
   },
   table: {
@@ -152,7 +152,7 @@ export const en = {
       "AWS has announced the P6e-GB300 UltraServer (GB300 NVL72, 72 GPUs), but the instance type name and pricing are not published yet, so it is not in the table.",
     title: "Notes",
     priceNote:
-      "On-Demand pricing (USD) for %PRICE_REGION%. CB = Capacity Blocks, per GPU per hour. Pricing as of %PRICING_AS_OF%.",
+      "On-Demand pricing (USD) for %PRICE_REGION%. CB = Capacity Blocks, per GPU per hour. Prices last checked %PRICING_AS_OF%.",
     priceRegionNote:
       "The region selector in the header switches the price columns ($/h, $/GPU, $/GPU CB) and the calculator's unit prices. Tick \"Only in selected region\" on the Compare tab to keep just the rows available in that region.",
     g7eNote:
