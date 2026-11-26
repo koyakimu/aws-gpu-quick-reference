@@ -117,7 +117,7 @@ describe("keys the renewed UI needs", () => {
   });
 
   it("no UI string contains an emoji", () => {
-    // 仕様 6.3: 絵文字は使わない。✓ — △ ▼ ▲ は記号なので対象外。
+    // UI-001: 絵文字は使わない。✓ — △ ▼ ▲ は記号なので対象外。
     const emoji = /\p{Extended_Pictographic}/u;
     for (const [lang, dict] of Object.entries(dictionaries)) {
       for (const path of collectKeys(dict)) {

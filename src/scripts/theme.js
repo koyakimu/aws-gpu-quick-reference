@@ -1,4 +1,4 @@
-// テーマの優先順位 (仕様 6.2):
+// テーマの優先順位 (UI-001):
 //   1. 切替ボタンで明示的に選ばれた値 (localStorage)
 //   2. 無ければ OS の prefers-color-scheme
 // 初回訪問では保存しない。保存してしまうと以後 OS 設定に追従しなくなるため。
@@ -45,7 +45,7 @@ export function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
   if (!btn) return;
 
-  // ラベルは「押すと切り替わる先」の名前。絵文字は使わない (仕様 6.3)。
+  // ラベルは「押すと切り替わる先」の名前。絵文字は使わない (UI-001)。
   function relabel() {
     const current = document.documentElement.getAttribute("data-theme");
     const label = current === "dark" ? t("theme.light") : t("theme.dark");

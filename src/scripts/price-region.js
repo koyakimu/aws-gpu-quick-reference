@@ -75,7 +75,7 @@ export function getPrice(row, region = getPriceRegion()) {
   return { od, gpu, cb };
 }
 
-// ヘッダのリージョン選択。regions.json が無ければ出さない (仕様 10 と同じ方針)。
+// ヘッダのリージョン選択。regions.json が無ければ出さない (REG-001 と同じ方針)。
 export function initPriceRegionSelect() {
   const select = document.getElementById("price-region");
   if (!select) return;

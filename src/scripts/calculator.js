@@ -75,7 +75,7 @@ function formatDiff(diff, formatter) {
 }
 
 function getUniqueInstances() {
-  // 仕様 §10: On-Demand と CB の両方が無い行だけ選択肢から除く（CB 専用は残す）
+  // CAL-001: On-Demand と CB の両方が無い行だけ選択肢から除く（CB 専用は残す）
   return GPU_DATA.filter((row) => row.price != null || row.priceCb != null).map((row) => ({
     size: row.size,
     label: `${row.size} (${row.gpu} x${row.count})`,

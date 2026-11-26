@@ -227,7 +227,7 @@ describe("priceNote carries the pricingAsOf placeholder", () => {
   });
 });
 
-// 仕様 9: instances.json のすべての gpuKey が gpu-features.json に載っていること。
+// GPU-001: instances.json のすべての gpuKey が gpu-features.json に載っていること。
 describe("gpu-features.json covers every gpuKey", () => {
   const featureKeys = features.features.map((f) => f.key);
 

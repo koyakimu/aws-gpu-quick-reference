@@ -1,5 +1,5 @@
 // AWS Price List と CB 価格 JSON から、全リージョンの提供有無を取得して
-// data/regions.json を更新する (仕様 7.1)。
+// data/regions.json を更新する (REG-001)。
 //   node scripts/update-regions.mjs
 //   node scripts/update-regions.mjs --dry-run
 //
@@ -99,7 +99,7 @@ async function scanRegion(code, wantedSizes) {
 
 const file = readInstances();
 const allSizes = file.instances.map((row) => row.size);
-// UltraServer は Price List に載らないので On-Demand の走査対象から外す (仕様 7.1)。
+// UltraServer は Price List に載らないので On-Demand の走査対象から外す (REG-001)。
 const odSizes = new Set(file.instances.filter((row) => row.unit !== "ultraserver").map((row) => row.size));
 
 const regionIndex = await fetchJson(`${BASE}/region_index.json`);

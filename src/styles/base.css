@@ -46,7 +46,7 @@ a:hover {
   display: none;
 }
 
-/* 未生成データのプレースホルダ (仕様 10) */
+/* 未生成データのプレースホルダ (REG-001 / GPU-001) */
 .placeholder {
   padding: var(--sp-6);
   text-align: center;
@@ -106,7 +106,7 @@ a:hover {
   margin-top: var(--sp-2);
 }
 
-/* 動きを減らす設定では遷移を止める (仕様 6.2) */
+/* 動きを減らす設定では遷移を止める (UI-001) */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -117,7 +117,7 @@ a:hover {
   }
 }
 
-/* サイト唯一のブレークポイント。全ファイルのモバイル調整をここに集約する (仕様 6.3) */
+/* サイト唯一のブレークポイント。全ファイルのモバイル調整をここに集約する (UI-001) */
 @media (max-width: 768px) {
   body {
     padding: var(--sp-3);
@@ -176,7 +176,7 @@ a:hover {
     row-gap: var(--sp-2);
   }
   /* 世代フィルタは折り返さず、自分の行の中で横スクロールさせる。
-     ページ本体が横に伸びるのを防ぐ (仕様 6.3)。 */
+     ページ本体が横に伸びるのを防ぐ (UI-001)。 */
   .filter-group {
     min-width: 0;
     max-width: 100%;
