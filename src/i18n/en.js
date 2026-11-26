@@ -2,7 +2,7 @@ export const en = {
   header: {
     priceRegion: "Price region:",
     priceRegionTitle: "Switches the price columns ($/h, $/GPU, $/GPU CB) and the calculator's default unit prices to this region.",
-    pricingAsOf: "(prices as of %PRICING_AS_OF%)",
+    pricingAsOf: "(prices checked %PRICING_AS_OF%)",
     updated: "Last updated",
   },
   table: {
@@ -10,7 +10,7 @@ export const en = {
     ec2Type: "EC2",
     instanceSize: "Size",
     gpuCount: "GPUs",
-    vram: "VRAM (GB)",
+    vram: "Total VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -25,6 +25,10 @@ export const en = {
     fp4Sparse: "FP4 Sparse",
     fp32: "FP32",
     tf32Dense: "TF32 Dense",
+    bf16Dense: "BF16 Dense",
+    bf16Sparse: "BF16 Sparse",
+    int8Dense: "INT8 Dense (TOPS)",
+    int8Sparse: "INT8 Sparse (TOPS)",
     onDemand: "$/h",
     perGpu: "$/GPU",
     cb: "$/GPU(CB)",
@@ -152,7 +156,7 @@ export const en = {
       "AWS has announced the P6e-GB300 UltraServer (GB300 NVL72, 72 GPUs), but the instance type name and pricing are not published yet, so it is not in the table.",
     title: "Notes",
     priceNote:
-      "On-Demand pricing (USD) for %PRICE_REGION%. CB = Capacity Blocks, per GPU per hour. Pricing as of %PRICING_AS_OF%.",
+      "On-Demand pricing (USD) for %PRICE_REGION%. CB = Capacity Blocks, per GPU per hour. Prices last checked %PRICING_AS_OF%.",
     priceRegionNote:
       "The region selector in the header switches the price columns ($/h, $/GPU, $/GPU CB) and the calculator's unit prices. Tick \"Only in selected region\" on the Compare tab to keep just the rows available in that region.",
     g7eNote:
@@ -163,7 +167,7 @@ export const en = {
     pcieNote:
       "Gen5 offers ~2x bandwidth over Gen4. Affects CPU-GPU data transfer speeds.",
     fpNote:
-      "TFLOPS values. CUDA = performance without TensorCore. Dense = dense matrix operations, Sparse = with structured sparsity (2:4) enabled. FP8 supported from Hopper onwards, FP4 from Blackwell onwards. Turing/Volta do not support Sparsity. * indicates estimated values.",
+      "TFLOPS values. CUDA = performance without TensorCore. Dense = dense matrix operations, Sparse = with structured sparsity (2:4) enabled. FP8 supported from Hopper onwards, FP4 from Blackwell onwards. Turing/Volta do not support Sparsity. INT8 is in TOPS. FP32 / TF32 / BF16 / INT8 come from the NVIDIA datasheets; a — means the datasheet does not publish that number (T4 and V100 list no BF16). * indicates estimated values.",
     refTitle: "Official References",
     refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing Instances",

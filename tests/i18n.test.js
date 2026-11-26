@@ -64,14 +64,14 @@ describe("pricingAsOf substitution", () => {
   it("replaces %PRICING_AS_OF% in translated strings", async () => {
     const { t, setLang } = await import("../src/scripts/i18n.js");
     const { PRICING_META } = await import("../src/scripts/gpu-data.js");
-    const { formatMonth } = await import("../src/scripts/format.js");
+    const { formatDate } = await import("../src/scripts/format.js");
     ["ja", "en", "ko"].forEach((lang) => {
       setLang(lang);
       const note = t("notes.priceNote");
       expect(note, `${lang}: placeholder left unsubstituted`).not.toContain("%PRICING_AS_OF%");
-      // ISO ではなく言語ごとの月表記で入る
-      expect(note, `${lang}: pricingAsOf missing`).toContain(formatMonth(PRICING_META.pricingAsOf, lang));
-      expect(note, `${lang}: raw ISO month leaked`).not.toContain(PRICING_META.pricingAsOf);
+      // ISO ではなく言語ごとの日付表記で入る
+      expect(note, `${lang}: pricingAsOf missing`).toContain(formatDate(PRICING_META.pricingAsOf, lang));
+      expect(note, `${lang}: raw ISO date leaked`).not.toContain(PRICING_META.pricingAsOf);
     });
   });
 

@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import specs from "../data/gpu-specs.json";
 import { GPU_DATA } from "../src/scripts/gpu-data.js";
 import { initGpuSpecsView, SPEC_FIELDS } from "../src/scripts/gpu-specs-view.js";
-import { initCompareView } from "../src/scripts/compare-view.js";
+import { initCompareView, COMPARE_COLUMNS } from "../src/scripts/compare-view.js";
+import { EMPTY } from "../src/scripts/table-engine.js";
 
 // 仕様: instances.json のすべての gpuKey が gpu-specs.json に載っていること。
 // 逆向き (specs ⊆ instances) は成り立たない。インスタンスがまだ無い GPU を
@@ -82,5 +83,16 @@ describe("GPU tab rendering", () => {
     const headers = [...document.querySelectorAll("#compare-table thead th")].map((th) => th.textContent);
     expect(headers).toContain("FP32");
     expect(headers).toContain("TF32 Dense");
+  });
+
+  it("adds BF16 and INT8 to the compare table and leaves unpublished values empty", () => {
+    initCompareView();
+    const headers = [...document.querySelectorAll("#compare-table thead th")].map((th) => th.textContent);
+    for (const label of ["BF16 Dense", "BF16 Sparse", "INT8 Dense (TOPS)", "INT8 Sparse (TOPS)"]) {
+      expect(headers, label).toContain(label);
+    }
+    const bf16 = COMPARE_COLUMNS.find((c) => c.key === "spec-bf16Dense");
+    expect(bf16.format(null, { gpuKey: "t4" })).toBe(EMPTY);
+    expect(bf16.format(null, { gpuKey: "h100" })).toBe("989.5");
   });
 });

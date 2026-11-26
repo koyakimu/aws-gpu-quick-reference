@@ -2,7 +2,7 @@ export const ja = {
   header: {
     priceRegion: "価格リージョン:",
     priceRegionTitle: "価格列 ($/h・$/GPU・$/GPU CB) と計算ツールの初期単価が、このリージョンの値に切り替わります。",
-    pricingAsOf: "（価格基準 %PRICING_AS_OF%）",
+    pricingAsOf: "（価格確認日 %PRICING_AS_OF%）",
     updated: "更新日",
   },
   table: {
@@ -10,7 +10,7 @@ export const ja = {
     ec2Type: "EC2",
     instanceSize: "サイズ",
     gpuCount: "数",
-    vram: "VRAM (GB)",
+    vram: "VRAM 合計 (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -25,6 +25,10 @@ export const ja = {
     fp4Sparse: "FP4 Sparse",
     fp32: "FP32",
     tf32Dense: "TF32 Dense",
+    bf16Dense: "BF16 Dense",
+    bf16Sparse: "BF16 Sparse",
+    int8Dense: "INT8 Dense (TOPS)",
+    int8Sparse: "INT8 Sparse (TOPS)",
     onDemand: "$/h",
     perGpu: "$/GPU",
     cb: "$/GPU(CB)",
@@ -152,7 +156,7 @@ export const ja = {
       "P6e-GB300 UltraServer（GB300 NVL72、GPU 72 基）は AWS が発表済みですが、インスタンス型名と価格が未公開のため表には載せていません。",
     title: "Notes",
     priceNote:
-      "%PRICE_REGION% の On-Demand 価格 (USD)。CB = Capacity Blocks の GPU 1 枚あたり単価。価格基準: %PRICING_AS_OF%。",
+      "%PRICE_REGION% の On-Demand 価格 (USD)。CB = Capacity Blocks の GPU 1 枚あたり単価。価格の最終確認日: %PRICING_AS_OF%。",
     priceRegionNote:
       "ヘッダのリージョン選択で、価格列 ($/h・$/GPU・$/GPU CB) と計算ツールの単価が切り替わります。比較タブの「選択リージョンで提供のみ」にチェックを入れると、そのリージョンで提供のある行だけに絞り込めます。",
     g7eNote:
@@ -163,7 +167,7 @@ export const ja = {
     pcieNote:
       "Gen5はGen4の約2倍の帯域幅。CPU-GPU間のデータ転送速度に影響。",
     fpNote:
-      "TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。*付きは予想値。",
+      "TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。INT8 のみ TOPS。FP32 / TF32 / BF16 / INT8 は NVIDIA 公式データシートの値で、— は記載が無い項目（T4・V100 に BF16 の記載は無い）。*付きは予想値。",
     refTitle: "公式リファレンス",
     refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing インスタンス一覧",

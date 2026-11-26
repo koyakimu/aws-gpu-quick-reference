@@ -4,7 +4,7 @@ import { GPU_DATA } from "../src/scripts/gpu-data.js";
 import { TAB_IDS } from "../src/scripts/tabs.js";
 import { t, getLang } from "../src/scripts/i18n.js";
 import { PRICING_META } from "../src/scripts/gpu-data.js";
-import { formatMonth } from "../src/scripts/format.js";
+import { formatDate } from "../src/scripts/format.js";
 
 // 実物の index.html を読んで body だけを jsdom に流し込む。
 // マークアップと main.js の配線がずれたらここで落ちる。
@@ -56,7 +56,7 @@ describe("main.js boot", () => {
     const select = document.getElementById("price-region");
     expect(select.title).not.toBe("");
     const caption = document.getElementById("pricing-caption").textContent;
-    expect(caption).toContain(formatMonth(PRICING_META.pricingAsOf, getLang()));
+    expect(caption).toContain(formatDate(PRICING_META.pricingAsOf, getLang()));
     expect(caption).not.toContain("%PRICING_AS_OF%");
   });
 

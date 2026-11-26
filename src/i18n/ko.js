@@ -2,7 +2,7 @@ export const ko = {
   header: {
     priceRegion: "가격 리전:",
     priceRegionTitle: "가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 기본 단가가 이 리전의 값으로 바뀝니다.",
-    pricingAsOf: "(가격 기준 %PRICING_AS_OF%)",
+    pricingAsOf: "(가격 확인일 %PRICING_AS_OF%)",
     updated: "업데이트",
   },
   table: {
@@ -10,7 +10,7 @@ export const ko = {
     ec2Type: "EC2",
     instanceSize: "사이즈",
     gpuCount: "수",
-    vram: "VRAM (GB)",
+    vram: "총 VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
@@ -25,6 +25,10 @@ export const ko = {
     fp4Sparse: "FP4 Sparse",
     fp32: "FP32",
     tf32Dense: "TF32 Dense",
+    bf16Dense: "BF16 Dense",
+    bf16Sparse: "BF16 Sparse",
+    int8Dense: "INT8 Dense (TOPS)",
+    int8Sparse: "INT8 Sparse (TOPS)",
     onDemand: "$/h",
     perGpu: "$/GPU",
     cb: "$/GPU(CB)",
@@ -152,7 +156,7 @@ export const ko = {
       "AWS는 P6e-GB300 UltraServer(GB300 NVL72, GPU 72기)를 발표했지만 인스턴스 유형 이름과 가격이 공개되지 않아 표에는 넣지 않았습니다.",
     title: "Notes",
     priceNote:
-      "%PRICE_REGION%의 On-Demand 가격 (USD). CB = Capacity Blocks의 GPU 1장당 단가. 가격 기준: %PRICING_AS_OF%.",
+      "%PRICE_REGION%의 On-Demand 가격 (USD). CB = Capacity Blocks의 GPU 1장당 단가. 가격 최종 확인일: %PRICING_AS_OF%.",
     priceRegionNote:
       "헤더의 리전 선택으로 가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 단가가 바뀝니다. 비교 탭의 \"선택한 리전에서 제공되는 것만\"을 체크하면 해당 리전에서 제공되는 행만 남습니다.",
     g7eNote:
@@ -163,7 +167,7 @@ export const ko = {
     pcieNote:
       "Gen5는 Gen4의 약 2배 대역폭. CPU-GPU 간 데이터 전송 속도에 영향.",
     fpNote:
-      "TFLOPS 값. CUDA = TensorCore 미사용 시 성능. Dense = 밀집 행렬 연산, Sparse = 구조적 희소성(2:4) 활성화 시. FP8은 Hopper 이후, FP4는 Blackwell 이후 지원. Turing/Volta는 Sparsity 미지원. *는 예상 값.",
+      "TFLOPS 값. CUDA = TensorCore 미사용 시 성능. Dense = 밀집 행렬 연산, Sparse = 구조적 희소성(2:4) 활성화 시. FP8은 Hopper 이후, FP4는 Blackwell 이후 지원. Turing/Volta는 Sparsity 미지원. INT8 만 TOPS. FP32 / TF32 / BF16 / INT8 은 NVIDIA 공식 데이터시트 값이며, — 는 기재가 없는 항목 (T4·V100 은 BF16 기재 없음). *는 예상 값.",
     refTitle: "공식 레퍼런스",
     refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing 인스턴스 목록",
