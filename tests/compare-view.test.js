@@ -151,11 +151,14 @@ describe("column formats", () => {
     expect(cb.format(null, { size: "x" })).toBe(EMPTY);
   });
 
-  it("scales VRAM down for a fractional GPU count", () => {
+  it("shows VRAM for the whole instance (GPU count x VRAM per GPU)", () => {
     const vram = column("vramPerGpu");
-    expect(vram.format(24, { count: 1 })).toBe("24");
-    expect(vram.format(24, { count: "1/8" })).toBe("3");
-    expect(vram.format(null, { count: 1 })).toBe(EMPTY);
+    expect(vram.format(24, { count: 1, vramPerGpu: 24 })).toBe("24");
+    expect(vram.format(48, { count: 8, vramPerGpu: 48 })).toBe("384");
+    expect(vram.format(186, { count: 72, vramPerGpu: 186 })).toBe("13,392");
+    expect(vram.format(24, { count: "1/8", vramPerGpu: 24 })).toBe("3");
+    expect(vram.format(null, { count: 1, vramPerGpu: null })).toBe(EMPTY);
+    expect(vram.sortValue({ count: 8, vramPerGpu: 80 })).toBe(640);
   });
 });
 

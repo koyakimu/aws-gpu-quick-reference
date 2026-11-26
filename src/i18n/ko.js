@@ -10,7 +10,7 @@ export const ko = {
     ec2Type: "EC2",
     instanceSize: "사이즈",
     gpuCount: "수",
-    vram: "VRAM (GB)",
+    vram: "총 VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",

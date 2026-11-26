@@ -10,7 +10,7 @@ export const ja = {
     ec2Type: "EC2",
     instanceSize: "サイズ",
     gpuCount: "数",
-    vram: "VRAM (GB)",
+    vram: "VRAM 合計 (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",

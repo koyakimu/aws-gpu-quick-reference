@@ -58,11 +58,15 @@ function countCell(value) {
   return value == null || value === "" ? EMPTY : String(value);
 }
 
-// VRAM は 1 GPU あたりの値。count が "1/8" のような分数なら実効値に直す。
-function vramCell(value, row) {
-  if (value == null) return EMPTY;
-  const count = parseCount(row.count);
-  return count < 1 ? String(Math.round(value * count)) : String(value);
+// VRAM はインスタンス全体の値 (GPU 数 × 1 GPU あたりの VRAM)。
+// count が "1/8" のような分数なら、実際に使える量になる。
+function totalVram(row) {
+  return row.vramPerGpu == null ? null : Math.round(row.vramPerGpu * parseCount(row.count));
+}
+
+function vramCell(_value, row) {
+  const total = totalVram(row);
+  return total == null ? EMPTY : formatNumber(total);
 }
 
 // 演算性能は est の行だけ末尾に * を付ける。notes.fpNote の「*付きは予想値」がその説明。
@@ -156,8 +160,7 @@ export const COMPARE_COLUMNS = [
     labelKey: "table.vram",
     type: "number",
     format: vramCell,
-    // 分数 GPU の行は表示値 (実効 VRAM) で並べる。vramCell と同じ計算にする。
-    sortValue: (row) => row.vramPerGpu * Math.min(1, parseCount(row.count)),
+    sortValue: totalVram,
   },
   ...PERF_COLUMNS,
   { key: "efa", group: "connect", labelKey: "table.efa", type: "text", mono: true },

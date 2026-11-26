@@ -10,7 +10,7 @@ export const en = {
     ec2Type: "EC2",
     instanceSize: "Size",
     gpuCount: "GPUs",
-    vram: "VRAM (GB)",
+    vram: "Total VRAM (GB)",
     efa: "EFA",
     pcie: "PCIe",
     vcpu: "vCPU",
