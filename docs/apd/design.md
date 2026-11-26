@@ -1,8 +1,6 @@
 ---
-title: AWS EC2 GPU Quick Reference — Product Design
-status: approved
-created: 2026-02-11
-updated: 2026-02-11
+project_name: "AWS EC2 GPU Quick Reference"
+version: 1
 ---
 
 # AWS EC2 GPU Quick Reference — Product Design

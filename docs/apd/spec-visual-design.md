@@ -1,10 +1,10 @@
 ---
-spec_id: UI-001
-title: ビジュアルデザインの洗練
-context: Visual Design
-status: draft
-created: 2026-02-11
-updated: 2026-02-11
+spec_id: "UI-001"
+context: "Visual Design"
+version: 1
+issue_ref: null
+title: "ビジュアルデザインの洗練"
+decision_refs: []
 ---
 
 # UI-001: ビジュアルデザインの洗練

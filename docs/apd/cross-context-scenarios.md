@@ -1,7 +1,5 @@
 ---
-title: コンテキスト間データフロー
-status: draft
-created: 2026-02-11
+version: 1
 ---
 
 # コンテキスト間データフロー

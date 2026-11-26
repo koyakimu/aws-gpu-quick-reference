@@ -1,10 +1,10 @@
 ---
-spec_id: CAL-001
-title: 簡易コスト計算ツール
-context: Cost Calculator
-status: draft
-created: 2026-02-11
-updated: 2026-02-11
+spec_id: "CAL-001"
+context: "Cost Calculator"
+version: 1
+issue_ref: null
+title: "簡易コスト計算ツール"
+decision_refs: []
 ---
 
 # CAL-001: 簡易コスト計算ツール

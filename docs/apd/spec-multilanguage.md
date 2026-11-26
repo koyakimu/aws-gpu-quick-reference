@@ -1,10 +1,10 @@
 ---
-spec_id: I18N-001
-title: 多言語対応（日本語・英語）
-context: Internationalization
-status: draft
-created: 2026-02-11
-updated: 2026-02-11
+spec_id: "I18N-001"
+context: "Internationalization"
+version: 1
+issue_ref: null
+title: "多言語対応（日本語・英語）"
+decision_refs: []
 ---
 
 # I18N-001: 多言語対応（日本語・英語）

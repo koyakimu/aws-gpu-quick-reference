@@ -1,9 +1,10 @@
 ---
-spec_id: REF-001
-title: GPUインスタンス比較テーブル
-context: Reference Table
-status: draft
-created: 2026-02-11
+spec_id: "REF-001"
+context: "Reference Table"
+version: 2
+issue_ref: null
+title: "GPUインスタンス比較テーブル"
+decision_refs: []
 ---
 
 # REF-001: GPUインスタンス比較テーブル
