@@ -62,7 +62,7 @@ src/
 
 ### GPU スペック (data/gpu-specs.json)
 
-GPU タブ上段の「GPU スペック」表と、比較表の FP32 / TF32 Dense 列が読むファイル。gpuKey ごとに 1 エントリで、`fp64` 〜 `int8Sparse` (TFLOPS、INT8 のみ TOPS)、`memoryGb` / `memoryBandwidthGbs` / `tdpW`、`source` (参照した NVIDIA のページ or データシート PDF の URL)、`notes` を持つ。
+GPU タブ上段の「GPU スペック」表と、比較表の FP32 / TF32 / BF16 / INT8 列が読むファイル。gpuKey ごとに 1 エントリで、`fp64` 〜 `int8Sparse` (TFLOPS、INT8 のみ TOPS)、`memoryGb` / `memoryBandwidthGbs` / `tdpW`、`source` (参照した NVIDIA のページ or データシート PDF の URL)、`notes` を持つ。
 
 編集の決まり:
 
@@ -71,6 +71,8 @@ GPU タブ上段の「GPU スペック」表と、比較表の FP32 / TF32 Dense
 - データシートがスパース値しか載せていない場合は Dense = その半分とし、その旨を `notes` に書く
 - `source` は実際にその数値を読んだ URL にする。複数ページを使った場合は主たる URL を `source` に置き、残りを `notes` に書く
 - 追加・変更したら `data/instances.json` の `fp16Dense` / `fp8Dense` / `fp4Dense` と突き合わせる。食い違ったら instances.json を黙って直さず、どちらが正しいかを確認する
+
+比較表の FP32 / TF32 Dense / BF16 Dense・Sparse / INT8 Dense・Sparse 列はこのファイルから gpuKey で引く（`compare-view.js` の `specColumn`）。`null` の項目は — になる。比較表の VRAM 列はインスタンス全体の値（`count` × `vramPerGpu`）で、`instances.json` のフィールドは 1 GPU あたりのまま。
 
 `tests/gpu-specs.test.js` が守っている: instances.json の全 gpuKey にエントリがあること、`source` が URL であること、数値フィールドがすべて正数か `null` であること、GPU タブが 15 行描かれること、比較表に FP32 列があること。
 

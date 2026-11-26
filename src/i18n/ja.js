@@ -25,6 +25,10 @@ export const ja = {
     fp4Sparse: "FP4 Sparse",
     fp32: "FP32",
     tf32Dense: "TF32 Dense",
+    bf16Dense: "BF16 Dense",
+    bf16Sparse: "BF16 Sparse",
+    int8Dense: "INT8 Dense (TOPS)",
+    int8Sparse: "INT8 Sparse (TOPS)",
     onDemand: "$/h",
     perGpu: "$/GPU",
     cb: "$/GPU(CB)",
@@ -163,7 +167,7 @@ export const ja = {
     pcieNote:
       "Gen5はGen4の約2倍の帯域幅。CPU-GPU間のデータ転送速度に影響。",
     fpNote:
-      "TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。*付きは予想値。",
+      "TFLOPS値。CUDA = TensorCore未使用時の性能。Dense = 密な行列演算、Sparse = 構造化スパース性（2:4）有効時。FP8はHopper以降、FP4はBlackwell以降で対応。Turing/VoltaはSparsity非対応。INT8 のみ TOPS。FP32 / TF32 / BF16 / INT8 は NVIDIA 公式データシートの値で、— は記載が無い項目（T4・V100 に BF16 の記載は無い）。*付きは予想値。",
     refTitle: "公式リファレンス",
     refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing インスタンス一覧",

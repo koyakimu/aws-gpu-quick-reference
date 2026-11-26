@@ -38,6 +38,7 @@ Then: 以下のカラムが表示される
   - VRAM（インスタンス全体 = GPU数 × 1GPU当たり。分数GPUは実際に使える量）
   - FP16性能（1GPU当たり + 合計、TFLOPS）
   - FP8性能（1GPU当たり + 合計、TFLOPS）
+  - BF16 / INT8性能（1GPU当たり、Dense / Sparse。INT8 は TOPS。データシートに記載の無いGPUは —）
   - EFAバージョン
   - PCIe世代
   - vCPU

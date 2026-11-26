@@ -25,6 +25,10 @@ export const en = {
     fp4Sparse: "FP4 Sparse",
     fp32: "FP32",
     tf32Dense: "TF32 Dense",
+    bf16Dense: "BF16 Dense",
+    bf16Sparse: "BF16 Sparse",
+    int8Dense: "INT8 Dense (TOPS)",
+    int8Sparse: "INT8 Sparse (TOPS)",
     onDemand: "$/h",
     perGpu: "$/GPU",
     cb: "$/GPU(CB)",
@@ -163,7 +167,7 @@ export const en = {
     pcieNote:
       "Gen5 offers ~2x bandwidth over Gen4. Affects CPU-GPU data transfer speeds.",
     fpNote:
-      "TFLOPS values. CUDA = performance without TensorCore. Dense = dense matrix operations, Sparse = with structured sparsity (2:4) enabled. FP8 supported from Hopper onwards, FP4 from Blackwell onwards. Turing/Volta do not support Sparsity. * indicates estimated values.",
+      "TFLOPS values. CUDA = performance without TensorCore. Dense = dense matrix operations, Sparse = with structured sparsity (2:4) enabled. FP8 supported from Hopper onwards, FP4 from Blackwell onwards. Turing/Volta do not support Sparsity. INT8 is in TOPS. FP32 / TF32 / BF16 / INT8 come from the NVIDIA datasheets; a — means the datasheet does not publish that number (T4 and V100 list no BF16). * indicates estimated values.",
     refTitle: "Official References",
     refAwsTitle: "AWS",
     refAccelerated: "EC2 Accelerated Computing Instances",

@@ -138,8 +138,17 @@ const PERF_COLUMNS = [
   format: perfCell,
 }));
 
-// FP16 CUDA の直後に、GPU 単体のデータシート値 (gpu-specs.json) から引く 2 列を挟む。
-PERF_COLUMNS.splice(1, 0, specColumn("fp32", "table.fp32"), specColumn("tf32Dense", "table.tf32Dense"));
+// GPU 単体のデータシート値 (gpu-specs.json) から引く列。精度の高い順に並ぶよう、
+// FP32 / TF32 / BF16 は FP16 CUDA の直後に挟み、INT8 (TOPS) は末尾に置く。
+PERF_COLUMNS.splice(
+  1,
+  0,
+  specColumn("fp32", "table.fp32"),
+  specColumn("tf32Dense", "table.tf32Dense"),
+  specColumn("bf16Dense", "table.bf16Dense"),
+  specColumn("bf16Sparse", "table.bf16Sparse"),
+);
+PERF_COLUMNS.push(specColumn("int8Dense", "table.int8Dense"), specColumn("int8Sparse", "table.int8Sparse"));
 
 export const COMPARE_COLUMNS = [
   // 読み手は NVIDIA 側 (GPU → ファミリ → サイズ) から見るので、GPU を先頭の固定列にする。
