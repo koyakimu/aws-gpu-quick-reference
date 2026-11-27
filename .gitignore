@@ -5,13 +5,7 @@ Thumbs.db
 .claude/
 *.swp
 *~
-__pycache__/
 .env
-.playwright-cli/
 .playwright-mcp/
 node_modules/
 dist/
-.serena/
-
-# superpowers brainstorming mockups
-.superpowers/

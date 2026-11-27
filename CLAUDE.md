@@ -8,6 +8,7 @@ AWS EC2 GPUインスタンスの比較表を表示する静的Webサイト。
 - ソースは `src/` 配下にモジュール分割（CSS/JS/HTML/i18n）
 - `npm run build` で `dist/index.html` に単一HTMLを出力
 - デプロイ: GitHub Actions で `npm run build` → `dist/` を GitHub Pages にデプロイ
+- PR では `.github/workflows/ci.yml` が `npm test` と `npm run build` を実行する
 
 ### ディレクトリ構成
 
@@ -53,6 +54,7 @@ tests/                    # Vitest（jsdom）
 ### GPUスペック
 
 - `data/aws-ec2-nvidia-gpu-specs.json` は `instances.json` の演算性能（`fp16*` / `fp8*` / `fp4*`）と VRAM を検証する照合用のファイル（`tests/gpu-data.test.js`）。表示には使わない
+- `data/gpu-reference-sources.md` は `instances.json` の演算性能の出典と、データシートに無い値（推定値・8 GPU 構成からの算出）の導出記録。値を変えたらここの記述と更新履歴も直す
 - 新しい GPU を追加する場合は、まずこの JSON と `data/gpu-specs.json` / `data/gpu-features.json` を更新してから `data/instances.json` にレコードを追加
 
 ### instances.json

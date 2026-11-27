@@ -22,9 +22,9 @@ jobs:
     # products で打ち切っていた頃の 2〜3 倍を落とす。見込みは転送量 10〜15GB / 20〜40 分。
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
