@@ -3,7 +3,6 @@ export const ja = {
     priceRegion: "価格リージョン:",
     priceRegionTitle: "価格列 ($/h・$/GPU・$/GPU CB) と計算ツールの初期単価が、このリージョンの値に切り替わります。",
     pricingAsOf: "（価格確認日 %PRICING_AS_OF%）",
-    updated: "更新日",
   },
   table: {
     gpuModel: "GPU",
@@ -74,7 +73,7 @@ export const ja = {
     ap: "アジア太平洋",
   },
   regions: {
-    generatedAt: "データ生成: {date}",
+    generatedAt: "データ確認日: {date}",
     localZoneNote: "Local Zone でのみ提供される CB は親リージョンの列に含めています。",
     legend: "{od} = On-Demand で提供 / {cb} = Capacity Blocks で提供 / — = 提供なし",
   },
@@ -155,6 +154,8 @@ export const ja = {
     gb300Note:
       "P6e-GB300 UltraServer（GB300 NVL72、GPU 72 基）は AWS が発表済みですが、インスタンス型名と価格が未公開のため表には載せていません。",
     title: "Notes",
+    dataChecked:
+      "データの最終確認日 — On-Demand 価格: %PRICING_AS_OF% / Capacity Blocks 価格: %CB_AS_OF% / リージョン別データ: %REGIONS_AS_OF%",
     priceNote:
       "%PRICE_REGION% の On-Demand 価格 (USD)。CB = Capacity Blocks の GPU 1 枚あたり単価。価格の最終確認日: %PRICING_AS_OF%。",
     priceRegionNote:

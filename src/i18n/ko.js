@@ -3,7 +3,6 @@ export const ko = {
     priceRegion: "가격 리전:",
     priceRegionTitle: "가격 열 ($/h, $/GPU, $/GPU CB)과 계산기의 기본 단가가 이 리전의 값으로 바뀝니다.",
     pricingAsOf: "(가격 확인일 %PRICING_AS_OF%)",
-    updated: "업데이트",
   },
   table: {
     gpuModel: "GPU",
@@ -74,7 +73,7 @@ export const ko = {
     ap: "아시아 태평양",
   },
   regions: {
-    generatedAt: "데이터 생성: {date}",
+    generatedAt: "데이터 확인일: {date}",
     localZoneNote: "Local Zone 에서만 제공되는 CB 는 상위 리전 열에 포함했습니다.",
     legend: "{od} = On-Demand 으로 제공 / {cb} = Capacity Blocks 로 제공 / — = 제공 안 함",
   },
@@ -155,6 +154,8 @@ export const ko = {
     gb300Note:
       "AWS는 P6e-GB300 UltraServer(GB300 NVL72, GPU 72기)를 발표했지만 인스턴스 유형 이름과 가격이 공개되지 않아 표에는 넣지 않았습니다.",
     title: "Notes",
+    dataChecked:
+      "데이터 최종 확인일 — On-Demand 가격: %PRICING_AS_OF% / Capacity Blocks 가격: %CB_AS_OF% / 리전별 데이터: %REGIONS_AS_OF%",
     priceNote:
       "%PRICE_REGION%의 On-Demand 가격 (USD). CB = Capacity Blocks의 GPU 1장당 단가. 가격 최종 확인일: %PRICING_AS_OF%.",
     priceRegionNote:

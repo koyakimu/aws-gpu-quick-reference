@@ -170,11 +170,23 @@ const regions = regionOrder(
 
 const next = { generatedAt: new Date().toISOString(), regions, availability, prices };
 
-if (sameExceptGeneratedAt(next, previous)) {
-  console.log("Region availability is up to date.");
+// generatedAt は「最後に全リージョンを確認できた日時」。データに差分が無くても、
+// 全リージョンの取得が通っていれば書き換える (REG-001)。取得に失敗したリージョンが
+// あって差分も無いときは、確認できていないので書き換えない。
+const unchanged = sameExceptGeneratedAt(next, previous);
+if (unchanged && failed.length > 0) {
+  console.log("No data changes and some regions failed; keeping the previous generatedAt.");
 } else if (dryRun) {
-  console.log(`Would write ${regions.length} regions for ${allSizes.length} instance sizes.`);
+  console.log(
+    unchanged
+      ? "No data changes; would refresh generatedAt."
+      : `Would write ${regions.length} regions for ${allSizes.length} instance sizes.`,
+  );
 } else {
   writeFileSync(REGIONS_PATH, serialize(next));
-  console.log(`Wrote data/regions.json: ${regions.length} regions, ${allSizes.length} instance sizes.`);
+  console.log(
+    unchanged
+      ? "No data changes; refreshed generatedAt."
+      : `Wrote data/regions.json: ${regions.length} regions, ${allSizes.length} instance sizes.`,
+  );
 }

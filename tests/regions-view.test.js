@@ -76,7 +76,7 @@ describe("initRegionsView", () => {
     expect(first[3].textContent).toBe("CB");
 
     // ISO 文字列そのままではなく日付部分だけ出す
-    expect(document.getElementById("regions-generated").textContent).toBe("データ生成: 2026-09-07");
+    expect(document.getElementById("regions-generated").textContent).toBe("データ確認日: 2026-09-07");
     expect(document.getElementById("regions-local-zone-note").textContent).toContain("Local Zone");
     expect(document.getElementById("regions-missing").hidden).toBe(true);
     // 地理グループの表示切替 (2 段見出しの代わり)

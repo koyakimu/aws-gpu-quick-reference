@@ -2,8 +2,9 @@ name: Update On-Demand Pricing
 
 on:
   schedule:
-    # 毎週月曜 17:00 JST (08:00 UTC)。update-regions.yml の 1 時間前
-    - cron: "0 8 * * 1"
+    # 毎週月曜 17:47 JST (08:47 UTC)。update-regions.yml の 50 分前。
+    # 毎時 0 分は schedule が大きく遅れるので外している
+    - cron: "47 8 * * 1"
   workflow_dispatch:
 
 permissions:

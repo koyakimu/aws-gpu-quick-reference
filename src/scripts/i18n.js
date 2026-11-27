@@ -4,6 +4,13 @@ import { ko } from "../i18n/ko.js";
 import { PRICING_META } from "./gpu-data.js";
 import { getPriceRegion, PRICE_REGION_EVENT } from "./price-region.js";
 import { formatDate } from "./format.js";
+import { REGIONS_FILE } from "./regions-data.js";
+
+// データごとの最終確認日。値が無い (regions.json 未生成など) ときは「—」にする。
+function checkedDate(iso) {
+  const day = typeof iso === "string" ? iso.slice(0, 10) : "";
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) ? formatDate(day, currentLang) : "—";
+}
 
 const STORAGE_KEY = "gpu-ref-lang";
 const dictionaries = { ja, en, ko };
@@ -40,11 +47,13 @@ export function t(key) {
     value = value[k];
   }
   if (value == null) return key;
-  // 価格の基準月はデータ (data/instances.json) が、リージョンはヘッダの選択が持つ。
+  // 確認日はデータ (data/instances.json / regions.json) が、リージョンはヘッダの選択が持つ。
   // 辞書側は置換子だけ持つ。
   return typeof value === "string"
     ? value
         .replaceAll("%PRICING_AS_OF%", formatDate(PRICING_META.pricingAsOf, currentLang))
+        .replaceAll("%CB_AS_OF%", checkedDate(PRICING_META.cbAsOf))
+        .replaceAll("%REGIONS_AS_OF%", checkedDate(REGIONS_FILE?.generatedAt))
         .replaceAll("%PRICE_REGION%", getPriceRegion())
     : value;
 }
