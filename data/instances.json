@@ -1,5 +1,5 @@
 {
-  "pricingAsOf": "2026-11-26",
+  "pricingAsOf": "2026-11-27",
   "pricingRegion": "us-east-1",
   "instances": [
     {"gen":"blackwell","gpu":"B300","gpuKey":"b300","ec2":"P6-B300","size":"p6-b300.48xlarge","unit":"instance","count":8,"vramPerGpu":288,"fp16NonTc":null,"fp16Dense":2250,"fp16Sparse":4500,"fp8Dense":4500,"fp8Sparse":9000,"fp4Dense":13500,"fp4Sparse":18000,"est":false,"efa":"v4 3200G","pcie":"Gen5","vcpu":192,"mem":"4TB","nvme":"30TB","price":142.42,"priceGpu":17.8,"priceCb":16.15,"tokyo":true,"addedAt":"2026-09"},
