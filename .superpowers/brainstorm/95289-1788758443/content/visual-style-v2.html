@@ -1,0 +1,187 @@
+<h2>折衷案 D と、C の比較</h2>
+<p class="subtitle">D は「A の密度と等幅 + C の柔らかいグレー基調、ガラス効果なし」。フィルタバーとソート中の列まで描いています。下にライトテーマ版もあります。</p>
+
+<style>
+  .vs { font-size: 13px; line-height: 1.45; }
+  .vs table { border-collapse: collapse; width: 100%; }
+  .vs th, .vs td { padding: 6px 10px; white-space: nowrap; text-align: left; }
+  .vs td.n, .vs th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .vs .mono { font-family: "SF Mono", Menlo, "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; }
+  .vs .chip { display:inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+  .vs .tabs { display:flex; gap: 2px; }
+  .vs .tab { padding: 6px 12px; font-size: 12.5px; border-radius: 5px; }
+  .vs .top { display:flex; align-items:center; justify-content: space-between; margin-bottom: 14px; }
+  .vs .brand { display:flex; align-items: baseline; gap: 10px; }
+  .vs .brand h1 { margin:0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .vs .brand small { font-size: 11px; }
+  .vs .bar { display:flex; gap: 8px; align-items:center; margin: 10px 0 12px; font-size: 12px; }
+  .vs .ctl { padding: 4px 9px; border-radius: 5px; border:1px solid; display:inline-flex; gap: 6px; align-items:center; }
+  .vs .sortarrow { font-size: 9px; margin-left: 3px; }
+
+  /* D: dark */
+  .d { background:#161719; color:#d4d6da; font-family: -apple-system, "Inter", "Hiragino Sans", "Segoe UI", sans-serif; padding: 20px; border-radius: 8px; }
+  .d .brand h1 { color:#f2f3f5; }
+  .d .brand small { color:#7c8088; }
+  .d .tabs { background:#1e2023; padding: 3px; border-radius: 7px; border:1px solid #2a2c30; }
+  .d .tab { color:#8b8f97; }
+  .d .tab.on { background:#2b2d31; color:#f2f3f5; }
+  .d .ctl { border-color:#2a2c30; background:#1b1d20; color:#b6b9bf; }
+  .d .ctl.on { border-color:#3d3a2e; background:#231f14; color:#f5b95a; }
+  .d .frame { border:1px solid #2a2c30; border-radius: 7px; overflow:hidden; }
+  .d thead th { color:#8b8f97; font-weight: 500; font-size: 11.5px; background:#1b1d20; border-bottom:1px solid #2a2c30; }
+  .d thead th.sorted { color:#f5b95a; background:#221e15; }
+  .d td { border-bottom: 1px solid #222428; }
+  .d tbody tr:last-child td { border-bottom: 0; }
+  .d tr:hover td { background:#1c1e22; }
+  .d td.k { color:#f2f3f5; }
+  .d td.sorted { background:#1a1916; }
+  .d td.dim { color:#5c6068; }
+  .d .price { color:#f5b95a; }
+  .d .chip { background:#232529; color:#a9adb5; border:1px solid #2e3035; }
+  .d .chip.bw { color:#c4b5ff; border-color:#3c3560; background:#211f30; }
+  .d .chip.hp { color:#9db8ff; border-color:#2c3a5f; background:#1b2233; }
+  .d .chip.ada { color:#8fd3db; border-color:#25444a; background:#16272a; }
+  .d .chip.amp { color:#b5d37a; border-color:#374722; background:#1e2515; }
+  .d .sticky { box-shadow: 1px 0 0 #2a2c30; }
+  .d .note { font-size: 11px; color:#7c8088; margin-top: 10px; }
+
+  /* D light */
+  .dl { background:#f7f7f8; color:#2b2d31; font-family: -apple-system, "Inter", "Hiragino Sans", "Segoe UI", sans-serif; padding: 20px; border-radius: 8px; }
+  .dl .brand h1 { color:#16171a; }
+  .dl .brand small { color:#7c8088; }
+  .dl .tabs { background:#ebebee; padding: 3px; border-radius: 7px; border:1px solid #e1e2e6; }
+  .dl .tab { color:#6b6f77; }
+  .dl .tab.on { background:#fff; color:#16171a; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .dl .ctl { border-color:#dcdde2; background:#fff; color:#4b4f57; }
+  .dl .ctl.on { border-color:#e8c58a; background:#fff6e6; color:#a35f00; }
+  .dl .frame { border:1px solid #dcdde2; border-radius: 7px; overflow:hidden; background:#fff; }
+  .dl thead th { color:#6b6f77; font-weight: 500; font-size: 11.5px; background:#fafafb; border-bottom:1px solid #e1e2e6; }
+  .dl thead th.sorted { color:#a35f00; background:#fff6e6; }
+  .dl td { border-bottom: 1px solid #eeeff2; }
+  .dl tbody tr:last-child td { border-bottom: 0; }
+  .dl tr:hover td { background:#f6f6f8; }
+  .dl td.k { color:#16171a; }
+  .dl td.sorted { background:#fffaf1; }
+  .dl td.dim { color:#a0a4ab; }
+  .dl .price { color:#a35f00; }
+  .dl .chip { background:#f0f0f3; color:#5c6068; border:1px solid #e1e2e6; }
+  .dl .chip.bw { color:#5b45c7; border-color:#d9d2f7; background:#f2effd; }
+  .dl .chip.hp { color:#2f5bd9; border-color:#cfdafa; background:#eef3fe; }
+  .dl .chip.ada { color:#137a86; border-color:#c2e6ea; background:#e9f7f9; }
+  .dl .chip.amp { color:#5b7a10; border-color:#d9e6b8; background:#f3f8e6; }
+
+  /* C for comparison (compact) */
+  .c { background: radial-gradient(1200px 400px at 20% -10%, #2b2350 0%, #12131a 55%, #0d0e12 100%); color:#e6e8ee; font-family: -apple-system, "Inter", "Hiragino Sans", "Segoe UI", sans-serif; padding: 20px; border-radius: 12px; }
+  .c .brand h1 { font-weight: 600; background: linear-gradient(90deg,#fff,#b9b3ff); -webkit-background-clip: text; color: transparent; }
+  .c .brand small { color:#9aa0ad; }
+  .c .tabs { background: rgba(255,255,255,.05); padding: 3px; border-radius: 9px; border:1px solid rgba(255,255,255,.08); }
+  .c .tab { color:#9aa0ad; }
+  .c .tab.on { background: rgba(255,255,255,.12); color:#fff; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .c .frame { background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius: 10px; overflow:hidden; }
+  .c th { color:#9aa0ad; font-weight: 500; font-size: 11px; background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.08); }
+  .c td { border-bottom: 1px solid rgba(255,255,255,.05); }
+  .c tr:hover td { background: rgba(140,110,255,.08); }
+  .c td.k { color:#fff; font-weight: 600; }
+  .c .price { color:#a5f3c4; }
+  .c .chip { background: linear-gradient(90deg, rgba(140,110,255,.35), rgba(82,127,255,.35)); color:#dcd8ff; border:1px solid rgba(160,140,255,.35); border-radius: 999px; }
+  .c .chip.hp { background: linear-gradient(90deg, rgba(68,185,198,.35), rgba(82,127,255,.35)); color:#c9f3f7; border-color: rgba(100,200,210,.35); }
+</style>
+
+<div class="cards" style="grid-template-columns: 1fr;">
+
+  <div class="card" data-choice="d-dark" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;height:auto;">
+      <div class="vs d">
+        <div class="top">
+          <div class="brand"><h1>AWS GPU Reference</h1><small class="mono">pricing 2026-08 · us-east-1</small></div>
+          <div class="tabs"><span class="tab on">Compare</span><span class="tab">Regions</span><span class="tab">Features</span><span class="tab">Calculator</span></div>
+        </div>
+        <div class="bar">
+          <span class="ctl on">Blackwell ✓</span><span class="ctl on">Hopper ✓</span><span class="ctl">Ada</span><span class="ctl">Ampere</span>
+          <span style="width:8px"></span>
+          <span class="ctl">Region: ap-northeast-1 ▾</span>
+          <span class="ctl">Columns ▾</span>
+          <span style="margin-left:auto;color:#7c8088" class="mono">12 / 47 rows</span>
+        </div>
+        <div class="frame">
+        <table>
+          <thead><tr><th class="sticky">Instance</th><th>GPU</th><th class="n">×</th><th class="n">VRAM</th><th class="n">FP8</th><th class="n sorted">On-Demand<span class="sortarrow">▼</span></th><th class="n">CB</th><th class="n">vCPU</th><th class="n">EFA</th><th>Tokyo</th></tr></thead>
+          <tbody>
+          <tr><td class="k mono sticky">p6-b200.48xlarge</td><td><span class="chip bw">B200</span></td><td class="n mono">8</td><td class="n mono">180</td><td class="n mono">4,500</td><td class="n mono price sorted">113.93</td><td class="n mono price">72.00</td><td class="n mono">192</td><td class="n mono">3,200</td><td class="dim">—</td></tr>
+          <tr><td class="k mono sticky">p5en.48xlarge</td><td><span class="chip hp">H200</span></td><td class="n mono">8</td><td class="n mono">141</td><td class="n mono">1,979</td><td class="n mono price sorted">63.30</td><td class="n mono price">35.00</td><td class="n mono">192</td><td class="n mono">3,200</td><td>✓</td></tr>
+          <tr><td class="k mono sticky">p5.48xlarge</td><td><span class="chip hp">H100</span></td><td class="n mono">8</td><td class="n mono">80</td><td class="n mono">1,979</td><td class="n mono price sorted">55.04</td><td class="n mono price">31.46</td><td class="n mono">192</td><td class="n mono">3,200</td><td>✓</td></tr>
+          <tr><td class="k mono sticky">g6e.48xlarge</td><td><span class="chip ada">L40S</span></td><td class="n mono">8</td><td class="n mono">48</td><td class="n mono">733</td><td class="n mono price sorted">30.13</td><td class="n mono dim">—</td><td class="n mono">192</td><td class="n mono">400</td><td>✓</td></tr>
+          <tr><td class="k mono sticky">g5.xlarge</td><td><span class="chip amp">A10G</span></td><td class="n mono">1</td><td class="n mono">24</td><td class="n mono dim">—</td><td class="n mono price sorted">1.01</td><td class="n mono dim">—</td><td class="n mono">4</td><td class="n mono dim">—</td><td>✓</td></tr>
+          <tr><td class="k mono sticky">g6.xlarge</td><td><span class="chip ada">L4</span></td><td class="n mono">1</td><td class="n mono">24</td><td class="n mono">242</td><td class="n mono price sorted">0.80</td><td class="n mono dim">—</td><td class="n mono">4</td><td class="n mono dim">—</td><td>✓</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="note">USD/hour · FP8 は dense TFLOPS · 先頭列とヘッダは横スクロール時に固定</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D. 折衷案（ダーク）</h3>
+      <p>無彩色のダークグレー 1 段、ヘアライン、淡い塗りのチップ。インスタンス名と数値は等幅。アクセントのアンバーは価格とソート中の列など「状態」にだけ使う。ガラス効果と影なし。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="d-light" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;height:auto;">
+      <div class="vs dl">
+        <div class="top">
+          <div class="brand"><h1>AWS GPU Reference</h1><small class="mono">pricing 2026-08 · us-east-1</small></div>
+          <div class="tabs"><span class="tab on">Compare</span><span class="tab">Regions</span><span class="tab">Features</span><span class="tab">Calculator</span></div>
+        </div>
+        <div class="bar">
+          <span class="ctl on">Blackwell ✓</span><span class="ctl on">Hopper ✓</span><span class="ctl">Ada</span><span class="ctl">Ampere</span>
+          <span style="width:8px"></span>
+          <span class="ctl">Region: ap-northeast-1 ▾</span>
+          <span class="ctl">Columns ▾</span>
+          <span style="margin-left:auto;color:#7c8088" class="mono">12 / 47 rows</span>
+        </div>
+        <div class="frame">
+        <table>
+          <thead><tr><th>Instance</th><th>GPU</th><th class="n">×</th><th class="n">VRAM</th><th class="n">FP8</th><th class="n sorted">On-Demand<span class="sortarrow">▼</span></th><th class="n">CB</th><th class="n">vCPU</th><th class="n">EFA</th><th>Tokyo</th></tr></thead>
+          <tbody>
+          <tr><td class="k mono">p6-b200.48xlarge</td><td><span class="chip bw">B200</span></td><td class="n mono">8</td><td class="n mono">180</td><td class="n mono">4,500</td><td class="n mono price sorted">113.93</td><td class="n mono price">72.00</td><td class="n mono">192</td><td class="n mono">3,200</td><td class="dim">—</td></tr>
+          <tr><td class="k mono">p5en.48xlarge</td><td><span class="chip hp">H200</span></td><td class="n mono">8</td><td class="n mono">141</td><td class="n mono">1,979</td><td class="n mono price sorted">63.30</td><td class="n mono price">35.00</td><td class="n mono">192</td><td class="n mono">3,200</td><td>✓</td></tr>
+          <tr><td class="k mono">p5.48xlarge</td><td><span class="chip hp">H100</span></td><td class="n mono">8</td><td class="n mono">80</td><td class="n mono">1,979</td><td class="n mono price sorted">55.04</td><td class="n mono price">31.46</td><td class="n mono">192</td><td class="n mono">3,200</td><td>✓</td></tr>
+          <tr><td class="k mono">g6e.48xlarge</td><td><span class="chip ada">L40S</span></td><td class="n mono">8</td><td class="n mono">48</td><td class="n mono">733</td><td class="n mono price sorted">30.13</td><td class="n mono dim">—</td><td class="n mono">192</td><td class="n mono">400</td><td>✓</td></tr>
+          <tr><td class="k mono">g5.xlarge</td><td><span class="chip amp">A10G</span></td><td class="n mono">1</td><td class="n mono">24</td><td class="n mono dim">—</td><td class="n mono price sorted">1.01</td><td class="n mono dim">—</td><td class="n mono">4</td><td class="n mono dim">—</td><td>✓</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D. 折衷案（ライト）</h3>
+      <p>同じトークン設計をライトに反転したもの。OS 設定に従って自動で切り替わり、ヘッダの切替で固定できる。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c-glass" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;height:auto;">
+      <div class="vs c">
+        <div class="top">
+          <div class="brand"><h1>AWS GPU Reference</h1><small>Pricing as of Aug 2026 · us-east-1</small></div>
+          <div class="tabs"><span class="tab on">Compare</span><span class="tab">Regions</span><span class="tab">Features</span><span class="tab">Calculator</span></div>
+        </div>
+        <div class="frame">
+        <table>
+          <tr><th>Instance</th><th>GPU</th><th class="n">×</th><th class="n">VRAM</th><th class="n">FP8 TFLOPS</th><th class="n">On-Demand</th><th class="n">Capacity Block</th><th>Tokyo</th></tr>
+          <tr><td class="k">p6-b200.48xlarge</td><td><span class="chip">Blackwell</span> B200</td><td class="n">8</td><td class="n">180 GB</td><td class="n">4,500</td><td class="n price">$113.93</td><td class="n price">$72.00</td><td style="color:#6b7280">—</td></tr>
+          <tr><td class="k">p5en.48xlarge</td><td><span class="chip hp">Hopper</span> H200</td><td class="n">8</td><td class="n">141 GB</td><td class="n">1,979</td><td class="n price">$63.30</td><td class="n price">$35.00</td><td>✓</td></tr>
+          <tr><td class="k">p5.48xlarge</td><td><span class="chip hp">Hopper</span> H100</td><td class="n">8</td><td class="n">80 GB</td><td class="n">1,979</td><td class="n price">$55.04</td><td class="n price">$31.46</td><td>✓</td></tr>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. グラス調（比較用）</h3>
+      <p>前の画面と同じもの。D と並べて質感の差を見るために置いています。</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">D でよければクリックしてターミナルで教えてください。アクセント色（アンバー以外にしたい等）や密度の調整もこの段階で聞きます。</p>

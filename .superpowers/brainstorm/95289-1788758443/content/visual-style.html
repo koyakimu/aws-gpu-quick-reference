@@ -1,0 +1,134 @@
+<h2>どの方向が「おしゃれ」に近いですか?</h2>
+<p class="subtitle">同じ 6 行のデータを、3 つの方向で描いています。配色・書体・密度の違いを見てください。クリックで選択できます。</p>
+
+<style>
+  .vs { font-size: 13px; line-height: 1.4; }
+  .vs table { border-collapse: collapse; width: 100%; }
+  .vs th, .vs td { padding: 5px 10px; white-space: nowrap; text-align: left; }
+  .vs td.n, .vs th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .vs .chip { display:inline-block; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+  .vs .tabs { display:flex; gap: 4px; margin-bottom: 12px; }
+  .vs .tab { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+  .vs .brand { display:flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+  .vs .brand h1 { margin:0; font-size: 18px; letter-spacing: -.01em; }
+  .vs .brand small { font-size: 11px; opacity:.7; }
+
+  /* A: Terminal */
+  .a { background:#0b0e13; color:#d7dce3; font-family: "SF Mono", Menlo, "JetBrains Mono", ui-monospace, monospace; padding: 18px; border-radius: 8px; }
+  .a .brand h1 { color:#f5f7fa; font-weight: 600; }
+  .a .brand h1 span { color:#ffb454; }
+  .a .tab { color:#8b95a5; border:1px solid transparent; }
+  .a .tab.on { color:#ffb454; border-color:#3a2a10; background:#1a140a; }
+  .a th { color:#8b95a5; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #222a35; }
+  .a td { border-bottom: 1px solid #161b23; }
+  .a tr:hover td { background:#11161e; }
+  .a td.k { color:#f5f7fa; font-weight: 600; }
+  .a td.price { color:#ffb454; }
+  .a .gen { width: 3px; padding: 0; }
+  .a .chip { background:#1a1f28; color:#aeb7c4; }
+
+  /* B: Editorial */
+  .b { background:#fbfaf7; color:#1a1a1a; font-family: -apple-system, "Helvetica Neue", "Hiragino Sans", "Segoe UI", sans-serif; padding: 22px; border-radius: 8px; }
+  .b .brand h1 { font-size: 24px; font-weight: 800; letter-spacing: -.03em; }
+  .b .brand h1 span { color:#ff5a1f; }
+  .b .tabs { border-bottom: 2px solid #1a1a1a; gap: 0; }
+  .b .tab { border-radius: 0; font-weight: 600; color:#777; padding: 8px 14px; }
+  .b .tab.on { color:#1a1a1a; box-shadow: inset 0 -2px 0 #ff5a1f; }
+  .b th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color:#1a1a1a; border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; }
+  .b td { border-bottom: 1px solid #e6e2da; }
+  .b tr:hover td { background:#f3efe6; }
+  .b td.k { font-weight: 700; }
+  .b td.n { font-family: "SF Mono", Menlo, ui-monospace, monospace; font-size: 12px; }
+  .b td.price { color:#ff5a1f; font-weight: 700; }
+  .b .chip { background:#1a1a1a; color:#fbfaf7; }
+  .b .chip.h { background:#ff5a1f; }
+
+  /* C: Glass */
+  .c { background: radial-gradient(1200px 400px at 20% -10%, #2b2350 0%, #12131a 55%, #0d0e12 100%); color:#e6e8ee; font-family: -apple-system, "Inter", "Hiragino Sans", "Segoe UI", sans-serif; padding: 20px; border-radius: 12px; }
+  .c .brand h1 { font-weight: 600; background: linear-gradient(90deg,#fff,#b9b3ff); -webkit-background-clip: text; color: transparent; }
+  .c .tabs { background: rgba(255,255,255,.05); padding: 3px; border-radius: 9px; width: max-content; border:1px solid rgba(255,255,255,.08); }
+  .c .tab { color:#9aa0ad; }
+  .c .tab.on { background: rgba(255,255,255,.12); color:#fff; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .c .panel { background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius: 10px; overflow:hidden; }
+  .c th { color:#9aa0ad; font-weight: 500; font-size: 11px; background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.08); }
+  .c td { border-bottom: 1px solid rgba(255,255,255,.05); }
+  .c tr:hover td { background: rgba(140,110,255,.08); }
+  .c td.k { color:#fff; font-weight: 600; }
+  .c td.price { color:#a5f3c4; }
+  .c .chip { background: linear-gradient(90deg, rgba(140,110,255,.35), rgba(82,127,255,.35)); color:#dcd8ff; border:1px solid rgba(160,140,255,.35); }
+  .c .chip.h { background: linear-gradient(90deg, rgba(68,185,198,.35), rgba(82,127,255,.35)); color:#c9f3f7; border-color: rgba(100,200,210,.35); }
+</style>
+
+<div class="cards" style="grid-template-columns: 1fr;">
+
+  <div class="card" data-choice="a-terminal" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;height:auto;">
+      <div class="vs a">
+        <div class="brand"><h1>aws<span>/</span>gpu</h1><small>pricing as of 2026-08 · us-east-1</small></div>
+        <div class="tabs"><span class="tab on">compare</span><span class="tab">regions</span><span class="tab">features</span><span class="tab">calc</span></div>
+        <table>
+          <tr><th class="gen"></th><th>instance</th><th>gpu</th><th class="n">×</th><th class="n">vram</th><th class="n">fp8 tflops</th><th class="n">$/h od</th><th class="n">$/h cb</th><th>tokyo</th></tr>
+          <tr><td class="gen" style="background:#8c6eff"></td><td class="k">p6-b200.48xlarge</td><td>B200</td><td class="n">8</td><td class="n">180</td><td class="n">4,500</td><td class="n price">113.93</td><td class="n price">72.00</td><td><span class="chip">no</span></td></tr>
+          <tr><td class="gen" style="background:#527fff"></td><td class="k">p5en.48xlarge</td><td>H200</td><td class="n">8</td><td class="n">141</td><td class="n">1,979</td><td class="n price">63.30</td><td class="n price">35.00</td><td><span class="chip">yes</span></td></tr>
+          <tr><td class="gen" style="background:#527fff"></td><td class="k">p5.48xlarge</td><td>H100</td><td class="n">8</td><td class="n">80</td><td class="n">1,979</td><td class="n price">55.04</td><td class="n price">31.46</td><td><span class="chip">yes</span></td></tr>
+          <tr><td class="gen" style="background:#44b9c6"></td><td class="k">g6e.48xlarge</td><td>L40S</td><td class="n">8</td><td class="n">48</td><td class="n">733</td><td class="n price">30.13</td><td class="n">—</td><td><span class="chip">yes</span></td></tr>
+          <tr><td class="gen" style="background:#44b9c6"></td><td class="k">g6.xlarge</td><td>L4</td><td class="n">1</td><td class="n">24</td><td class="n">242</td><td class="n price">0.80</td><td class="n">—</td><td><span class="chip">yes</span></td></tr>
+          <tr><td class="gen" style="background:#7aa116"></td><td class="k">g5.xlarge</td><td>A10G</td><td class="n">1</td><td class="n">24</td><td class="n">—</td><td class="n price">1.01</td><td class="n">—</td><td><span class="chip">yes</span></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. ターミナル調</h3>
+      <p>漆黒の背景に等幅書体、アンバーのアクセント 1 色。世代は行の左端の細い色帯だけで示し、数字が主役。Bloomberg 端末や htop のような「道具」の質感。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b-editorial" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;height:auto;">
+      <div class="vs b">
+        <div class="brand"><h1>AWS GPU<span>.</span></h1><small>Pricing as of Aug 2026 · us-east-1</small></div>
+        <div class="tabs"><span class="tab on">Compare</span><span class="tab">Regions</span><span class="tab">Features</span><span class="tab">Calculator</span></div>
+        <table>
+          <tr><th>Instance</th><th>GPU</th><th class="n">×</th><th class="n">VRAM</th><th class="n">FP8</th><th class="n">On-Demand</th><th class="n">Capacity Block</th><th>Tokyo</th></tr>
+          <tr><td class="k">p6-b200.48xlarge</td><td><span class="chip">Blackwell</span> B200</td><td class="n">8</td><td class="n">180 GB</td><td class="n">4,500</td><td class="n price">$113.93</td><td class="n price">$72.00</td><td>—</td></tr>
+          <tr><td class="k">p5en.48xlarge</td><td><span class="chip h">Hopper</span> H200</td><td class="n">8</td><td class="n">141 GB</td><td class="n">1,979</td><td class="n price">$63.30</td><td class="n price">$35.00</td><td>●</td></tr>
+          <tr><td class="k">p5.48xlarge</td><td><span class="chip h">Hopper</span> H100</td><td class="n">8</td><td class="n">80 GB</td><td class="n">1,979</td><td class="n price">$55.04</td><td class="n price">$31.46</td><td>●</td></tr>
+          <tr><td class="k">g6e.48xlarge</td><td><span class="chip" style="background:#6b6b6b">Ada</span> L40S</td><td class="n">8</td><td class="n">48 GB</td><td class="n">733</td><td class="n price">$30.13</td><td class="n">—</td><td>●</td></tr>
+          <tr><td class="k">g6.xlarge</td><td><span class="chip" style="background:#6b6b6b">Ada</span> L4</td><td class="n">1</td><td class="n">24 GB</td><td class="n">242</td><td class="n price">$0.80</td><td class="n">—</td><td>●</td></tr>
+          <tr><td class="k">g5.xlarge</td><td><span class="chip" style="background:#9a9a9a">Ampere</span> A10G</td><td class="n">1</td><td class="n">24 GB</td><td class="n">—</td><td class="n price">$1.01</td><td class="n">—</td><td>●</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. エディトリアル調</h3>
+      <p>生成りの白地に黒の太い見出し、アクセントは鮮やかなオレンジ 1 色。罫線は細く、見出しの下だけ太い。雑誌のデータページのような、余白のある明るい印象。ライトが既定でダークも用意。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c-glass" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;height:auto;">
+      <div class="vs c">
+        <div class="brand"><h1>AWS GPU Reference</h1><small>Pricing as of Aug 2026 · us-east-1</small></div>
+        <div class="tabs"><span class="tab on">Compare</span><span class="tab">Regions</span><span class="tab">Features</span><span class="tab">Calculator</span></div>
+        <div class="panel">
+        <table>
+          <tr><th>Instance</th><th>GPU</th><th class="n">×</th><th class="n">VRAM</th><th class="n">FP8 TFLOPS</th><th class="n">On-Demand</th><th class="n">Capacity Block</th><th>Tokyo</th></tr>
+          <tr><td class="k">p6-b200.48xlarge</td><td><span class="chip">Blackwell</span> B200</td><td class="n">8</td><td class="n">180 GB</td><td class="n">4,500</td><td class="n price">$113.93</td><td class="n price">$72.00</td><td style="color:#6b7280">—</td></tr>
+          <tr><td class="k">p5en.48xlarge</td><td><span class="chip h">Hopper</span> H200</td><td class="n">8</td><td class="n">141 GB</td><td class="n">1,979</td><td class="n price">$63.30</td><td class="n price">$35.00</td><td>✓</td></tr>
+          <tr><td class="k">p5.48xlarge</td><td><span class="chip h">Hopper</span> H100</td><td class="n">8</td><td class="n">80 GB</td><td class="n">1,979</td><td class="n price">$55.04</td><td class="n price">$31.46</td><td>✓</td></tr>
+          <tr><td class="k">g6e.48xlarge</td><td><span class="chip" style="background:rgba(122,161,22,.25);color:#d5f0a0;border-color:rgba(122,161,22,.4)">Ada</span> L40S</td><td class="n">8</td><td class="n">48 GB</td><td class="n">733</td><td class="n price">$30.13</td><td class="n" style="color:#6b7280">—</td><td>✓</td></tr>
+          <tr><td class="k">g6.xlarge</td><td><span class="chip" style="background:rgba(122,161,22,.25);color:#d5f0a0;border-color:rgba(122,161,22,.4)">Ada</span> L4</td><td class="n">1</td><td class="n">24 GB</td><td class="n">242</td><td class="n price">$0.80</td><td class="n" style="color:#6b7280">—</td><td>✓</td></tr>
+          <tr><td class="k">g5.xlarge</td><td><span class="chip" style="background:rgba(255,153,0,.2);color:#ffd28a;border-color:rgba(255,153,0,.4)">Ampere</span> A10G</td><td class="n">1</td><td class="n">24 GB</td><td class="n">—</td><td class="n price">$1.01</td><td class="n" style="color:#6b7280">—</td><td>✓</td></tr>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. グラス調</h3>
+      <p>深い紺のグラデーション背景に半透明のパネル、世代チップはグラデーション。Linear や Vercel のダッシュボードに近い、今風で柔らかい質感。ダークが既定。</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">組み合わせでも構いません（例: A の密度で B の配色）。ターミナルに感想を書いてください。</p>
