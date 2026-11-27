@@ -75,6 +75,21 @@ describe("pricingAsOf substitution", () => {
     });
   });
 
+  it("fills the three checked dates in notes.dataChecked", async () => {
+    const { t, setLang } = await import("../src/scripts/i18n.js");
+    const { PRICING_META } = await import("../src/scripts/gpu-data.js");
+    const { REGIONS_FILE } = await import("../src/scripts/regions-data.js");
+    const { formatDate } = await import("../src/scripts/format.js");
+    ["ja", "en", "ko"].forEach((lang) => {
+      setLang(lang);
+      const note = t("notes.dataChecked");
+      expect(note, `${lang}: placeholder left unsubstituted`).not.toContain("%");
+      expect(note).toContain(formatDate(PRICING_META.pricingAsOf, lang));
+      expect(note).toContain(formatDate(PRICING_META.cbAsOf, lang));
+      expect(note).toContain(formatDate(REGIONS_FILE.generatedAt.slice(0, 10), lang));
+    });
+  });
+
   it("leaves strings without the placeholder alone", async () => {
     const { t, setLang } = await import("../src/scripts/i18n.js");
     setLang("en");

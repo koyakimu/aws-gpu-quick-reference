@@ -2,8 +2,9 @@ name: Update CB Pricing
 
 on:
   schedule:
-    # 毎日 18:00 JST (09:00 UTC)。pricing.json 側の更新後に実行される想定
-    - cron: "0 9 * * *"
+    # 毎日 18:17 JST (09:17 UTC)。pricing.json 側の更新後に実行される想定。
+    # 毎時 0 分は GitHub Actions が混み、schedule が大きく遅れるので外している
+    - cron: "17 9 * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [cb-pricing-updated]
@@ -34,6 +35,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # 取得に成功すれば cbAsOf (最終確認日) が変わるので、その日の初回は毎回差分が出る
           if git diff --quiet; then
             echo "No pricing changes."
             exit 0

@@ -127,7 +127,8 @@ https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/index.
 On-Demand 価格の更新は `node scripts/update-od-pricing.mjs`（`--dry-run` で書き込みなし）。us-east-1 の価格で `price` / `priceGpu` を、東京の有無で `tokyo` を更新する。
 
 - `pricingAsOf` は「最後に Price List と突き合わせた日」（`YYYY-MM-DD`、UTC）。取得と検証が通れば、価格に変更が無くても実行日に書き換える。表示は `formatDate` が言語ごとの日付表記にする
-- **自動化済み**: `.github/workflows/update-od-pricing.yml` が毎週月曜 17:00 JST の cron と `workflow_dispatch` で実行し、`data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-od-pricing.yml`
+- サイトに出す日付は 3 つとも「最後に取得元と突き合わせた日」: `pricingAsOf`（On-Demand）、`cbAsOf`（CB）、`regions.json` の `generatedAt`。データに変更が無くても更新が通れば進める。ビルド日は出さない。cron は毎時 0 分を避ける（GitHub Actions の `schedule` が大きく遅れるため）
+- **自動化済み**: `.github/workflows/update-od-pricing.yml` が毎週月曜 17:47 JST の cron と `workflow_dispatch` で実行し、`data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-od-pricing.yml`
 
 #### CB (Capacity Blocks) 価格更新
 
@@ -142,7 +143,7 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 
 判定ロジックは `scripts/lib/cb-pricing.mjs` の純関数（`pickRate` / `applyCbPricing` / `unmatchedFeedKeys`）にあり、`tests/update-cb-pricing.test.js` でテストする。ファイルの読み書きは `scripts/lib/instances-file.mjs` の `readInstances` / `writeInstances` を使う（1 レコード 1 行の書式を保つため、別のシリアライザを書かないこと）。`scripts/update-cb-pricing.mjs` は fetch と入出力だけの薄い CLI で、フィードにあって `instances.json` に無いサイズを `warning: no row for <key>` として stderr に出す（trn / inf 系は対象外なので除く）。
 
-**この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:00 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、差分があれば `data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
+**この更新は自動化済み**: `.github/workflows/update-cb-pricing.yml` が毎日 18:17 JST と `repository_dispatch`（`cb-pricing-updated`）で `scripts/update-cb-pricing.mjs` を実行し、`cbAsOf`（CB 価格の最終確認日、UTC）を実行日にして `data/instances.json` を main にコミットして deploy を起動する。手動実行は `gh workflow run update-cb-pricing.yml` または `node scripts/update-cb-pricing.mjs`。
 
 #### リージョン別の提供有無と価格 (data/regions.json)
 
@@ -166,7 +167,7 @@ JSONの `instance_types.<インスタンス名>.pricing` 配列から `accelerat
 - `availability` / `prices` のリージョンキーは並列走査の完了順ではなくリージョンコード順に揃える。実行ごとにキー順が変わると `sameExceptGeneratedAt` が毎回「差分あり」と判定してしまうため
 - UI 側はヘッダの `#price-region` で選んだリージョンの価格を `src/scripts/price-region.js` 経由で読む。既定は `us-east-1` で、`prices` に値が無ければ `instances.json` の `price` / `priceCb` に落ちる
 
-**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:00 JST の cron と `workflow_dispatch` で実行し、差分があれば main にコミットして deploy を起動する。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
+**自動化済み**: `.github/workflows/update-regions.yml` が毎週月曜 18:37 JST の cron と `workflow_dispatch` で実行し、全リージョンの取得が通れば `generatedAt` を進めて main にコミットして deploy を起動する。手動実行は `gh workflow run update-regions.yml` または `node scripts/update-regions.mjs`（`--dry-run` で書き込みなし）。
 
 ### GPU 機能マトリクス (data/gpu-features.json)
 

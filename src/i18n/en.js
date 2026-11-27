@@ -3,7 +3,6 @@ export const en = {
     priceRegion: "Price region:",
     priceRegionTitle: "Switches the price columns ($/h, $/GPU, $/GPU CB) and the calculator's default unit prices to this region.",
     pricingAsOf: "(prices checked %PRICING_AS_OF%)",
-    updated: "Last updated",
   },
   table: {
     gpuModel: "GPU",
@@ -74,7 +73,7 @@ export const en = {
     ap: "Asia Pacific",
   },
   regions: {
-    generatedAt: "Generated: {date}",
+    generatedAt: "Data checked: {date}",
     localZoneNote: "CB offerings available only in a Local Zone are counted in their parent region's column.",
     legend: "{od} = available On-Demand / {cb} = available as Capacity Blocks / — = not offered",
   },
@@ -155,6 +154,8 @@ export const en = {
     gb300Note:
       "AWS has announced the P6e-GB300 UltraServer (GB300 NVL72, 72 GPUs), but the instance type name and pricing are not published yet, so it is not in the table.",
     title: "Notes",
+    dataChecked:
+      "Data last checked — On-Demand prices: %PRICING_AS_OF% / Capacity Blocks prices: %CB_AS_OF% / per-region data: %REGIONS_AS_OF%",
     priceNote:
       "On-Demand pricing (USD) for %PRICE_REGION%. CB = Capacity Blocks, per GPU per hour. Prices last checked %PRICING_AS_OF%.",
     priceRegionNote:

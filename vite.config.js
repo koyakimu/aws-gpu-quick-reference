@@ -2,12 +2,7 @@ import { readFileSync } from "node:fs";
 import { defineConfig } from "vitest/config";
 import { viteSingleFile } from "vite-plugin-singlefile";
 
-// ビルド実行日 (JST) を index.html の %BUILD_DATE% に埋め込む
-const buildDate = new Intl.DateTimeFormat("sv-SE", {
-  timeZone: "Asia/Tokyo",
-}).format(new Date());
-
-// 価格の基準月 (%PRICING_AS_OF%) はデータの正から読む
+// 価格の確認日 (%PRICING_AS_OF%) はデータの正から読む
 const { pricingAsOf } = JSON.parse(
   readFileSync(new URL("./data/instances.json", import.meta.url), "utf8"),
 );
@@ -18,9 +13,7 @@ const injectBuildMeta = () => ({
   transformIndexHtml: {
     order: "pre",
     handler(html) {
-      return html
-        .replaceAll("%BUILD_DATE%", buildDate)
-        .replaceAll("%PRICING_AS_OF%", pricingAsOf);
+      return html.replaceAll("%PRICING_AS_OF%", pricingAsOf);
     },
   },
 });

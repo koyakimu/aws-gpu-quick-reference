@@ -1,7 +1,7 @@
 ---
 spec_id: "PRC-001"
 context: "Pricing"
-version: 1
+version: 2
 issue_ref: null
 title: "価格リージョンの選択と価格データの更新"
 decision_refs: []
@@ -33,13 +33,15 @@ decision_refs: []
 - **Then**: その価格は「—」になる（別リージョンの価格で埋めない）
 - **And**: us-east-1 を選んでいて `regions.json` に値が無いときだけ、`instances.json` の `price` / `priceCb` を使う
 
-### AC-004 価格の最終確認日
+### AC-004 データの最終確認日
 - **Given**: サイトを開く
 - **When**: ヘッダと Notes を見る
 - **Then**: On-Demand 価格を最後に AWS Price List と突き合わせた日（`instances.json` の `pricingAsOf`）が、言語ごとの日付表記で出る（ja「2026年11月26日」/ en "November 26, 2026" / ko「2026년 11월 26일」）
+- **And**: Notes の末尾に、データごとの最終確認日が 1 行で出る: On-Demand 価格（`pricingAsOf`）、Capacity Blocks 価格（`instances.json` の `cbAsOf`）、リージョン別データ（`regions.json` の `generatedAt` の日付部分）。値が無いものは「—」
+- **And**: どの日付も「最後に取得元と突き合わせた日」で、データに変更が無くても更新が通れば進む。ビルドした日は出さない
 
 ### AC-005 On-Demand 価格の自動更新
-- **Given**: `.github/workflows/update-od-pricing.yml`（毎週月曜 17:00 JST、手動実行も可）
+- **Given**: `.github/workflows/update-od-pricing.yml`（毎週月曜 17:47 JST、手動実行も可）
 - **When**: `scripts/update-od-pricing.mjs` が走る
 - **Then**: us-east-1 の Price List から Linux / Shared の時間単価を取り、`price` と `priceGpu`（= `price` ÷ GPU 数）を更新する。東京の Price List に載っているかで `tokyo` を更新する
 - **And**: 取得と検証が通れば、価格に変更が無くても `pricingAsOf` を実行日（UTC、`YYYY-MM-DD`）にする
@@ -51,11 +53,12 @@ decision_refs: []
 - **Then**: 何も書かずに終了コード 1 で終わる（`pricingAsOf` も変えない）
 
 ### AC-007 Capacity Blocks 価格の自動更新
-- **Given**: `.github/workflows/update-cb-pricing.yml`（毎日 18:00 JST、`repository_dispatch` の `cb-pricing-updated`、手動実行も可）
+- **Given**: `.github/workflows/update-cb-pricing.yml`（毎日 18:17 JST、`repository_dispatch` の `cb-pricing-updated`、手動実行も可）
 - **When**: `scripts/update-cb-pricing.mjs` が走る
 - **Then**: CB 価格 JSON の `accelerator_hourly_rate_usd` で `priceCb` を更新する。リージョンは 東京 → us-east-1 → us-east-2 → us-west-2 → レートを持つ先頭の順で選ぶ
 - **And**: フィードに東京が載っている行は `tokyo` を `true` にする（`false` には倒さない）
 - **And**: フィードにあって `instances.json` に無いサイズは警告を出す（trn / inf 系は除く）
+- **And**: 取得が通れば、価格に変更が無くても `cbAsOf` を実行日（UTC、`YYYY-MM-DD`）にし、main にコミットしてデプロイを起動する。フィードが空なら何も書かずに終了コード 1 で終わる
 
 ### AC-008 リージョン別価格の自動更新
 - **Given**: REG-001 の週次更新
@@ -77,7 +80,7 @@ decision_refs: []
 ### Outputs
 - **To**: REF-001 — 行ごとの `{ od, gpu, cb }`
 - **To**: CAL-001 — 単価の既定値
-- **To**: I18N-001 — 文言の置換子 `%PRICE_REGION%` / `%PRICING_AS_OF%` の値
+- **To**: I18N-001 — 文言の置換子 `%PRICE_REGION%` / `%PRICING_AS_OF%` / `%CB_AS_OF%` / `%REGIONS_AS_OF%` の値
 
 ### Dependencies
 - **REG-001**: `regions.json` を生成する
@@ -92,10 +95,12 @@ decision_refs: []
 | AC-004 | unit | `tests/format.test.js` 日付の表記、`tests/i18n.test.js` / `tests/main-boot.test.js` 置換、`tests/gpu-data.test.js` `pricingAsOf` の形式 |
 | AC-005, AC-006 | unit | `tests/update-od-pricing.test.js`（走査と反映の純関数。検証と `pricingAsOf` の書き換えは CLI 側でテストなし） |
 | AC-005 | 完成後の実機確認 | `gh workflow run update-od-pricing.yml` が通り、`pricingAsOf` が実行日になる |
-| AC-007 | unit | `tests/update-cb-pricing.test.js` |
+| AC-007 | unit | `tests/update-cb-pricing.test.js`（価格の反映の純関数。`cbAsOf` の書き換えは CLI 側でテストなし） |
+| AC-007 | 完成後の実機確認 | `gh workflow run update-cb-pricing.yml` が通り、`cbAsOf` が実行日になる |
 | AC-008 | unit | `tests/update-regions.test.js` |
 
 ## Notes
 
+- cron を毎時 0 分から外しているのは、GitHub Actions の `schedule` が混雑時（毎時 0 分を含む）に遅れるため。0 分に置いていた頃は 7〜12 時間遅れていた
 - 価格の採り方（Linux / Shared / Used / preInstalledSw NA / BYOL 以外、複数該当時は最安）と各スクリプトの構成は CLAUDE.md の「価格更新」にある
 - UltraServer と Capacity Blocks 専用のサイズは Price List に On-Demand 価格が無い。`tokyo` は CB 側と `regions.json` が持つ

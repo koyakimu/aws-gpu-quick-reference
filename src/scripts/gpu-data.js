@@ -49,5 +49,6 @@ export const GPU_DATA = instancesFile.instances;
 
 export const PRICING_META = {
   pricingAsOf: instancesFile.pricingAsOf,
+  cbAsOf: instancesFile.cbAsOf,
   pricingRegion: instancesFile.pricingRegion,
 };

@@ -224,7 +224,8 @@ export function carryOverPrices(prices, previous, regionCodes) {
   return result;
 }
 
-// generatedAt だけが違うなら「変化なし」。書き換えを避けるための判定 (REG-001)。
+// generatedAt だけが違うなら「変化なし」。ログの出し分けと、取得に失敗した
+// リージョンがあるときに generatedAt を進めないための判定 (REG-001)。
 export function sameExceptGeneratedAt(a, b) {
   if (!a || !b) return false;
   const strip = (file) =>

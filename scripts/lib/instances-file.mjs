@@ -13,6 +13,7 @@ export function writeInstances(file) {
   const body = file.instances.map((row) => "    " + JSON.stringify(row)).join(",\n");
   const json = `{
   "pricingAsOf": ${JSON.stringify(file.pricingAsOf)},
+  "cbAsOf": ${JSON.stringify(file.cbAsOf ?? null)},
   "pricingRegion": ${JSON.stringify(file.pricingRegion)},
   "instances": [
 ${body}

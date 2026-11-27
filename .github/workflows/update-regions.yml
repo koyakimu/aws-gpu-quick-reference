@@ -2,8 +2,8 @@ name: Update Region Availability
 
 on:
   schedule:
-    # 毎週月曜 18:00 JST (09:00 UTC)
-    - cron: "0 9 * * 1"
+    # 毎週月曜 18:37 JST (09:37 UTC)。毎時 0 分は schedule が大きく遅れるので外している
+    - cron: "37 9 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -36,6 +36,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # 全リージョンの取得に成功すれば generatedAt (最終確認日時) が変わるので、通常は毎回差分が出る
           if git diff --quiet; then
             echo "No region data changes."
             exit 0

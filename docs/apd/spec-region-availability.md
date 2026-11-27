@@ -1,7 +1,7 @@
 ---
 spec_id: "REG-001"
 context: "Regions"
-version: 1
+version: 2
 issue_ref: null
 title: "リージョン別の提供状況（Regions タブ）"
 decision_refs: []
@@ -36,7 +36,7 @@ decision_refs: []
 ### AC-004 凡例と生成日
 - **Given**: Regions の表が出ている
 - **When**: 表の下を見る
-- **Then**: OD / CB / — の凡例、データの生成日（UTC の日付）、Local Zone の注記が出る
+- **Then**: OD / CB / — の凡例、データの確認日（`generatedAt` の UTC の日付）、Local Zone の注記が出る
 
 ### AC-005 Local Zone の扱い
 - **Given**: Capacity Blocks が Local Zone でのみ提供されるインスタンスがある
@@ -49,15 +49,16 @@ decision_refs: []
 - **Then**: 表の代わりに「データはまだ生成されていません」と出る。ほかのタブは動く
 
 ### AC-007 データの自動更新
-- **Given**: `.github/workflows/update-regions.yml`（毎週月曜 18:00 JST、手動実行も可）
+- **Given**: `.github/workflows/update-regions.yml`（毎週月曜 18:37 JST、手動実行も可）
 - **When**: `scripts/update-regions.mjs` が走る
 - **Then**: AWS Price List の通常リージョン（Local Zone と GovCloud を除く）を走査し、Linux / Shared の提供有無と On-Demand 時間単価を取る。Capacity Blocks は CB 価格 JSON から取る
-- **And**: `generatedAt` 以外に差分があるときだけ `data/regions.json` を書き換え、main にコミットしてデプロイを起動する
+- **And**: 全リージョンの取得が通れば、データに差分が無くても `generatedAt` を実行日時にして `data/regions.json` を書き換え、main にコミットしてデプロイを起動する
 
 ### AC-008 (Error Case) 一部のリージョンの取得に失敗
 - **Given**: 更新中に 1 つ以上のリージョンの取得が失敗した
 - **When**: スクリプトが終わる
 - **Then**: 失敗したリージョンは前回の値を保ち、警告を出して終了コード 0 で終わる
+- **And**: ほかのリージョンにも差分が無ければ `generatedAt` は進めない（全リージョンを確認できていないため）
 - **And**: 全リージョンが失敗したときだけ終了コード 1 で終わり、ファイルは書き換えない
 
 ## UI Description
@@ -88,7 +89,7 @@ decision_refs: []
 |-------|-----------|-------------|
 | AC-001〜AC-004, AC-006 | unit | `tests/regions-view.test.js` |
 | AC-005, AC-007, AC-008 | unit | `tests/update-regions.test.js`（Price List と CB JSON の固定入力。ネットワークは使わない） |
-| AC-007 | 完成後の実機確認 | `gh workflow run update-regions.yml` が通り、差分があればコミットされる |
+| AC-007 | 完成後の実機確認 | `gh workflow run update-regions.yml` が通り、`generatedAt` が実行日時になる |
 
 ## Notes
 
